@@ -1,6 +1,6 @@
 # Formula One Machine Learning Workshop
 
-Welcome to the Formula One Machine Learning Workshop GitHub repository! This workshop is designed to introduce participants to the exciting application of machine learning in the world of Formula One racing. Through hands-on projects, we'll explore how to use historical race data, driver performance, and car telemetry to make informed predictions and optimizations.
+Formula 1 Machine Learning Workshop repository! This workshop is designed to introduce participants to the exciting application of machine learning in the world of Formula One racing. Through hands-on projects, we'll explore how to use historical race data, driver performance, and car telemetry to make informed predictions and optimizations.
 
 ## Workshop Overview
 
