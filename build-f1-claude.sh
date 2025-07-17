@@ -69,6 +69,7 @@ case "$COMMAND" in
         check_env_file
         
         print_info "Building Docker images..."
+        docker-compose -f docker/docker-compose.yml build
         
         if [ $? -eq 0 ]; then
             print_success "\n✅ Setup complete! Run './build-f1-claude.sh jupyter' to start."
@@ -82,6 +83,7 @@ case "$COMMAND" in
         print_info "🚀 Starting Jupyter Lab..."
         check_env_file
         
+        docker-compose -f docker/docker-compose.yml up -d f1-jupyter
         
         if [ $? -eq 0 ]; then
             sleep 3
@@ -119,6 +121,7 @@ case "$COMMAND" in
         print_info "🚀 Starting all services..."
         check_env_file
         
+        docker-compose -f docker/docker-compose.yml up -d
         
         if [ $? -eq 0 ]; then
             sleep 3
@@ -134,6 +137,7 @@ case "$COMMAND" in
     
     stop)
         print_info "🛑 Stopping all services..."
+        docker-compose -f docker/docker-compose.yml down
         print_success "✅ All services stopped."
         ;;
     
@@ -143,7 +147,7 @@ case "$COMMAND" in
         read -r CONFIRM
         if [ "$CONFIRM" = "yes" ]; then
             print_info "🧹 Cleaning up..."
-            docker-compose down -v --rmi all
+            docker-compose -f docker/docker-compose.yml down -v --rmi all
             print_success "✅ Cleanup complete."
         else
             print_info "Cancelled."
@@ -152,11 +156,12 @@ case "$COMMAND" in
     
     status)
         print_info "📊 Service Status:"
-        docker-compose ps
+        docker-compose -f docker/docker-compose.yml ps
         ;;
     
     logs)
         print_info "📜 Showing logs (Ctrl+C to exit)..."
+        docker-compose -f docker/docker-compose.yml logs -f
         ;;
     
     *)
