@@ -69,7 +69,6 @@ case "$COMMAND" in
         check_env_file
         
         print_info "Building Docker images..."
-        docker-compose build
         
         if [ $? -eq 0 ]; then
             print_success "\n✅ Setup complete! Run './build-f1-claude.sh jupyter' to start."
@@ -83,7 +82,6 @@ case "$COMMAND" in
         print_info "🚀 Starting Jupyter Lab..."
         check_env_file
         
-        docker-compose up -d f1-jupyter
         
         if [ $? -eq 0 ]; then
             sleep 3
@@ -114,14 +112,13 @@ case "$COMMAND" in
         check_env_file
         
         print_info "Entering interactive Claude session (type 'exit' to quit)..."
-        docker-compose run --rm claude-code claude
+        docker-compose -f docker/docker-compose.yml run --rm claude-code claude
         ;;
     
     all)
         print_info "🚀 Starting all services..."
         check_env_file
         
-        docker-compose up -d
         
         if [ $? -eq 0 ]; then
             sleep 3
@@ -137,7 +134,6 @@ case "$COMMAND" in
     
     stop)
         print_info "🛑 Stopping all services..."
-        docker-compose down
         print_success "✅ All services stopped."
         ;;
     
@@ -161,7 +157,6 @@ case "$COMMAND" in
     
     logs)
         print_info "📜 Showing logs (Ctrl+C to exit)..."
-        docker-compose logs -f
         ;;
     
     *)

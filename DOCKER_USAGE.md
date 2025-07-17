@@ -19,13 +19,17 @@ echo "ANTHROPIC_API_KEY=your-api-key-here" > .env
 
 ```bash
 # Build all services
-docker-compose build
+docker-compose -f docker/docker-compose.yml build
 
 # Start Jupyter service (for notebooks)
-docker-compose up f1-jupyter -d
+docker-compose -f docker/docker-compose.yml up f1-jupyter -d
 
 # Access Claude Code CLI
-docker-compose run --rm claude-code claude
+docker-compose -f docker/docker-compose.yml run --rm claude-code claude
+
+# Or use the helper scripts (recommended):
+# Windows: .\build-f1-claude.ps1 setup
+# Mac/Linux: ./build-f1-claude.sh setup
 ```
 
 Access JupyterLab at: http://localhost:8888
