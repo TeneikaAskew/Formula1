@@ -1,0 +1,94 @@
+# Use Python 3.10 slim image as base
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies including unzip for data extraction
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    git \
+    curl \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install Jupyter and additional ML packages for F1 analysis
+RUN pip install --no-cache-dir \
+    jupyter \
+    jupyterlab \
+    ipywidgets \
+    notebook \
+    nbconvert \
+    jupyter-contrib-nbextensions
+
+# Copy the entire project
+COPY . .
+
+# Create directories for data and notebooks
+RUN mkdir -p /app/data /app/notebooks
+
+# Extract F1 data if zip file exists
+RUN if [ -f "f1db_csv.zip" ]; then \
+        echo "Extracting F1 data..." && \
+        unzip -q f1db_csv.zip -d data/ && \
+        echo "F1 data extracted successfully" && \
+        rm -f f1db_csv.zip; \
+    else \
+        echo "No f1db_csv.zip found, skipping extraction"; \
+    fi
+
+# Expose ports
+# 8888 for Jupyter
+# 5000 for potential API endpoints
+EXPOSE 8888 5000
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV JUPYTER_ENABLE_LAB=yes
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Create startup script for flexible execution
+RUN echo '#!/bin/bash\n\
+set -e\n\
+\n\
+# Check if data needs to be extracted\n\
+if [ -f "f1db_csv.zip" ] && [ ! -f "data/results.csv" ]; then\n\
+    echo "Extracting F1 data..."\n\
+    unzip -q f1db_csv.zip -d data/\n\
+    echo "Data extraction complete"\n\
+fi\n\
+\n\
+# Handle different startup modes\n\
+case "$1" in\n\
+    jupyter)\n\
+        echo "Starting JupyterLab..."\n\
+        exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root \\\n\
+             --NotebookApp.token="" --NotebookApp.password="" \\\n\
+             --NotebookApp.allow_origin="*"\n\
+        ;;\n\
+    notebook)\n\
+        echo "Starting Jupyter Notebook..."\n\
+        exec jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root \\\n\
+             --NotebookApp.token="" --NotebookApp.password="" \\\n\
+             --NotebookApp.allow_origin="*"\n\
+        ;;\n\
+    bash)\n\
+        exec /bin/bash\n\
+        ;;\n\
+    *)\n\
+        exec "$@"\n\
+        ;;\n\
+esac' > /app/start.sh && chmod +x /app/start.sh
+
+# Set entrypoint
+ENTRYPOINT ["/app/start.sh"]
+
+# Default command to start JupyterLab
+CMD ["jupyter"]

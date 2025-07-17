@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  f1-claude-code:
+    build:
+      context: .
+      dockerfile: Dockerfile.f1-claude
+    image: f1-claude-code:latest
+    container_name: f1-claude-code-env
+    ports:
+      - "8888:8888"  # Jupyter Lab
+      - "8501:8501"  # Streamlit
+      - "8000:8000"  # FastAPI
+      - "5000:5000"  # Additional services
+    volumes:
+      - .:/workspace
+      - f1_claude_notebooks:/workspace/.jupyter
+      - f1_claude_data:/workspace/data
+      - f1_claude_models:/workspace/models
+      - f1_claude_output:/workspace/output
+    environment:
+      - PYTHONUNBUFFERED=1
+      - F1_PROJECT_ROOT=/workspace
+      - JUPYTER_ENABLE_LAB=yes
+    working_dir: /workspace
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    command: ["/workspace/start-f1-claude.sh"]
+
+volumes:
+  f1_claude_notebooks:
+  f1_claude_data:
+  f1_claude_models:
+  f1_claude_output:

@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # Claude Code CLI service
+  claude-code:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.claude-code
+    image: claude-code-cli:latest
+    container_name: claude-code-cli
+    volumes:
+      - ..:/workspace
+      - ~/.claude-code:/root/.claude-code  # Persist Claude Code config
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    stdin_open: true
+    tty: true
+    networks:
+      - f1-network
+
+  # Jupyter service for F1 notebooks
+  f1-jupyter:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.jupyter
+    image: f1-jupyter:latest
+    container_name: f1-jupyter
+    ports:
+      - "8888:8888"  # Jupyter port
+      - "5000:5000"  # API port (for future use)
+    volumes:
+      # Mount the entire app directory for live code updates
+      - ..:/app
+      # Exclude data from being overwritten by host
+      - /app/data
+      # Named volume for persistent data storage
+      - f1-data:/app/data
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - PYTHONUNBUFFERED=1
+      - GRANT_SUDO=yes
+    command: jupyter  # Default to JupyterLab
+    restart: unless-stopped
+    networks:
+      - f1-network
+
+  # Development environment with extra features
+  f1-dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    image: f1-dev:latest
+    container_name: f1-dev
+    ports:
+      - "8890:8888"  # Jupyter
+      - "8501:8501"  # Streamlit
+      - "8000:8000"  # FastAPI
+      - "5001:5000"  # Additional API port
+    volumes:
+      - ..:/workspace
+      - /workspace/data
+      - f1-data:/workspace/data
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - PYTHONUNBUFFERED=1
+    profiles:
+      - dev  # Only start when specifically requested
+    restart: unless-stopped
+    networks:
+      - f1-network
+
+volumes:
+  f1-data:
+    driver: local
+
+networks:
+  f1-network:
+    driver: bridge
