@@ -1,28 +1,64 @@
 # Git files
 .git
 .gitignore
+.gitattributes
 
-# Python cache
-__pycache__
-*.pyc
-*.pyo
-*.pyd
+# Python cache and artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 .Python
-env
-pip-log.txt
-pip-delete-this-directory.txt
-.tox
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing and coverage
+.tox/
+.nox/
 .coverage
 .coverage.*
 .cache
 nosetests.xml
 coverage.xml
 *.cover
-*.log
-.git
-.mypy_cache
-.pytest_cache
-.hypothesis
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# pyenv
+.python-version
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
 
 # OS generated files
 .DS_Store
@@ -32,20 +68,27 @@ coverage.xml
 .Trashes
 ehthumbs.db
 Thumbs.db
+*~
 
 # IDE files
-.vscode
-.idea
+.vscode/
+.idea/
 *.swp
 *.swo
+*~
+.project
+.pydevproject
 
-# Docker files
-Dockerfile*
-docker-compose*
+# Logs
+*.log
+logs/
 
-# Documentation
-README.md
-*.md
+# Environment variables
+.env.local
+.env.*.local
 
-# Jupyter notebook checkpoints
-.ipynb_checkpoints
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
