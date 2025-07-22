@@ -24,6 +24,8 @@ __pycache__/
 venv/
 env/
 ENV/
+.venv/
+.env/
 
 # IDE
 .vscode/
