@@ -217,7 +217,7 @@ def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_do
     Load F1DB data with a simple function call
     
     Args:
-        data_dir: Directory to store/load data (if None, uses ../../data/f1db relative to this file)
+        data_dir: Directory to store/load data (if None, uses ../../data relative to this file)
         format: Data format ('csv' recommended)
         force_download: Force re-download of data
         
