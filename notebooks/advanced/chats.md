@@ -1423,4 +1423,32 @@ The build took about 7 minutes because it installed all the Python packages, but
   4. MLflow tracking - All experiments logged centrally
 
   The beauty is that F1_Pipeline_Integration.ipynb handles all the complexity -        
-  you just need to run it!
+  you just need to run it!'
+
+
+   Step 3: Run the Pipeline!
+
+  You now have 3 ways to run the pipeline:
+
+  Option 1: Jupyter (Interactive)
+  # Open Jupyter and navigate to:
+  /workspace/notebooks/advanced/F1_Pipeline_Integration.ipynb
+  # Then: Run All Cells
+
+  Option 2: Command Line (Automated)
+  cd /workspace/notebooks/advanced
+  python run_f1_pipeline.py
+
+  Option 3: With Options
+  python run_f1_pipeline.py --race-id 1234    # Specific race
+  python run_f1_pipeline.py --schedule        # Schedule weekend automation
+  python run_f1_pipeline.py --backtest        # Run backtesting
+
+  📋 What Will Happen
+
+  1. First Run: The pipeline will automatically run prerequisite notebooks to create models
+  2. Data Loading: Uses correct f1db_data_loader.py
+  3. Predictions: Generates Prize Picks recommendations
+  4. Output: Results saved to pipeline_outputs/ directory
+
+  The pipeline is now fully integrated and ready to generate F1 Prize Picks predictions!
