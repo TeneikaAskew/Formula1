@@ -12,7 +12,8 @@
       "Bash(echo:*)",
       "Bash(grep:*)",
       "WebFetch(domain:github.com)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }
