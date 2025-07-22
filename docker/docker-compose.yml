@@ -6,8 +6,8 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.claude-code
-    image: claude-code-cli:latest
-    container_name: claude-code-cli
+    image: f1-claude-code:latest
+    container_name: f1-claude-code
     volumes:
       - ..:/workspace
       - ~/.claude-code:/root/.claude-code  # Persist Claude Code config
