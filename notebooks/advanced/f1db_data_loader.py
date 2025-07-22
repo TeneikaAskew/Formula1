@@ -114,16 +114,27 @@ class F1DBDataLoader:
         # Ensure data is downloaded
         self.download_latest_data()
         
-        # Load all CSV files
-        csv_files = list(self.data_dir.glob("*.csv"))
+        # Load all CSV files (try with f1db- prefix first)
+        csv_files = list(self.data_dir.glob("f1db-*.csv"))
+        if not csv_files:
+            # Fallback to files without prefix
+            csv_files = list(self.data_dir.glob("*.csv"))
+            
         if not csv_files:
             raise FileNotFoundError("No CSV files found. Data may not be downloaded correctly.")
         
         print(f"Loading {len(csv_files)} CSV files...")
         for csv_file in csv_files:
+            # Get the table name, removing f1db- prefix if present
             table_name = csv_file.stem
+            if table_name.startswith('f1db-'):
+                table_name = table_name[5:]  # Remove 'f1db-' prefix
+            
+            # Replace dashes with underscores for consistency
+            table_name = table_name.replace('-', '_')
+            
             try:
-                df = pd.read_csv(csv_file, encoding='utf-8')
+                df = pd.read_csv(csv_file, encoding='utf-8', low_memory=False)
                 dataframes[table_name] = df
                 print(f"  ✓ Loaded {table_name}: {len(df)} rows")
             except Exception as e:
@@ -142,16 +153,17 @@ class F1DBDataLoader:
             'drivers': ['drivers', 'driver'],
             'constructors': ['constructors', 'constructor', 'teams'],
             'circuits': ['circuits', 'circuit', 'tracks'],
-            'results': ['race_results', 'results', 'race_result'],
-            'qualifying': ['qualifying_results', 'qualifying', 'qualifying_result'],
-            'sprint_results': ['sprint_race_results', 'sprint_results', 'sprint_race_result'],
-            'fastest_laps': ['fastest_laps', 'fastest_lap'],
-            'pit_stops': ['pit_stops', 'pitstops', 'pit_stop'],
-            'driver_standings': ['race_driver_standings', 'driver_standings', 'driverStandings'],
-            'constructor_standings': ['race_constructor_standings', 'constructor_standings', 'constructorStandings'],
+            'results': ['races_race_results', 'race_results', 'results', 'race_result'],
+            'qualifying': ['races_qualifying_results', 'qualifying_results', 'qualifying', 'qualifying_result'],
+            'sprint_results': ['races_sprint_race_results', 'sprint_race_results', 'sprint_results', 'sprint_race_result'],
+            'fastest_laps': ['races_fastest_laps', 'fastest_laps', 'fastest_lap'],
+            'pit_stops': ['races_pit_stops', 'pit_stops', 'pitstops', 'pit_stop'],
+            'driver_standings': ['races_driver_standings', 'race_driver_standings', 'driver_standings', 'driverStandings'],
+            'constructor_standings': ['races_constructor_standings', 'race_constructor_standings', 'constructor_standings', 'constructorStandings'],
             'seasons': ['seasons', 'season'],
-            'lap_times': ['lap_times', 'lapTimes', 'laps'],
-            'status': ['race_result_status', 'status']
+            'lap_times': ['races_laps', 'lap_times', 'lapTimes', 'laps'],
+            'status': ['race_result_status', 'status'],
+            'constructor_results': ['races_race_results', 'race_results', 'results']  # Added for constructor results
         }
         
         core_data = {}
@@ -173,6 +185,28 @@ class F1DBDataLoader:
         for table_name, df in all_data.items():
             if table_name not in core_data_names:
                 core_data[table_name] = df
+        
+        # Create a synthetic status table for compatibility with older code
+        if 'results' in core_data and 'status' not in core_data:
+            # Extract unique statuses from reasonRetired column
+            results_df = core_data['results']
+            if 'reasonRetired' in results_df.columns:
+                unique_statuses = results_df['reasonRetired'].dropna().unique()
+                # Create a status dataframe
+                status_df = pd.DataFrame({
+                    'statusId': range(1, len(unique_statuses) + 2),
+                    'status': ['Finished'] + list(unique_statuses)
+                })
+                core_data['status'] = status_df
+                print("  → Created synthetic status table from reasonRetired data")
+        
+        # Add positionOrder column to results for compatibility
+        if 'results' in core_data:
+            results_df = core_data['results']
+            if 'positionOrder' not in results_df.columns and 'positionNumber' in results_df.columns:
+                results_df['positionOrder'] = results_df['positionNumber']
+                core_data['results'] = results_df
+                print("  → Added positionOrder column to results for compatibility")
         
         return core_data
 

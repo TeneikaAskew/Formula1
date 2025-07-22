@@ -1,0 +1,212 @@
+name: Race Weekend Predictions
+
+on:
+  schedule:
+    # Run on Fridays at 12:00 PM UTC (before FP1)
+    - cron: '0 12 * * 5'
+    # Run on Saturdays at 10:00 AM UTC (before Qualifying)
+    - cron: '0 10 * * 6'
+    # Run on Sundays at 10:00 AM UTC (before Race)
+    - cron: '0 10 * * 0'
+  workflow_dispatch:
+    inputs:
+      session_type:
+        description: 'Session type'
+        required: true
+        type: choice
+        options:
+          - practice
+          - qualifying
+          - race
+      update_predictions:
+        description: 'Update predictions with latest data'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  check-race-weekend:
+    name: Check if Race Weekend
+    runs-on: ubuntu-latest
+    outputs:
+      is_race_weekend: ${{ steps.check.outputs.is_race_weekend }}
+      race_name: ${{ steps.check.outputs.race_name }}
+      session_type: ${{ steps.check.outputs.session_type }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Check race schedule
+      id: check
+      run: |
+        python -c "
+        import pandas as pd
+        from datetime import datetime, timedelta
+        import sys
+        sys.path.append('notebooks/advanced')
+        from f1db_data_loader import load_f1db_data
+        
+        # Load race data
+        data = load_f1db_data()
+        races = data['races']
+        races['date'] = pd.to_datetime(races['date'])
+        
+        # Get current date and upcoming races
+        today = datetime.now()
+        upcoming = races[races['date'] >= today - timedelta(days=3)]
+        upcoming = upcoming.sort_values('date')
+        
+        if len(upcoming) > 0:
+            next_race = upcoming.iloc[0]
+            race_date = next_race['date']
+            days_until = (race_date - today).days
+            
+            # Check if we're in a race weekend (Friday to Sunday)
+            if -2 <= days_until <= 0:
+                print(f'is_race_weekend=true')
+                print(f'race_name={next_race[\"name\"]}')
+                
+                # Determine session type based on day
+                if days_until == -2:  # Friday
+                    print('session_type=practice')
+                elif days_until == -1:  # Saturday
+                    print('session_type=qualifying')
+                else:  # Sunday
+                    print('session_type=race')
+            else:
+                print('is_race_weekend=false')
+        else:
+            print('is_race_weekend=false')
+        " >> $GITHUB_OUTPUT
+
+  generate-predictions:
+    name: Generate Predictions
+    needs: check-race-weekend
+    if: needs.check-race-weekend.outputs.is_race_weekend == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r notebooks/requirements.txt
+        pip install -r notebooks/requirements-dev.txt
+    
+    - name: Generate predictions
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        cd notebooks/advanced
+        
+        SESSION_TYPE="${{ github.event.inputs.session_type || needs.check-race-weekend.outputs.session_type }}"
+        RACE_NAME="${{ needs.check-race-weekend.outputs.race_name }}"
+        
+        echo "Generating predictions for $RACE_NAME - $SESSION_TYPE"
+        
+        # Run appropriate prediction based on session type
+        python -c "
+        from F1_Pipeline_Integration import F1PrizePipeline
+        import json
+        
+        # Initialize pipeline
+        pipeline = F1PrizePipeline()
+        
+        # Configure for session type
+        config = {
+            'session_type': '$SESSION_TYPE',
+            'race_name': '$RACE_NAME',
+            'update_with_latest': True
+        }
+        
+        # Run predictions
+        results = pipeline.run(config=config)
+        
+        # Save predictions
+        with open('predictions_${SESSION_TYPE}.json', 'w') as f:
+            json.dump(results, f, indent=2)
+        
+        print(f'Predictions generated for {results[\"race_name\"]} - $SESSION_TYPE')
+        "
+    
+    - name: Create prediction summary
+      run: |
+        cd notebooks/advanced
+        python -c "
+        import json
+        import pandas as pd
+        
+        # Load predictions
+        with open('predictions_${{ needs.check-race-weekend.outputs.session_type }}.json', 'r') as f:
+            predictions = json.load(f)
+        
+        # Create tweet-sized summary
+        race_name = predictions['race_name']
+        top_3 = predictions['predictions']['top_3'][:3]
+        
+        summary = f'''🏎️ F1 Predictions - {race_name}
+        
+        🥇 {top_3[0]['driver']} ({top_3[0]['confidence']:.0%})
+        🥈 {top_3[1]['driver']} ({top_3[1]['confidence']:.0%})
+        🥉 {top_3[2]['driver']} ({top_3[2]['confidence']:.0%})
+        
+        #F1 #Formula1 #{race_name.replace(' ', '')}'''
+        
+        print(summary)
+        
+        with open('../../prediction_summary.txt', 'w') as f:
+            f.write(summary)
+        "
+    
+    - name: Upload predictions
+      uses: actions/upload-artifact@v3
+      with:
+        name: race-predictions-${{ github.run_id }}
+        path: |
+          notebooks/advanced/predictions_*.json
+          prediction_summary.txt
+        retention-days: 7
+    
+    - name: Create PR with predictions
+      if: github.event_name == 'schedule'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "🏎️ Add ${{ needs.check-race-weekend.outputs.race_name }} predictions"
+        title: "F1 Predictions: ${{ needs.check-race-weekend.outputs.race_name }} - ${{ needs.check-race-weekend.outputs.session_type }}"
+        body: |
+          ## 🏁 Race Weekend Predictions
+          
+          **Race**: ${{ needs.check-race-weekend.outputs.race_name }}
+          **Session**: ${{ needs.check-race-weekend.outputs.session_type }}
+          **Generated**: ${{ github.event.repository.updated_at }}
+          
+          This PR contains the latest predictions for the upcoming session.
+          
+          ### Files Updated
+          - `predictions_${{ needs.check-race-weekend.outputs.session_type }}.json`
+          - Model confidence scores and betting recommendations
+          
+          ---
+          *Generated automatically by F1 Pipeline*
+        branch: predictions/${{ needs.check-race-weekend.outputs.race_name }}-${{ needs.check-race-weekend.outputs.session_type }}
+        delete-branch: true

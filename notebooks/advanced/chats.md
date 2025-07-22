@@ -1159,3 +1159,40 @@ The build took about 7 minutes because it installed all the Python packages, but
 
   All tasks have been completed successfully, excluding the FastAPI implementation     
    as requested.
+
+
+● Summary
+
+  I've created an improved Random Forest and Gradient Boosting notebook
+  (F1_Improved_RF_GB_Models.ipynb) that addresses all your requirements:
+
+  Key Improvements:
+
+  1. Top 5 Predictions Added
+    - Now shows Top 10, Top 5, and Top 3 predictions
+    - All predictions display with confidence scores
+    - Clear formatting with emojis for easy reading
+  2. Race Name Validation
+    - Displays the next race name prominently
+    - Shows race round and scheduled date
+    - Clear header showing which race the predictions are for
+  3. Overfitting Prevention
+    - Temporal validation splits (train: up to 2022, val: 2023, test: 2024+)
+    - Regularized models with shallow trees and high min_samples requirements
+    - Proper feature engineering with .shift(1) to prevent data leakage
+    - Rolling window features that don't use future data
+  4. Comprehensive Overfitting Tests
+    - Train vs validation accuracy comparison
+    - ROC curves and AUC analysis
+    - Confusion matrices visualization
+    - Overfitting ratio calculations
+    - Warnings when overfitting is detected
+  5. Realistic Performance
+    - Expected accuracy: 70-85% (instead of 99%+)
+    - Proper temporal validation
+    - Feature importance analysis
+    - Model performance monitoring
+
+  The notebook now provides more realistic predictions with proper validation and      
+  includes all drivers for Top 10, Top 5, and Top 3 predictions with the race name     
+   clearly displayed.

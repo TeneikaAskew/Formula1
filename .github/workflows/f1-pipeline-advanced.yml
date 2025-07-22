@@ -1,0 +1,334 @@
+name: F1 Pipeline - Advanced
+
+on:
+  schedule:
+    # Run daily at 10:00 AM UTC (after European races typically finish)
+    - cron: '0 10 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - 'notebooks/advanced/**'
+      - 'data/f1db/**'
+      - '.github/workflows/f1-pipeline-advanced.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'notebooks/advanced/**'
+  workflow_dispatch:
+    inputs:
+      race_id:
+        description: 'Specific race ID to process'
+        required: false
+        type: string
+      run_backtest:
+        description: 'Run backtesting'
+        required: false
+        type: boolean
+        default: false
+      deploy_results:
+        description: 'Deploy results to GitHub Pages'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  PYTHON_VERSION: '3.9'
+  CACHE_VERSION: 'v1'
+
+jobs:
+  test:
+    name: Test Pipeline Components
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pip
+          ~/nltk_data
+        key: ${{ runner.os }}-pip-${{ env.CACHE_VERSION }}-${{ hashFiles('**/requirements*.txt') }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov nbval
+        pip install -r notebooks/requirements.txt
+        pip install -r notebooks/requirements-dev.txt
+    
+    - name: Run unit tests
+      run: |
+        cd notebooks/advanced
+        # Test data loader
+        python -m pytest f1db_data_loader.py -v
+        # Test enhanced data loader
+        python -m pytest enhanced_f1db_data_loader.py -v
+    
+    - name: Validate notebooks
+      run: |
+        # Test that notebooks can be executed without errors
+        pytest --nbval-lax notebooks/advanced/F1_Model_Fixes_and_Validation.ipynb
+        pytest --nbval-lax notebooks/advanced/F1_Feature_Store.ipynb
+
+  run-pipeline:
+    name: Run F1 Pipeline
+    needs: test
+    runs-on: ubuntu-latest
+    
+    outputs:
+      race_name: ${{ steps.pipeline.outputs.race_name }}
+      predictions_made: ${{ steps.pipeline.outputs.predictions_made }}
+      report_path: ${{ steps.pipeline.outputs.report_path }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pip
+          ~/nltk_data
+        key: ${{ runner.os }}-pip-${{ env.CACHE_VERSION }}-${{ hashFiles('**/requirements*.txt') }}
+    
+    - name: Cache F1DB data
+      uses: actions/cache@v3
+      with:
+        path: data/f1db
+        key: f1db-${{ env.CACHE_VERSION }}-${{ hashFiles('data/f1db/.f1db_version') }}-${{ github.run_id }}
+        restore-keys: |
+          f1db-${{ env.CACHE_VERSION }}-${{ hashFiles('data/f1db/.f1db_version') }}
+          f1db-${{ env.CACHE_VERSION }}-
+    
+    - name: Cache MLflow data
+      uses: actions/cache@v3
+      with:
+        path: notebooks/advanced/mlflow
+        key: mlflow-${{ env.CACHE_VERSION }}-${{ github.run_number }}
+        restore-keys: |
+          mlflow-${{ env.CACHE_VERSION }}-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r notebooks/requirements.txt
+        pip install -r notebooks/requirements-dev.txt
+    
+    - name: Create directories
+      run: |
+        mkdir -p data/f1db
+        mkdir -p notebooks/advanced/mlflow
+        mkdir -p notebooks/advanced/models
+        mkdir -p notebooks/advanced/reports
+        mkdir -p artifacts
+    
+    - name: Run pipeline
+      id: pipeline
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        cd notebooks/advanced
+        
+        # Run the pipeline
+        if [ -n "${{ github.event.inputs.race_id }}" ]; then
+          echo "Running pipeline for specific race: ${{ github.event.inputs.race_id }}"
+          python run_f1_pipeline.py --race-id "${{ github.event.inputs.race_id }}" --output-dir reports
+        else
+          echo "Running pipeline for next race"
+          python run_f1_pipeline.py --output-dir reports
+        fi
+        
+        # Extract race information from the latest report
+        if [ -f "reports/latest_report.json" ]; then
+          RACE_NAME=$(python -c "import json; print(json.load(open('reports/latest_report.json'))['race_name'])")
+          echo "race_name=$RACE_NAME" >> $GITHUB_OUTPUT
+          echo "predictions_made=true" >> $GITHUB_OUTPUT
+          echo "report_path=notebooks/advanced/reports/latest_report.json" >> $GITHUB_OUTPUT
+        else
+          echo "predictions_made=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Run backtesting
+      if: github.event.inputs.run_backtest == 'true'
+      run: |
+        cd notebooks/advanced
+        python -c "
+        from F1_Backtesting_Framework import F1BacktestEngine
+        backtest = F1BacktestEngine()
+        results = backtest.run_backtest(
+            start_date='2023-01-01',
+            end_date='2024-12-31',
+            strategy='moderate'
+        )
+        print(f'Backtest ROI: {results[\"roi\"]*100:.1f}%')
+        "
+    
+    - name: Generate summary report
+      if: steps.pipeline.outputs.predictions_made == 'true'
+      run: |
+        cd notebooks/advanced
+        python -c "
+        import json
+        import pandas as pd
+        from datetime import datetime
+        
+        # Load the report
+        with open('reports/latest_report.json', 'r') as f:
+            report = json.load(f)
+        
+        # Create markdown summary
+        summary = f'''# F1 Pipeline Results - {datetime.now().strftime('%Y-%m-%d')}
+        
+        ## Race: {report.get('race_name', 'Unknown')}
+        
+        ### Top Predictions
+        - **Predicted Winners**: {', '.join(report.get('top_3_predictions', [])[:3])}
+        - **Confidence**: {report.get('avg_confidence', 0)*100:.1f}%
+        
+        ### Model Performance
+        - **Validation Accuracy**: {report.get('val_accuracy', 0)*100:.1f}%
+        - **Expected ROI**: {report.get('expected_roi', 0)*100:.1f}%
+        
+        ### Recommended Bets
+        {report.get('betting_recommendations', 'No recommendations available')}
+        '''
+        
+        with open('../../artifacts/pipeline_summary.md', 'w') as f:
+            f.write(summary)
+        "
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: pipeline-artifacts-${{ github.run_id }}
+        path: |
+          notebooks/advanced/reports/
+          notebooks/advanced/models/
+          artifacts/
+        retention-days: 30
+    
+    - name: Upload MLflow tracking
+      uses: actions/upload-artifact@v3
+      with:
+        name: mlflow-tracking-${{ github.run_id }}
+        path: notebooks/advanced/mlflow/
+        retention-days: 90
+
+  deploy-results:
+    name: Deploy Results
+    needs: run-pipeline
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'schedule' || 
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_results == 'true')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: pipeline-artifacts-${{ github.run_id }}
+        path: artifacts
+    
+    - name: Prepare deployment
+      run: |
+        mkdir -p public
+        cp -r artifacts/* public/
+        
+        # Create index.html
+        cat > public/index.html << EOF
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>F1 Predictions - ${{ needs.run-pipeline.outputs.race_name }}</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; }
+                h1 { color: #e10600; }
+                .prediction { margin: 20px 0; padding: 15px; background: #f0f0f0; }
+                .confidence { color: #00a19c; font-weight: bold; }
+            </style>
+        </head>
+        <body>
+            <h1>F1 Predictions - ${{ needs.run-pipeline.outputs.race_name }}</h1>
+            <div id="content"></div>
+            <script>
+                fetch('latest_report.json')
+                    .then(r => r.json())
+                    .then(data => {
+                        document.getElementById('content').innerHTML = 
+                            '<h2>Top 3 Predictions</h2>' +
+                            data.top_3_predictions.map(p => 
+                                '<div class="prediction">' + p + '</div>'
+                            ).join('');
+                    });
+            </script>
+        </body>
+        </html>
+        EOF
+    
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        destination_dir: predictions/${{ needs.run-pipeline.outputs.race_name }}
+
+  notify:
+    name: Send Notifications
+    needs: [run-pipeline, deploy-results]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Send success notification
+      if: needs.run-pipeline.result == 'success'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const race_name = '${{ needs.run-pipeline.outputs.race_name }}';
+          const body = `✅ F1 Pipeline completed successfully!
+          
+          **Race**: ${race_name || 'Next Race'}
+          **Date**: ${new Date().toISOString().split('T')[0]}
+          **Status**: Predictions generated
+          
+          View the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`;
+          
+          // Create a comment on the latest commit
+          github.rest.repos.createCommitComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            commit_sha: context.sha,
+            body: body
+          });
+    
+    - name: Send failure notification
+      if: needs.run-pipeline.result == 'failure'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: `F1 Pipeline Failed - ${new Date().toISOString().split('T')[0]}`,
+            body: `The F1 pipeline failed. Check the [logs](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`,
+            labels: ['bug', 'pipeline-failure']
+          });

@@ -1,0 +1,100 @@
+name: Daily F1 Pipeline Run
+
+on:
+  schedule:
+    # Run at 10:00 AM UTC every day
+    - cron: '0 10 * * *'
+  workflow_dispatch:  # Allow manual trigger
+    inputs:
+      race_id:
+        description: 'Specific race ID to process (optional)'
+        required: false
+        type: string
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Cache F1DB data
+      uses: actions/cache@v3
+      with:
+        path: data/f1db
+        key: f1db-data-${{ hashFiles('data/f1db/.f1db_version') }}
+        restore-keys: |
+          f1db-data-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r notebooks/requirements.txt
+        pip install -r notebooks/requirements-dev.txt
+    
+    - name: Create data directories
+      run: |
+        mkdir -p data/f1db
+        mkdir -p notebooks/advanced/mlflow
+        mkdir -p notebooks/advanced/models
+        mkdir -p reports
+    
+    - name: Run F1 Pipeline
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        cd notebooks/advanced
+        if [ -n "${{ github.event.inputs.race_id }}" ]; then
+          echo "Running pipeline for race: ${{ github.event.inputs.race_id }}"
+          python run_f1_pipeline.py --race-id "${{ github.event.inputs.race_id }}"
+        else
+          echo "Running pipeline for next race"
+          python run_f1_pipeline.py
+        fi
+    
+    - name: Upload pipeline results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: pipeline-results-${{ github.run_id }}
+        path: |
+          notebooks/advanced/reports/
+          notebooks/advanced/mlflow/
+          notebooks/advanced/models/
+        retention-days: 30
+    
+    - name: Upload logs
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: error-logs-${{ github.run_id }}
+        path: |
+          notebooks/advanced/*.log
+        retention-days: 7
+    
+    - name: Send notification on failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: `F1 Pipeline Failed - ${new Date().toISOString().split('T')[0]}`,
+            body: `The daily F1 pipeline run failed. Please check the [workflow logs](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).`,
+            labels: ['pipeline-failure', 'automated']
+          })
