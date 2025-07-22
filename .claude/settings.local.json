@@ -13,7 +13,11 @@
       "Bash(grep:*)",
       "WebFetch(domain:github.com)",
       "Bash(python:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(pip install:*)",
+      "Bash(wsl:*)",
+      "Bash(source:*)",
+      "Bash(touch:*)"
     ],
     "deny": []
   }

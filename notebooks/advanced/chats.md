@@ -1485,3 +1485,88 @@ The build took about 7 minutes because it installed all the Python packages, but
 
   Try running the pipeline again. Even if some notebooks fail to create advanced models, the basic functionality will work with real data and provide        
   meaningful recommendations based on driver performance history.
+
+
+# Fix for Module Not Found Errors in VSCode
+
+## Issue
+Even though all packages are installed in the container, VSCode/Pylance shows "module not found" errors.
+
+## Root Cause
+VSCode on Windows is trying to use a Windows Python interpreter instead of the Docker container's Python at `/opt/venv/bin/python`.
+
+## Solution Steps
+
+### 1. Select the Correct Python Interpreter
+**This is the most important step!**
+
+1. Open any `.py` or `.ipynb` file
+2. Press `Ctrl+Shift+P`
+3. Type: **"Python: Select Interpreter"**
+4. Choose **"Enter interpreter path..."**
+5. Type exactly: `/opt/venv/bin/python`
+6. Press Enter
+
+### 2. For Jupyter Notebooks Specifically
+1. Open a notebook
+2. Click on the kernel selector (top right, might say "Python 3" or similar)
+3. Select **"Select Another Kernel..."**
+4. Choose **"Python Environments..."**
+5. Select the interpreter at `/opt/venv/bin/python`
+
+### 3. Verify the Interpreter is Correct
+- Look at the bottom status bar of VSCode
+- It should show: `Python 3.11.2 ('/opt/venv/bin/python')`
+- NOT a Windows path like `C:\Python\...`
+
+### 4. If Errors Persist After Selecting Interpreter
+
+#### Option A: Use Remote Development (Recommended)
+1. Install the **"Remote - WSL"** extension
+2. Open your project folder in WSL:
+   - Press `Ctrl+Shift+P`
+   - Type: "Remote-WSL: Reopen Folder in WSL"
+   - This ensures VSCode runs in the Linux environment
+
+#### Option B: Use Dev Containers
+1. Install the **"Dev Containers"** extension
+2. With Docker Desktop running:
+   - Press `Ctrl+Shift+P`
+   - Type: "Dev Containers: Reopen in Container"
+   - Select your container
+
+### 5. Clear VSCode Cache
+If errors still show after selecting the correct interpreter:
+1. Press `Ctrl+Shift+P`
+2. Type: **"Python: Clear Cache and Reload Window"**
+
+### 6. Restart Jupyter Kernel
+For notebooks:
+1. Press `Ctrl+Shift+P`
+2. Type: **"Jupyter: Restart Kernel"**
+
+## Quick Verification
+
+Run this in a notebook cell or terminal:
+```python
+import sys
+print(sys.executable)  # Should show: /opt/venv/bin/python
+import pandas as pd
+print(pd.__version__)  # Should work without errors
+```
+
+## Why This Happens
+
+- You're using VSCode on Windows
+- Your code runs in a Docker container (Linux)
+- VSCode defaults to looking for a Windows Python interpreter
+- The packages are installed in `/opt/venv/` inside the container
+- VSCode needs to be explicitly told to use the container's Python
+
+## Prevention
+
+1. Always check the Python interpreter in the status bar
+2. Use Remote-WSL or Dev Containers for seamless integration
+3. Save workspace settings to remember the interpreter:
+   - The settings are already configured in `.vscode/settings.json`
+   - Just need to select the interpreter once per session

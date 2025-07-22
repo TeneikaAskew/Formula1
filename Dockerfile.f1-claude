@@ -1,0 +1,130 @@
+# F1 Claude Code Image - Development Environment for Formula 1 ML Project
+FROM python:3.11-slim
+
+# Set image metadata
+LABEL maintainer="F1 Project Team"
+LABEL description="F1 Claude Code Environment - Optimized for Claude AI development"
+LABEL version="1.0.0"
+
+# Set working directory
+WORKDIR /workspace
+
+# Install system dependencies and development tools
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    curl \
+    wget \
+    vim \
+    nano \
+    htop \
+    tree \
+    zip \
+    unzip \
+    ssh \
+    rsync \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python packages for F1 ML development
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+    pandas>=2.0.0 \
+    matplotlib>=3.7.0 \
+    seaborn>=0.12.0 \
+    numpy>=1.24.0 \
+    scikit-learn>=1.3.0 \
+    jupyter>=1.0.0 \
+    jupyterlab>=4.0.0 \
+    notebook>=7.0.0 \
+    ipykernel>=6.25.0 \
+    plotly>=5.15.0 \
+    dash>=2.10.0 \
+    streamlit>=1.25.0 \
+    fastapi>=0.100.0 \
+    uvicorn>=0.23.0 \
+    requests>=2.31.0 \
+    beautifulsoup4>=4.12.0 \
+    sqlalchemy>=2.0.0 \
+    openpyxl>=3.1.0 \
+    xlsxwriter>=3.1.0 \
+    psutil>=5.9.0 \
+    tqdm>=4.65.0 \
+    ipywidgets>=8.0.0 \
+    voila>=0.5.0
+
+# Create project structure
+RUN mkdir -p /workspace/{data,notebooks,models,output,experiments,scripts,docs}
+
+# Set up environment variables for F1 development
+ENV PYTHONPATH="/workspace:$PYTHONPATH"
+ENV JUPYTER_CONFIG_DIR="/workspace/.jupyter"
+ENV F1_PROJECT_ROOT="/workspace"
+ENV PYTHONUNBUFFERED=1
+ENV JUPYTER_ENABLE_LAB=yes
+
+# Create development user (non-root for security)
+RUN useradd -m -s /bin/bash claude && \
+    chown -R claude:claude /workspace
+
+# Switch to development user
+USER claude
+
+# Configure Jupyter for Claude development
+RUN mkdir -p /workspace/.jupyter && \
+    echo "c.ServerApp.ip = '0.0.0.0'" > /workspace/.jupyter/jupyter_lab_config.py && \
+    echo "c.ServerApp.port = 8888" >> /workspace/.jupyter/jupyter_lab_config.py && \
+    echo "c.ServerApp.token = ''" >> /workspace/.jupyter/jupyter_lab_config.py && \
+    echo "c.ServerApp.password = ''" >> /workspace/.jupyter/jupyter_lab_config.py && \
+    echo "c.ServerApp.allow_root = True" >> /workspace/.jupyter/jupyter_lab_config.py && \
+    echo "c.ServerApp.allow_origin = '*'" >> /workspace/.jupyter/jupyter_lab_config.py
+
+# Create F1 project aliases and shortcuts
+RUN echo 'alias ll="ls -alF"' >> ~/.bashrc && \
+    echo 'alias la="ls -A"' >> ~/.bashrc && \
+    echo 'alias l="ls -CF"' >> ~/.bashrc && \
+    echo 'alias f1-data="cd /workspace/data && ls -la"' >> ~/.bashrc && \
+    echo 'alias f1-notebooks="cd /workspace/notebooks && ls -la"' >> ~/.bashrc && \
+    echo 'alias f1-models="cd /workspace/models && ls -la"' >> ~/.bashrc && \
+    echo 'alias jlab="jupyter lab --ip=0.0.0.0 --port=8888 --no-browser"' >> ~/.bashrc && \
+    echo 'export PS1="\[\033[01;32m\]🏎️  F1-Claude:\[\033[01;34m\]\w\[\033[00m\]$ "' >> ~/.bashrc
+
+# Create startup script
+RUN echo '#!/bin/bash\n\
+clear\n\
+echo "🏎️  F1 Claude Code Environment"\n\
+echo "================================"\n\
+echo ""\n\
+echo "📊 Formula 1 Machine Learning Workshop"\n\
+echo "🤖 Optimized for Claude AI Development"\n\
+echo "🐍 Python: $(python --version)"\n\
+echo "📦 Workspace: /workspace"\n\
+echo ""\n\
+echo "🚀 Quick Commands:"\n\
+echo "   f1-data      - Navigate to F1 datasets"\n\
+echo "   f1-notebooks - Navigate to notebooks"\n\
+echo "   f1-models    - Navigate to models"\n\
+echo "   jlab         - Start Jupyter Lab"\n\
+echo ""\n\
+echo "🌐 Services:"\n\
+echo "   Jupyter Lab: http://localhost:8888"\n\
+echo "   Streamlit:   http://localhost:8501"\n\
+echo "   FastAPI:     http://localhost:8000"\n\
+echo ""\n\
+if [ -d "/workspace/data" ] && [ "$(ls -A /workspace/data)" ]; then\n\
+    echo "📈 Available F1 Data:"\n\
+    ls -1 /workspace/data/ | head -5\n\
+    [ $(ls /workspace/data/ | wc -l) -gt 5 ] && echo "   ... and more"\n\
+else\n\
+    echo "📁 No F1 data found - mount your data volume or copy files to /workspace/data/"\n\
+fi\n\
+echo ""\n\
+echo "🎯 Starting Jupyter Lab..."\n\
+exec jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root' > /workspace/start-f1-claude.sh && \
+    chmod +x /workspace/start-f1-claude.sh
+
+# Expose ports for development services
+EXPOSE 8888 8501 8000 5000
+
+# Set default command
+CMD ["/workspace/start-f1-claude.sh"]
