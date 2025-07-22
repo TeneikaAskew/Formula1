@@ -11,7 +11,8 @@
       "Bash(chmod:*)",
       "Bash(echo:*)",
       "Bash(grep:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(python:*)"
     ],
     "deny": []
   }

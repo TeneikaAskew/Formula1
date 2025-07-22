@@ -1,0 +1,15 @@
+{
+  "data_dir": "..\\..\\data\\f1db",
+  "model_dir": ".",
+  "output_dir": "pipeline_outputs",
+  "bankroll": 1000,
+  "kelly_fraction": 0.25,
+  "max_correlation": 0.5,
+  "min_edge": 0.05,
+  "max_exposure": 0.25,
+  "constraints": {
+    "max_per_driver": 2,
+    "max_per_type": 3,
+    "min_avg_edge": 0.08
+  }
+}
