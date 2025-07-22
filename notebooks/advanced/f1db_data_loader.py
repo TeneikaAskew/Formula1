@@ -178,7 +178,7 @@ class F1DBDataLoader:
 
 
 # Convenience function for notebook usage
-def load_f1db_data(data_dir: str = None, format: str = "csv", force_download: bool = False) -> Dict[str, pd.DataFrame]:
+def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_download: bool = False) -> Dict[str, pd.DataFrame]:
     """
     Load F1DB data with a simple function call
     
@@ -195,7 +195,7 @@ def load_f1db_data(data_dir: str = None, format: str = "csv", force_download: bo
         current_file = Path(__file__).resolve()
         # Go up to project root (2 levels from notebooks/advanced/)
         project_root = current_file.parent.parent.parent
-        data_dir = project_root / "data" / "f1db"
+        data_dir = str(project_root / "data" / "f1db")
     
     loader = F1DBDataLoader(str(data_dir), format)
     loader.download_latest_data(force=force_download)
