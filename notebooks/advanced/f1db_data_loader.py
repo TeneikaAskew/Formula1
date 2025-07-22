@@ -135,38 +135,69 @@ class F1DBDataLoader:
         """Get the core datasets commonly used for analysis"""
         all_data = self.load_csv_data()
         
-        # Define core datasets
-        core_tables = [
-            'races', 'drivers', 'constructors', 'circuits',
-            'race_results', 'qualifying_results', 'sprint_race_results',
-            'fastest_laps', 'pit_stops', 'race_driver_standings',
-            'race_constructor_standings', 'seasons'
-        ]
+        # Define core datasets with fallback names for compatibility
+        table_mappings = {
+            # Standard name: [possible F1DB names]
+            'races': ['races', 'race'],
+            'drivers': ['drivers', 'driver'],
+            'constructors': ['constructors', 'constructor', 'teams'],
+            'circuits': ['circuits', 'circuit', 'tracks'],
+            'results': ['race_results', 'results', 'race_result'],
+            'qualifying': ['qualifying_results', 'qualifying', 'qualifying_result'],
+            'sprint_results': ['sprint_race_results', 'sprint_results', 'sprint_race_result'],
+            'fastest_laps': ['fastest_laps', 'fastest_lap'],
+            'pit_stops': ['pit_stops', 'pitstops', 'pit_stop'],
+            'driver_standings': ['race_driver_standings', 'driver_standings', 'driverStandings'],
+            'constructor_standings': ['race_constructor_standings', 'constructor_standings', 'constructorStandings'],
+            'seasons': ['seasons', 'season'],
+            'lap_times': ['lap_times', 'lapTimes', 'laps'],
+            'status': ['race_result_status', 'status']
+        }
         
         core_data = {}
-        for table in core_tables:
-            if table in all_data:
-                core_data[table] = all_data[table]
-            else:
-                print(f"Warning: Core table '{table}' not found in data")
+        for standard_name, possible_names in table_mappings.items():
+            found = False
+            for name in possible_names:
+                if name in all_data:
+                    core_data[standard_name] = all_data[name]
+                    if name != standard_name:
+                        print(f"  → Mapped {name} to {standard_name}")
+                    found = True
+                    break
+            
+            if not found and standard_name in ['races', 'drivers', 'results']:
+                print(f"Warning: Core table '{standard_name}' not found in data")
+        
+        # Also include any other tables that might be useful
+        core_data_names = set(core_data.keys())
+        for table_name, df in all_data.items():
+            if table_name not in core_data_names:
+                core_data[table_name] = df
         
         return core_data
 
 
 # Convenience function for notebook usage
-def load_f1db_data(data_dir: str = "data", format: str = "csv", force_download: bool = False) -> Dict[str, pd.DataFrame]:
+def load_f1db_data(data_dir: str = None, format: str = "csv", force_download: bool = False) -> Dict[str, pd.DataFrame]:
     """
     Load F1DB data with a simple function call
     
     Args:
-        data_dir: Directory to store/load data
+        data_dir: Directory to store/load data (if None, uses ../../data/f1db relative to this file)
         format: Data format ('csv' recommended)
         force_download: Force re-download of data
         
     Returns:
         Dictionary of DataFrames with F1 data
     """
-    loader = F1DBDataLoader(data_dir, format)
+    if data_dir is None:
+        # Determine the correct path relative to this file
+        current_file = Path(__file__).resolve()
+        # Go up to project root (2 levels from notebooks/advanced/)
+        project_root = current_file.parent.parent.parent
+        data_dir = project_root / "data" / "f1db"
+    
+    loader = F1DBDataLoader(str(data_dir), format)
     loader.download_latest_data(force=force_download)
     return loader.get_core_datasets()
 
@@ -176,3 +207,24 @@ def load_f1db_data(data_dir: str = "data", format: str = "csv", force_download: 
 # data = load_f1db_data()
 # races_df = data['races']
 # drivers_df = data['drivers']
+
+# Test functionality if run directly
+if __name__ == "__main__":
+    print("\nTesting F1DB data loader...")
+    
+    # Show where data will be saved
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent.parent
+    default_data_dir = project_root / "data" / "f1db"
+    print(f"Default data directory: {default_data_dir}")
+    
+    data = load_f1db_data()
+    print(f"\nSuccessfully loaded {len(data)} datasets!")
+    print("\nAvailable datasets:")
+    for name in sorted(data.keys()):
+        print(f"  - {name}: {len(data[name])} rows")
+    
+    # Show sample of races data
+    if 'races' in data:
+        print(f"\nSample races data:")
+        print(data['races'].head())
