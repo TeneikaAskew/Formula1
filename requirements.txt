@@ -1,12 +1,28 @@
+# Core data science packages
 pandas>=1.5.0
 matplotlib>=3.6.0
 seaborn>=0.11.0
 numpy>=1.24.0
 scikit-learn>=1.2.0
+scipy>=1.9.0
+joblib>=1.2.0
+
+# Jupyter ecosystem
 jupyter>=1.0.0
 notebook>=6.5.0
-ipykernel>=6.16.0
 jupyterlab>=3.5.0
+ipykernel>=6.16.0
 ipywidgets>=8.0.0
-joblib>=1.2.0
-scipy>=1.9.0
+
+# Advanced ML packages (for advanced notebooks)
+xgboost>=2.0.0
+lightgbm>=4.1.0
+shap>=0.43.0
+optuna>=3.4.0
+
+# Visualization and web frameworks (optional)
+plotly>=5.17.0
+streamlit>=1.28.0
+fastapi>=0.104.0
+uvicorn>=0.24.0
+dash>=2.14.0

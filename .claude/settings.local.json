@@ -6,7 +6,12 @@
       "Bash(true)",
       "Bash(ls:*)",
       "Bash(rm:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(ln:*)",
+      "Bash(chmod:*)",
+      "Bash(echo:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": []
   }
