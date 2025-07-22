@@ -29,12 +29,12 @@ services:
       - "8888:8888"  # Jupyter port
       - "5000:5000"  # API port (for future use)
     volumes:
-      # Mount the entire app directory for live code updates
-      - ..:/app
+      # Mount the entire workspace directory for live code updates
+      - ..:/workspace
       # Exclude data from being overwritten by host
-      - /app/data
+      - /workspace/data
       # Named volume for persistent data storage
-      - f1-data:/app/data
+      - f1-data:/workspace/data
     environment:
       - JUPYTER_ENABLE_LAB=yes
       - PYTHONUNBUFFERED=1
