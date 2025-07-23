@@ -17,7 +17,8 @@
       "Bash(pip install:*)",
       "Bash(wsl:*)",
       "Bash(source:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(jupyter nbconvert:*)"
     ],
     "deny": []
   }

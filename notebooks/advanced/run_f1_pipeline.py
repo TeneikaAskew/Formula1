@@ -23,12 +23,12 @@ def run_master_notebook(race_id=None, mode='predict'):
     subprocess.run([
         sys.executable, '-m', 'jupyter', 'nbconvert',
         '--to', 'script',
-        'F1_Pipeline_Integration_Master.ipynb'
+        'F1_Pipeline_Integration.ipynb'
     ])
     
     # Import and run
-    from F1_Pipeline_Integration_Master import F1PrizePipeline, PipelineConfig
-    from F1_Pipeline_Integration_Master import RaceWeekendAutomation, PerformanceMonitor
+    from F1_Pipeline_Integration import F1PrizePipeline, PipelineConfig
+    from F1_Pipeline_Integration import RaceWeekendAutomation, PerformanceMonitor
     
     # Load configuration
     config = PipelineConfig.load()
