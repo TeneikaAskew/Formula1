@@ -90,7 +90,7 @@ case "$COMMAND" in
             print_success "\n✅ Jupyter Lab is running!"
             print_info "📊 Open http://localhost:8888 in your browser"
             print_info "📝 Available notebooks:"
-            echo "   - F1_Improved_Models.ipynb"
+            echo "   - F1_Core_Models.ipynb"
             echo "   - F1_Constructor_Driver_Evaluation.ipynb"
             echo "   - F1_Betting_Market_Models.ipynb"
             echo ""

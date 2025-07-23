@@ -54,7 +54,7 @@ chmod +x build-f1-claude.sh
 
 Once Jupyter is running, you can access:
 
-1. **F1_Improved_Models.ipynb** - Base predictive models with proper validation
+1. **F1_Core_Models.ipynb** - Base predictive models with proper validation using Random Forest and Gradient Boosting
 2. **F1_Constructor_Driver_Evaluation.ipynb** - Driver evaluation and ROI analysis
 3. **F1_Betting_Market_Models.ipynb** - Betting market predictions and odds
 

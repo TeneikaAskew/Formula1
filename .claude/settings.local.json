@@ -18,7 +18,8 @@
       "Bash(wsl:*)",
       "Bash(source:*)",
       "Bash(touch:*)",
-      "Bash(jupyter nbconvert:*)"
+      "Bash(jupyter nbconvert:*)",
+      "Bash(test:*)"
     ],
     "deny": []
   }

@@ -110,7 +110,6 @@ def main():
     """Update all notebooks with f1db_data_loader imports"""
     notebooks_to_update = [
         'notebooks/advanced/F1_Pipeline_Integration.ipynb',
-        'notebooks/advanced/F1_Improved_Models.ipynb',
         'notebooks/advanced/F1_Core_Models.ipynb',
         'notebooks/advanced/F1_Betting_Market_Models.ipynb',
         'notebooks/advanced/F1_Prize_Picks_Optimizer.ipynb',

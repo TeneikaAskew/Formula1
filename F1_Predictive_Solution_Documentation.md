@@ -22,7 +22,7 @@ The original solution achieved 95-99% accuracy using Decision Trees and ensemble
 
 We've developed three core systems:
 
-#### A. Production-Ready Predictive Models (`F1_Improved_Models.ipynb`)
+#### A. Production-Ready Predictive Models (`F1_Core_Models.ipynb`)
 - **Temporal validation** to prevent data leakage
 - **Regularized models** with realistic performance (MAE ~3-4 positions)
 - **Rolling window features** respecting time constraints

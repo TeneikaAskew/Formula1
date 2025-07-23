@@ -65,12 +65,19 @@ python run_f1_pipeline.py --backtest   # Backtesting mode
 4. **Predictions**: Position predictions, DNF probability, points scoring, betting odds
 5. **Optimization**: Kelly criterion for bet sizing, prize picks optimization
 
-### Key Notebooks
-- `notebooks/advanced/F1_Improved_RF_GB_Models.ipynb` - Core ML models with proper validation
-- `notebooks/advanced/F1_Constructor_Driver_Evaluation.ipynb` - Driver evaluation system
+### Key Notebooks (Active in Pipeline)
+- `notebooks/advanced/F1_Core_Models.ipynb` - Core ML models with proper temporal validation
+- `notebooks/advanced/F1_Feature_Store.ipynb` - Centralized feature engineering (100+ features)
+- `notebooks/advanced/F1_Integrated_Driver_Evaluation.ipynb` - Driver/constructor evaluation system
 - `notebooks/advanced/F1_Prize_Picks_Optimizer.ipynb` - Betting optimization with Kelly criterion
 - `notebooks/advanced/F1_Pipeline_Integration.ipynb` - Full pipeline orchestration
-- `notebooks/advanced/F1_Backtesting_Framework.ipynb` - Historical race prediction testing and validation
+- `notebooks/advanced/F1_Backtesting_Framework.ipynb` - Historical race prediction validation (integrated)
+- `notebooks/advanced/F1_Explainability_Engine.ipynb` - SHAP-based model interpretability
+
+### Additional Resources
+- `notebooks/advanced/F1_Betting_Market_Models.ipynb` - Advanced market calibration techniques
+- `notebooks/advanced/f1_market_calibration.py` - Extracted market calibration functions
+- `notebooks/advanced/F1_Constructor_Driver_Evaluation.ipynb` - Original driver evaluation (superseded)
 
 ### Important Classes and Functions
 
@@ -92,6 +99,14 @@ python run_f1_pipeline.py --backtest   # Backtesting mode
 - Calculates accuracy metrics (position error, winner/podium/points accuracy)
 - Batch testing capabilities for multiple races
 - Driver-specific performance analysis
+- Integrated into main pipeline via `run_backtest()` method
+
+**Market Calibration (`notebooks/advanced/f1_market_calibration.py`):**
+- `OrdinalRegressionClassifier` - Handles ordered nature of F1 positions
+- `calibrate_probabilities_isotonic()` - Isotonic regression for probability calibration
+- `generate_betting_odds()` - Creates calibrated betting odds from predictions
+- `generate_head_to_head_odds()` - Driver matchup probabilities
+- `kelly_criterion_bet_size()` - Optimal bet sizing with fractional Kelly
 
 ### Model Performance Metrics
 - Winner Prediction: 65-70% accuracy
@@ -145,3 +160,11 @@ The pipeline automatically searches for data in:
 - The project uses real F1 data only - no synthetic/fallback data
 - Models are optimized for both accuracy and calibration (important for betting)
 - Pipeline includes automatic caching to speed up repeated runs
+- Backtesting is integrated and recommended before deploying betting strategies
+- Market calibration functions available for enhanced probability estimates
+
+### Recent Updates
+- Integrated F1_Backtesting_Framework into main pipeline with `run_backtest()` method
+- Created f1_market_calibration.py module with key betting market functions
+- Removed redundant notebooks: F1_Improved_Models.ipynb and F1_Improved_RF_GB_Models.ipynb
+- All functionality consolidated into F1_Core_Models.ipynb for cleaner architecture

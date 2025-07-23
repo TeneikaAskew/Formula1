@@ -90,7 +90,7 @@ switch ($Command.ToLower()) {
             Write-Success "`n✅ Jupyter Lab is running!"
             Write-Info "📊 Open http://localhost:8888 in your browser"
             Write-Info "📝 Available notebooks:"
-            Write-Host "   - F1_Improved_Models.ipynb"
+            Write-Host "   - F1_Core_Models.ipynb"
             Write-Host "   - F1_Constructor_Driver_Evaluation.ipynb"
             Write-Host "   - F1_Betting_Market_Models.ipynb"
             Write-Host ""

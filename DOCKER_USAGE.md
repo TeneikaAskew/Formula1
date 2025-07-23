@@ -252,7 +252,7 @@ Once JupyterLab is running:
 
 1. Open http://localhost:8888 in your browser
 2. Navigate to the notebooks:
-   - `F1_Improved_Models.ipynb` - Base predictive models
+   - `F1_Core_Models.ipynb` - Base predictive models with Random Forest and Gradient Boosting
    - `F1_Constructor_Driver_Evaluation.ipynb` - Driver evaluation system
    - `F1_Betting_Market_Models.ipynb` - Betting market predictions
 

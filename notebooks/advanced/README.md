@@ -87,19 +87,15 @@ python /app/notebooks/advanced/run_f1_pipeline.py --config path/to/config.json
 
 ### Legacy Notebooks (Reference)
 
-1. **F1_Improved_Models.ipynb**
-   - Original fixes for overfitting issues
-   - Foundation for current model improvements
-
-2. **F1_Constructor_Driver_Evaluation.ipynb**
+1. **F1_Constructor_Driver_Evaluation.ipynb**
    - Original driver evaluation system
    - Extended in the integrated evaluation notebook
 
-3. **F1_Betting_Market_Models.ipynb**
+2. **F1_Betting_Market_Models.ipynb**
    - Market calibration techniques
    - Incorporated into Prize Picks optimizer
 
-4. **Random_Forest_and_Gradient_Boosting.ipynb**
+3. **Random_Forest_and_Gradient_Boosting.ipynb**
    - Advanced ensemble methods
    - Techniques integrated into model fixes notebook
 

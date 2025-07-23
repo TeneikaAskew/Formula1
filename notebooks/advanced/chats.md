@@ -623,7 +623,7 @@
         91 +              Write-Info "📊 Open http://localhost:8888 in your 
      browser"
         92 +              Write-Info "📝 Available notebooks:"
-        93 +              Write-Host "   - F1_Improved_Models.ipynb"
+        93 +              Write-Host "   - F1_Core_Models.ipynb"
         94 +              Write-Host "   - F1_Constructor_Driver_Evaluation.ipynb"     
         95 +              Write-Host "   - F1_Betting_Market_Models.ipynb"
         96 +              Write-Host ""
@@ -854,7 +854,7 @@
         91 +              print_info "📊 Open http://localhost:8888 in your 
      browser"
         92 +              print_info "📝 Available notebooks:"
-        93 +              echo "   - F1_Improved_Models.ipynb"
+        93 +              echo "   - F1_Core_Models.ipynb"
         94 +              echo "   - F1_Constructor_Driver_Evaluation.ipynb"
         95 +              echo "   - F1_Betting_Market_Models.ipynb"
         96 +              echo ""
@@ -1164,7 +1164,7 @@ The build took about 7 minutes because it installed all the Python packages, but
 ● Summary
 
   I've created an improved Random Forest and Gradient Boosting notebook
-  (F1_Improved_RF_GB_Models.ipynb) that addresses all your requirements:
+  (F1_Core_Models.ipynb) that addresses all your requirements:
 
   Key Improvements:
 
@@ -1570,3 +1570,38 @@ print(pd.__version__)  # Should work without errors
 3. Save workspace settings to remember the interpreter:
    - The settings are already configured in `.vscode/settings.json`
    - Just need to select the interpreter once per session
+
+   ● Based on my analysis, here are the key differences between the two notebooks:
+
+  Random Forest and Gradient Boosting Notebook
+
+  - Original implementation with overfitting issues
+  - Achieves unrealistic 99.9%+ accuracy
+  - Uses improper random train/test split (not temporal)
+  - Designed for Google Colab with Google Drive
+  - Has data leakage issues in features
+  - Basic approach without proper regularization
+
+  F1 Model Fixes and Validation Notebook
+
+  - Production-ready implementation that fixes the issues
+  - Realistic 75-85% accuracy
+  - Uses proper temporal validation (train on past, test on future)
+  - All features use .shift(1) to prevent data leakage
+  - Strong regularization and model calibration
+  - Includes MLflow tracking and proper cross-validation
+
+  Should They Be Combined?
+
+  No, they should NOT be combined. Here's why:
+
+  1. Educational Value: Keeping them separate shows the progression from a flawed approach to a corrected one
+  2. Different Purposes:
+    - RF/GB notebook: Example of common ML mistakes (overfitting, data leakage)
+    - Fixes notebook: Production-ready solution with proper validation
+  3. Pipeline Integration: The fixes notebook is already integrated with the advanced F1 pipeline
+  4. Best Practice: The fixes notebook demonstrates industry best practices for time series ML
+
+  The separation serves as a valuable learning tool - showing what went wrong and how to fix it properly.
+
+> can you rename the fixes notebook to something more appropriate and production grade and make sure the name is updated everywhere

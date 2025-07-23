@@ -7,7 +7,7 @@
 - **Clicked_Formula_1_Feature_Engineering_and_Modeling.ipynb** - Initial ML models
 
 ### advanced/ - Production-Ready Solutions
-- **F1_Improved_Models.ipynb** - Fixed overfitting, proper temporal validation
+- **F1_Core_Models.ipynb** - Fixed overfitting, proper temporal validation with Random Forest and Gradient Boosting
 - **F1_Constructor_Driver_Evaluation.ipynb** - Driver evaluation system for teams
 - **F1_Betting_Market_Models.ipynb** - Betting market predictions
 - **Random_Forest_and_Gradient_Boosting.ipynb** - Ensemble methods exploration
