@@ -36,7 +36,7 @@ python /app/notebooks/advanced/run_f1_pipeline.py --config path/to/config.json
    - Automatic data synchronization from F1DB GitHub
    - Data integrity validation and metadata tracking
 
-2. **Model Fixes and Validation (`F1_Model_Fixes_and_Validation.ipynb`)**
+2. **Core Models (`F1_Core_Models.ipynb`)**
    - Addresses critical overfitting issues (99%+ accuracy → realistic 65-70%)
    - Implements proper temporal validation splits
    - Regularized Random Forest with shallow trees

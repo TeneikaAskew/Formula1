@@ -1089,7 +1089,7 @@ The build took about 7 minutes because it installed all the Python packages, but
     - Caching for performance
     - Error handling with retry logic
     - Data integrity validation
-  2. Model Fixes (F1_Model_Fixes_and_Validation.ipynb):
+  2. Model Fixes (F1_Core_Models.ipynb):
     - Fixed severe overfitting (99%+ accuracy)
     - Implemented proper temporal validation
     - Added regularization to models
@@ -1210,7 +1210,7 @@ The build took about 7 minutes because it installed all the Python packages, but
     - F1_Betting_Market_Models.ipynb - All betting models implemented
     - F1_Constructor_Driver_Evaluation.ipynb - Complete driver evaluation system       
     - F1_Integrated_Driver_Evaluation.ipynb - Unified driver scoring
-    - F1_Model_Fixes_and_Validation.ipynb - Fixed overfitting (99% → 65-70%)
+    - F1_Core_Models.ipynb - Fixed overfitting (99% → 65-70%)
   3. Prize Picks Optimization ✓
     - F1_Prize_Picks_Optimizer.ipynb - Kelly criterion optimizer
     - Parlay optimization (2-6 picks)
@@ -1281,7 +1281,7 @@ The build took about 7 minutes because it installed all the Python packages, but
   2. FEATURE ENGINEERING (F1_Feature_Store.ipynb)
      ↓
   3. MODEL PREDICTIONS (Multiple notebooks)
-     ├── F1_Model_Fixes_and_Validation.ipynb (base models)
+     ├── F1_Core_Models.ipynb (base models)
      ├── F1_Integrated_Driver_Evaluation.ipynb (driver factors)
      └── F1_Betting_Market_Models.ipynb (market calibration)
      ↓

@@ -70,7 +70,7 @@ else:
 # Test 5: Check for required notebooks
 required_notebooks = [
     'F1_Pipeline_Integration.ipynb',
-    'F1_Model_Fixes_and_Validation.ipynb',
+    'F1_Core_Models.ipynb',
     'F1_Feature_Store.ipynb',
     'F1_Integrated_Driver_Evaluation.ipynb',
     'F1_Prize_Picks_Optimizer.ipynb'
