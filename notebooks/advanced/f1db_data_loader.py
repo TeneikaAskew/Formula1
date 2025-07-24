@@ -9,8 +9,10 @@ import zipfile
 import requests
 import pandas as pd
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 import json
+from datetime import datetime
+import hashlib
 
 class F1DBDataLoader:
     """Load F1 data from the official F1DB repository"""
@@ -26,7 +28,12 @@ class F1DBDataLoader:
         self.data_dir = Path(data_dir)
         self.format = format
         self.base_url = "https://api.github.com/repos/f1db/f1db/releases/latest"
+        self.schema_url = "https://raw.githubusercontent.com/f1db/f1db/main/src/schema/current/single/f1db.schema.json"
         self.data_dir.mkdir(exist_ok=True)
+        self.schema_dir = self.data_dir / "schema"
+        self.schema_dir.mkdir(exist_ok=True)
+        self._schema_cache = None
+        self._schema_version = None
         
     def get_latest_release_info(self) -> Dict:
         """Get information about the latest F1DB release"""
@@ -34,7 +41,153 @@ class F1DBDataLoader:
         response.raise_for_status()
         return response.json()
     
-    def download_latest_data(self, force: bool = False) -> bool:
+    def download_schema(self, force: bool = False) -> Dict[str, Any]:
+        """
+        Download and cache the F1DB schema
+        
+        Args:
+            force: Force download even if schema exists
+            
+        Returns:
+            The schema as a dictionary
+        """
+        schema_file = self.schema_dir / "f1db.schema.json"
+        schema_version_file = self.schema_dir / ".schema_version"
+        
+        try:
+            # Check if we need to download
+            should_download = force or not schema_file.exists()
+            
+            if not should_download:
+                # Check if schema is older than 24 hours
+                if schema_file.exists():
+                    mod_time = datetime.fromtimestamp(schema_file.stat().st_mtime)
+                    if (datetime.now() - mod_time).total_seconds() > 86400:  # 24 hours
+                        should_download = True
+                        print("Schema is older than 24 hours, refreshing...")
+            
+            if should_download:
+                print("Downloading F1DB schema...")
+                response = requests.get(self.schema_url)
+                response.raise_for_status()
+                
+                schema_data = response.json()
+                
+                # Save schema
+                with open(schema_file, 'w', encoding='utf-8') as f:
+                    json.dump(schema_data, f, indent=2)
+                
+                # Calculate and save schema hash as version
+                schema_hash = hashlib.md5(response.text.encode()).hexdigest()
+                with open(schema_version_file, 'w') as f:
+                    f.write(schema_hash)
+                
+                print("Schema downloaded successfully")
+                self._schema_cache = schema_data
+                self._schema_version = schema_hash
+            else:
+                # Load from cache
+                if self._schema_cache is None:
+                    with open(schema_file, 'r', encoding='utf-8') as f:
+                        self._schema_cache = json.load(f)
+                    
+                    if schema_version_file.exists():
+                        with open(schema_version_file, 'r') as f:
+                            self._schema_version = f.read().strip()
+            
+            return self._schema_cache
+            
+        except Exception as e:
+            print(f"Error downloading/loading schema: {e}")
+            # Return empty schema as fallback
+            return {}
+    
+    def get_schema(self) -> Dict[str, Any]:
+        """Get the cached schema, downloading if necessary"""
+        if self._schema_cache is None:
+            self.download_schema()
+        return self._schema_cache or {}
+    
+    def get_table_schema(self, table_name: str) -> Optional[Dict[str, Any]]:
+        """
+        Get schema for a specific table
+        
+        Args:
+            table_name: Name of the table
+            
+        Returns:
+            Schema for the table or None if not found
+        """
+        schema = self.get_schema()
+        
+        # The schema structure has definitions for each entity
+        if 'definitions' in schema:
+            # Try different naming conventions
+            possible_names = [
+                table_name,
+                table_name.replace('_', '-'),
+                table_name.replace('-', '_'),
+                f"f1db-{table_name}",
+                f"f1db_{table_name}"
+            ]
+            
+            for name in possible_names:
+                if name in schema['definitions']:
+                    return schema['definitions'][name]
+        
+        return None
+    
+    def validate_dataframe_with_schema(self, df: pd.DataFrame, table_name: str) -> Dict[str, Any]:
+        """
+        Validate a DataFrame against the schema
+        
+        Args:
+            df: DataFrame to validate
+            table_name: Name of the table
+            
+        Returns:
+            Validation results including warnings and errors
+        """
+        results = {
+            'valid': True,
+            'warnings': [],
+            'errors': [],
+            'schema_found': False
+        }
+        
+        table_schema = self.get_table_schema(table_name)
+        if not table_schema:
+            results['warnings'].append(f"No schema found for table '{table_name}'")
+            return results
+        
+        results['schema_found'] = True
+        
+        # Check if schema has properties
+        if 'properties' in table_schema:
+            schema_columns = set(table_schema['properties'].keys())
+            df_columns = set(df.columns)
+            
+            # Check for missing required columns
+            if 'required' in table_schema:
+                required_columns = set(table_schema['required'])
+                missing_required = required_columns - df_columns
+                if missing_required:
+                    results['errors'].append(f"Missing required columns: {missing_required}")
+                    results['valid'] = False
+            
+            # Check for extra columns not in schema
+            extra_columns = df_columns - schema_columns
+            if extra_columns:
+                results['warnings'].append(f"Extra columns not in schema: {extra_columns}")
+            
+            # Check for missing optional columns
+            missing_optional = schema_columns - df_columns
+            if missing_optional:
+                results['warnings'].append(f"Missing optional columns: {missing_optional}")
+        
+        return results
+    
+    def download_latest_data(self, force: bool = False, update_schema: bool = True) -> bool:
         """
         Download the latest F1DB data if not already present
         
@@ -100,6 +253,11 @@ class F1DBDataLoader:
             with open(marker_file, 'w') as f:
                 f.write(latest_version)
             
+            # Update schema when data is updated
+            if update_schema:
+                print("Updating schema...")
+                self.download_schema(force=True)
+            
             print(f"Successfully downloaded F1DB data version {latest_version}")
             return True
             
@@ -107,12 +265,23 @@ class F1DBDataLoader:
             print(f"Error downloading F1DB data: {e}")
             raise
     
-    def load_csv_data(self) -> Dict[str, pd.DataFrame]:
-        """Load all CSV files into pandas DataFrames"""
+    def load_csv_data(self, validate: bool = True) -> Dict[str, pd.DataFrame]:
+        """Load all CSV files into pandas DataFrames
+        
+        Args:
+            validate: Whether to validate data against schema
+            
+        Returns:
+            Dictionary of DataFrames
+        """
         dataframes = {}
         
         # Ensure data is downloaded
         self.download_latest_data()
+        
+        # Ensure schema is loaded
+        if validate:
+            self.download_schema()
         
         # Load all CSV files (try with f1db- prefix first)
         csv_files = list(self.data_dir.glob("f1db-*.csv"))
@@ -124,9 +293,12 @@ class F1DBDataLoader:
             raise FileNotFoundError("No CSV files found. Data may not be downloaded correctly.")
         
         print(f"Loading {len(csv_files)} CSV files...")
+        validation_summary = {'valid': 0, 'warnings': 0, 'errors': 0}
+        
         for csv_file in csv_files:
             # Get the table name, removing f1db- prefix if present
             table_name = csv_file.stem
+            original_table_name = table_name
             if table_name.startswith('f1db-'):
                 table_name = table_name[5:]  # Remove 'f1db-' prefix
             
@@ -136,9 +308,29 @@ class F1DBDataLoader:
             try:
                 df = pd.read_csv(csv_file, encoding='utf-8', low_memory=False)
                 dataframes[table_name] = df
-                print(f"  ✓ Loaded {table_name}: {len(df)} rows")
+                
+                # Validate against schema if requested
+                if validate:
+                    validation = self.validate_dataframe_with_schema(df, original_table_name)
+                    if validation['valid']:
+                        validation_summary['valid'] += 1
+                    if validation['warnings']:
+                        validation_summary['warnings'] += len(validation['warnings'])
+                    if validation['errors']:
+                        validation_summary['errors'] += len(validation['errors'])
+                        print(f"  ✗ Loaded {table_name}: {len(df)} rows (validation errors)")
+                        for error in validation['errors']:
+                            print(f"    Error: {error}")
+                    else:
+                        print(f"  ✓ Loaded {table_name}: {len(df)} rows")
+                else:
+                    print(f"  ✓ Loaded {table_name}: {len(df)} rows")
             except Exception as e:
                 print(f"  ✗ Error loading {table_name}: {e}")
+        
+        if validate and validation_summary['warnings'] + validation_summary['errors'] > 0:
+            print(f"\nValidation summary: {validation_summary['valid']} valid, "
+                  f"{validation_summary['warnings']} warnings, {validation_summary['errors']} errors")
         
         return dataframes
     
@@ -209,10 +401,80 @@ class F1DBDataLoader:
                 print("  → Added positionOrder column to results for compatibility")
         
         return core_data
+    
+    def get_data_dictionary(self) -> Dict[str, Dict[str, Any]]:
+        """
+        Get a data dictionary from the schema
+        
+        Returns:
+            Dictionary mapping table names to their field descriptions
+        """
+        schema = self.get_schema()
+        data_dict = {}
+        
+        if 'definitions' in schema:
+            for entity_name, entity_schema in schema['definitions'].items():
+                if 'properties' in entity_schema:
+                    fields = {}
+                    for field_name, field_schema in entity_schema['properties'].items():
+                        field_info = {
+                            'type': field_schema.get('type', 'unknown'),
+                            'description': field_schema.get('description', ''),
+                            'format': field_schema.get('format', ''),
+                            'required': field_name in entity_schema.get('required', [])
+                        }
+                        
+                        # Add additional metadata if available
+                        if 'enum' in field_schema:
+                            field_info['enum'] = field_schema['enum']
+                        if 'minimum' in field_schema:
+                            field_info['minimum'] = field_schema['minimum']
+                        if 'maximum' in field_schema:
+                            field_info['maximum'] = field_schema['maximum']
+                        
+                        fields[field_name] = field_info
+                    
+                    data_dict[entity_name] = {
+                        'description': entity_schema.get('description', ''),
+                        'fields': fields
+                    }
+        
+        return data_dict
+    
+    def print_table_info(self, table_name: str) -> None:
+        """
+        Print detailed information about a table from the schema
+        
+        Args:
+            table_name: Name of the table
+        """
+        table_schema = self.get_table_schema(table_name)
+        if not table_schema:
+            print(f"No schema found for table '{table_name}'")
+            return
+        
+        print(f"\nTable: {table_name}")
+        if 'description' in table_schema:
+            print(f"Description: {table_schema['description']}")
+        
+        if 'properties' in table_schema:
+            print("\nFields:")
+            required_fields = set(table_schema.get('required', []))
+            
+            for field_name, field_schema in table_schema['properties'].items():
+                field_type = field_schema.get('type', 'unknown')
+                required = '(required)' if field_name in required_fields else '(optional)'
+                description = field_schema.get('description', '')
+                
+                print(f"  - {field_name}: {field_type} {required}")
+                if description:
+                    print(f"    {description}")
+                if 'enum' in field_schema:
+                    print(f"    Allowed values: {', '.join(map(str, field_schema['enum']))}")
 
 
 # Convenience function for notebook usage
-def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_download: bool = False) -> Dict[str, pd.DataFrame]:
+def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_download: bool = False, validate: bool = True) -> Dict[str, pd.DataFrame]:
     """
     Load F1DB data with a simple function call
     
@@ -220,6 +482,7 @@ def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_do
         data_dir: Directory to store/load data (if None, uses ../../data relative to this file)
         format: Data format ('csv' recommended)
         force_download: Force re-download of data
+        validate: Validate data against schema
         
     Returns:
         Dictionary of DataFrames with F1 data
@@ -252,11 +515,24 @@ if __name__ == "__main__":
     default_data_dir = project_root / "data" / "f1db"
     print(f"Default data directory: {default_data_dir}")
     
-    data = load_f1db_data()
+    # Initialize loader
+    loader = F1DBDataLoader(str(default_data_dir))
+    
+    # Test schema loading
+    print("\nTesting schema functionality...")
+    schema = loader.download_schema()
+    print(f"Schema loaded: {'definitions' in schema}")
+    
+    # Load data with validation
+    data = load_f1db_data(validate=True)
     print(f"\nSuccessfully loaded {len(data)} datasets!")
     print("\nAvailable datasets:")
     for name in sorted(data.keys()):
         print(f"  - {name}: {len(data[name])} rows")
+    
+    # Show sample table info
+    print("\nSample table information:")
+    loader.print_table_info('races')
     
     # Show sample of races data
     if 'races' in data:
