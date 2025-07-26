@@ -2,6 +2,12 @@
 F1DB Data Loader
 Fetches the latest F1 data from the official F1DB repository
 https://github.com/f1db/f1db
+
+Includes functionality for:
+- Downloading and extracting F1DB data
+- Validating data structure and schema
+- Analyzing and fixing column mappings
+- Checking data integrity
 """
 
 import os
@@ -9,10 +15,16 @@ import zipfile
 import requests
 import pandas as pd
 from pathlib import Path
-from typing import Dict, Optional, Any
+from typing import Dict, Optional, Any, List, Tuple
 import json
 from datetime import datetime
 import hashlib
+import logging
+import traceback
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class F1DBDataLoader:
     """Load F1 data from the official F1DB repository"""
@@ -471,10 +483,308 @@ class F1DBDataLoader:
                     print(f"    {description}")
                 if 'enum' in field_schema:
                     print(f"    Allowed values: {', '.join(map(str, field_schema['enum']))}")
+    
+    def fix_data_download(self) -> bool:
+        """
+        Fix data download issues by forcing re-download and handling extraction
+        
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            logger.info("Fixing F1DB data download...")
+            
+            # Remove version file to force re-download
+            version_file = self.data_dir / ".f1db_version"
+            if version_file.exists():
+                os.remove(version_file)
+                logger.info("Removed version file to force re-download")
+            
+            # Download the data
+            self.download_latest_data(force=True)
+            
+            # Check what was downloaded
+            logger.info("Checking downloaded files...")
+            for item in self.data_dir.iterdir():
+                logger.info(f"  - {item.name} {'(dir)' if item.is_dir() else ''}")
+            
+            # Check for CSV files in subdirectories
+            csv_path = self.data_dir / "f1db-csv"
+            if csv_path.exists():
+                csv_files = list(csv_path.glob("*.csv"))
+                logger.info(f"Found {len(csv_files)} CSV files in {csv_path}")
+                
+                # Move CSV files to main data directory if needed
+                for csv_file in csv_files:
+                    dest = self.data_dir / csv_file.name
+                    if not dest.exists():
+                        csv_file.rename(dest)
+                        logger.info(f"Moved {csv_file.name} to data directory")
+            
+            # Check for any remaining zip files
+            zip_files = list(self.data_dir.glob("*.zip"))
+            if zip_files:
+                logger.info(f"Found {len(zip_files)} zip files, extracting...")
+                for z in zip_files:
+                    logger.info(f"Extracting {z.name}...")
+                    with zipfile.ZipFile(z, 'r') as zip_ref:
+                        zip_ref.extractall(self.data_dir)
+                    z.unlink()  # Remove zip after extraction
+                    logger.info("Extracted and removed zip file")
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error fixing data download: {e}")
+            traceback.print_exc()
+            return False
+    
+    def check_data_structure(self) -> Dict[str, Any]:
+        """
+        Check F1DB data structure and analyze column names
+        
+        Returns:
+            Dictionary with structure analysis results
+        """
+        logger.info("Checking F1DB data structure...")
+        
+        # Load data
+        data = self.load_csv_data(validate=False)
+        
+        # Key datasets to check
+        key_datasets = ['races', 'results', 'drivers', 'constructors', 'circuits']
+        
+        analysis = {
+            'found_datasets': {},
+            'missing_datasets': [],
+            'column_analysis': {}
+        }
+        
+        for dataset_name in key_datasets:
+            # Try different naming conventions
+            possible_names = [
+                dataset_name,
+                f'f1db-{dataset_name}',
+                f'f1db-races-{dataset_name}',
+                f'f1db-races-race-{dataset_name}',
+                f'races_race_{dataset_name}',
+                f'races_{dataset_name}'
+            ]
+            
+            found = False
+            for name in possible_names:
+                if name in data:
+                    df = data[name]
+                    analysis['found_datasets'][dataset_name] = {
+                        'actual_name': name,
+                        'shape': df.shape,
+                        'columns': list(df.columns)
+                    }
+                    found = True
+                    logger.info(f"{dataset_name.upper()} found as '{name}': {df.shape}")
+                    break
+            
+            if not found:
+                analysis['missing_datasets'].append(dataset_name)
+                logger.warning(f"{dataset_name.upper()}: NOT FOUND")
+        
+        # Check for results data specifically
+        results_tables = [k for k in data.keys() if 'result' in k.lower()]
+        analysis['results_tables'] = results_tables
+        
+        return analysis
+    
+    def analyze_column_mapping(self) -> Dict[str, Dict[str, List[str]]]:
+        """
+        Analyze column mapping between expected and actual F1DB columns
+        
+        Returns:
+            Dictionary mapping expected columns to actual columns
+        """
+        logger.info("Analyzing column mappings...")
+        
+        # Load data
+        data = self.get_core_datasets()
+        
+        # Expected columns in notebooks (common usage)
+        expected_columns = {
+            'results': ['positionOrder', 'points', 'grid', 'statusId', 'driverId', 
+                       'constructorId', 'raceId', 'position', 'status', 'time', 'laps'],
+            'races': ['raceId', 'year', 'round', 'circuitId', 'name', 'date', 'time', 'url'],
+            'drivers': ['driverId', 'driverRef', 'number', 'code', 'forename', 'surname', 
+                       'dob', 'nationality', 'url'],
+            'constructors': ['constructorId', 'constructorRef', 'name', 'nationality', 'url']
+        }
+        
+        # Common column mappings
+        common_mappings = {
+            'raceId': ['id', 'race_id'],
+            'driverId': ['id', 'driver_id'],
+            'constructorId': ['id', 'constructor_id'],
+            'driverRef': ['abbreviation', 'name'],
+            'constructorRef': ['name'],
+            'forename': ['firstName', 'first_name'],
+            'surname': ['lastName', 'last_name'],
+            'dob': ['dateOfBirth', 'date_of_birth'],
+            'grid': ['gridPositionNumber', 'gridPosition', 'startingGridPosition'],
+            'position': ['positionNumber', 'positionOrder'],
+            'statusId': ['reasonRetired', 'status'],
+            'code': ['abbreviation'],
+            'url': ['link', 'website'],
+            'circuitId': ['id', 'circuit_id']
+        }
+        
+        mappings = {}
+        
+        for table_name, expected_cols in expected_columns.items():
+            if table_name not in data:
+                logger.warning(f"Table '{table_name}' not found in data")
+                continue
+            
+            df = data[table_name]
+            actual_cols = list(df.columns)
+            
+            table_mapping = {}
+            
+            for exp_col in expected_cols:
+                if exp_col in actual_cols:
+                    table_mapping[exp_col] = [exp_col]  # Exact match
+                else:
+                    # Try to find matches
+                    matches = []
+                    
+                    # Check for exact substring
+                    for act_col in actual_cols:
+                        if exp_col.lower() in act_col.lower() or act_col.lower() in exp_col.lower():
+                            matches.append(act_col)
+                    
+                    # Check common mappings
+                    if exp_col in common_mappings:
+                        for possible in common_mappings[exp_col]:
+                            if possible in actual_cols and possible not in matches:
+                                matches.append(possible)
+                    
+                    table_mapping[exp_col] = matches
+            
+            mappings[table_name] = table_mapping
+        
+        return mappings
+    
+    def validate_data_integrity(self) -> Dict[str, Any]:
+        """
+        Validate data integrity and check for common issues
+        
+        Returns:
+            Dictionary with validation results
+        """
+        logger.info("Validating data integrity...")
+        
+        data = self.get_core_datasets()
+        validation_results = {
+            'tables_checked': 0,
+            'issues': [],
+            'warnings': [],
+            'statistics': {}
+        }
+        
+        # Check key relationships
+        if 'races' in data and 'results' in data:
+            races_df = data['races']
+            results_df = data['results']
+            
+            # Check if race IDs match
+            race_ids = set(races_df['id']) if 'id' in races_df.columns else set()
+            result_race_ids = set(results_df['race_id']) if 'race_id' in results_df.columns else set()
+            
+            if race_ids and result_race_ids:
+                orphan_results = result_race_ids - race_ids
+                if orphan_results:
+                    validation_results['warnings'].append(
+                        f"Found {len(orphan_results)} results with no matching race"
+                    )
+        
+        # Check for required columns and data types
+        for table_name, df in data.items():
+            validation_results['tables_checked'] += 1
+            
+            # Check for null values in key columns
+            null_counts = df.isnull().sum()
+            high_null_cols = null_counts[null_counts > len(df) * 0.5]
+            if len(high_null_cols) > 0:
+                validation_results['warnings'].append(
+                    f"Table '{table_name}' has columns with >50% null values: {list(high_null_cols.index)}"
+                )
+            
+            # Collect statistics
+            validation_results['statistics'][table_name] = {
+                'row_count': len(df),
+                'column_count': len(df.columns),
+                'null_percentage': (df.isnull().sum().sum() / (len(df) * len(df.columns)) * 100)
+            }
+        
+        return validation_results
+    
+    def print_data_summary(self) -> None:
+        """
+        Print a comprehensive summary of the F1DB data
+        """
+        print("\n" + "=" * 80)
+        print("F1DB DATA SUMMARY")
+        print("=" * 80)
+        
+        # Check data structure
+        structure = self.check_data_structure()
+        
+        print("\nFound Datasets:")
+        for name, info in structure['found_datasets'].items():
+            print(f"  - {name}: {info['shape'][0]} rows, {info['shape'][1]} columns")
+            print(f"    (loaded as '{info['actual_name']}')")
+        
+        if structure['missing_datasets']:
+            print(f"\nMissing Datasets: {', '.join(structure['missing_datasets'])}")
+        
+        # Analyze column mappings
+        print("\n" + "-" * 40)
+        print("COLUMN MAPPING ANALYSIS")
+        print("-" * 40)
+        
+        mappings = self.analyze_column_mapping()
+        for table_name, table_mappings in mappings.items():
+            print(f"\n{table_name.upper()}:")
+            for expected, actual_matches in table_mappings.items():
+                if actual_matches and actual_matches[0] == expected:
+                    print(f"  ✓ {expected}")
+                elif actual_matches:
+                    print(f"  → {expected} maps to: {actual_matches[0]}")
+                else:
+                    print(f"  ✗ {expected} NOT FOUND")
+        
+        # Validate data integrity
+        print("\n" + "-" * 40)
+        print("DATA INTEGRITY")
+        print("-" * 40)
+        
+        validation = self.validate_data_integrity()
+        print(f"\nTables checked: {validation['tables_checked']}")
+        
+        if validation['warnings']:
+            print("\nWarnings:")
+            for warning in validation['warnings']:
+                print(f"  ⚠ {warning}")
+        
+        if validation['issues']:
+            print("\nIssues:")
+            for issue in validation['issues']:
+                print(f"  ✗ {issue}")
+        
+        print("\nTable Statistics:")
+        for table, stats in validation['statistics'].items():
+            print(f"  - {table}: {stats['row_count']:,} rows, "
+                  f"{stats['null_percentage']:.1f}% null values")
 
 
 # Convenience function for notebook usage
-def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_download: bool = False, validate: bool = True) -> Dict[str, pd.DataFrame]:
+def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_download: bool = False, validate: bool = True, fix_issues: bool = False) -> Dict[str, pd.DataFrame]:
     """
     Load F1DB data with a simple function call
     
@@ -483,6 +793,7 @@ def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_do
         format: Data format ('csv' recommended)
         force_download: Force re-download of data
         validate: Validate data against schema
+        fix_issues: Attempt to fix any data download/extraction issues
         
     Returns:
         Dictionary of DataFrames with F1 data
@@ -495,7 +806,12 @@ def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_do
         data_dir = str(project_root / "data" / "f1db")
     
     loader = F1DBDataLoader(str(data_dir), format)
-    loader.download_latest_data(force=force_download)
+    
+    if fix_issues:
+        loader.fix_data_download()
+    else:
+        loader.download_latest_data(force=force_download)
+    
     return loader.get_core_datasets()
 
 
@@ -507,7 +823,7 @@ def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_do
 
 # Test functionality if run directly
 if __name__ == "__main__":
-    print("\nTesting F1DB data loader...")
+    print("\nTesting F1DB data loader with enhanced functionality...")
     
     # Show where data will be saved
     current_file = Path(__file__).resolve()
@@ -533,6 +849,14 @@ if __name__ == "__main__":
     # Show sample table info
     print("\nSample table information:")
     loader.print_table_info('races')
+    
+    # Test new functionality
+    print("\n" + "=" * 80)
+    print("TESTING NEW FUNCTIONALITY")
+    print("=" * 80)
+    
+    # Print comprehensive data summary
+    loader.print_data_summary()
     
     # Show sample of races data
     if 'races' in data:
