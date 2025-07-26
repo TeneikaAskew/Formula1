@@ -1,0 +1,3463 @@
+{
+  "$id": "https://www.f1db.com/schema/v6.2.0/single/f1db.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "F1DB",
+  "description": "F1DB JSON Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "drivers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Driver"
+      },
+      "description": "The list of drivers, each representing the drivers who participated in races, including biographical details and statistics."
+    },
+    "constructors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Constructor"
+      },
+      "description": "The list of constructors, each representing the teams or manufacturers responsible for designing and producing race cars, including statistics."
+    },
+    "chassis": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Chassis"
+      },
+      "description": "The list of chassis, each representing a specific race car chassis design."
+    },
+    "engineManufacturers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/EngineManufacturer"
+      },
+      "description": "The list of engine manufacturers, each representing the entities producing engines, including statistics."
+    },
+    "engines": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Engine"
+      },
+      "description": "The list of engines, each representing the specific engines used in race cars, including configuration, performance data, and manufacturers."
+    },
+    "tyreManufacturers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/TyreManufacturer"
+      },
+      "description": "The list of tyre manufacturers, each representing the companies that supply tyres, including statistics."
+    },
+    "entrants": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Entrant"
+      },
+      "description": "The list of entrants, each representing the teams and individuals who have participated in races."
+    },
+    "circuits": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Circuit"
+      },
+      "description": "The list of circuits, each representing a specific racing track, including geographical location and race history."
+    },
+    "grandsPrix": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/GrandPrix"
+      },
+      "description": "The list of Grands Prix, each representing a racing event, including geographical location and race history."
+    },
+    "seasons": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Season"
+      },
+      "description": "The list of seasons, each representing a complete year, with details on the entrants, races, standings, and statistics."
+    },
+    "races": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Race"
+      },
+      "description": "The list of races, each representing detailed information about individual races, including results, participants, and statistics."
+    },
+    "continents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Continent"
+      },
+      "description": "The list of continents, each representing geographical regions associated with countries."
+    },
+    "countries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Country"
+      },
+      "description": "The list of countries, each representing a nation that is associated with drivers, constructors, etc."
+    }
+  },
+  "required": [
+    "drivers",
+    "constructors",
+    "engineManufacturers",
+    "tyreManufacturers",
+    "entrants",
+    "circuits",
+    "grandsPrix",
+    "seasons",
+    "races",
+    "continents",
+    "countries"
+  ],
+  "definitions": {
+    "Driver": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the driver."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the driver, typically used for display purposes."
+        },
+        "firstName": {
+          "type": "string",
+          "description": "The given name or first name of the driver."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "The family name or last name of the driver."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "The full name of the driver, usually a combination of first, middle and last names."
+        },
+        "abbreviation": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "^[A-Z']{3}$",
+          "description": "The three-letter abbreviation for the driver, consisting of uppercase letters (e.g., 'SEN' for Ayrton Senna)."
+        },
+        "permanentNumber": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 2,
+          "pattern": "^[0-9]{1,2}$",
+          "description": "The permanent racing number chosen by the driver."
+        },
+        "gender": {
+          "$ref": "#/definitions/Gender",
+          "description": "The gender of the driver."
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date",
+          "description": "The birth date of the driver."
+        },
+        "dateOfDeath": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The death date of the driver, if applicable."
+        },
+        "placeOfBirth": {
+          "type": "string",
+          "description": "The place of birth of the driver."
+        },
+        "countryOfBirthCountryId": {
+          "type": "string",
+          "description": "The identifier of the country where the driver was born."
+        },
+        "nationalityCountryId": {
+          "type": "string",
+          "description": "The identifier of the nationality of the driver."
+        },
+        "secondNationalityCountryId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The identifier of the second nationality of the driver, if applicable."
+        },
+        "familyRelationships": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/DriverFamilyRelationship"
+          },
+          "description": "The family relationships involving the driver, such as parent or sibling relationships."
+        },
+        "bestChampionshipPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the driver in a World Drivers' Championship."
+        },
+        "bestStartingGridPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best starting grid position achieved by the driver in a race."
+        },
+        "bestRaceResult": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the driver in a race."
+        },
+        "totalChampionshipWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of World Drivers' Championship titles won by the driver."
+        },
+        "totalRaceEntries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races entered by the driver."
+        },
+        "totalRaceStarts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races started by the driver."
+        },
+        "totalRaceWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races won by the driver."
+        },
+        "totalRaceLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of laps completed by the driver."
+        },
+        "totalPodiums": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of podium finishes achieved by the driver."
+        },
+        "totalPoints": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of points accumulated by the driver."
+        },
+        "totalChampionshipPoints": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of World Drivers' Championship points accumulated by the driver."
+        },
+        "totalPolePositions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of pole positions achieved by the driver."
+        },
+        "totalFastestLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of fastest laps set by the driver."
+        },
+        "totalDriverOfTheDay": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of Driver of the Day awards received by the driver."
+        },
+        "totalGrandSlams": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of Grand Slams achieved by the driver, defined as pole position, fastest lap, and leading every lap of the race."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "firstName",
+        "lastName",
+        "fullName",
+        "abbreviation",
+        "permanentNumber",
+        "gender",
+        "dateOfBirth",
+        "dateOfDeath",
+        "placeOfBirth",
+        "countryOfBirthCountryId",
+        "nationalityCountryId",
+        "secondNationalityCountryId",
+        "familyRelationships",
+        "bestChampionshipPosition",
+        "bestStartingGridPosition",
+        "bestRaceResult",
+        "totalChampionshipWins",
+        "totalRaceEntries",
+        "totalRaceStarts",
+        "totalRaceWins",
+        "totalRaceLaps",
+        "totalPodiums",
+        "totalPoints",
+        "totalChampionshipPoints",
+        "totalPolePositions",
+        "totalFastestLaps",
+        "totalDriverOfTheDay",
+        "totalGrandSlams"
+      ]
+    },
+    "DriverFamilyRelationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order of the family relationship relative to other relationships of the parent driver."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the related driver."
+        },
+        "type": {
+          "$ref": "#/definitions/FamilyRelationshipType",
+          "description": "The type of the family relationship."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "driverId",
+        "type"
+      ]
+    },
+    "Constructor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the constructor."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the constructor, typically used for display purposes."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "The full name of the constructor."
+        },
+        "countryId": {
+          "type": "string",
+          "description": "The identifier of the country of origin of the constructor."
+        },
+        "chronology": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/ConstructorChronology"
+          },
+          "description": "The chronology of the constructor."
+        },
+        "bestChampionshipPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the constructor in a World Constructors' Championship."
+        },
+        "bestStartingGridPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best starting grid position achieved by the constructor in a race."
+        },
+        "bestRaceResult": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the constructor in a race."
+        },
+        "totalChampionshipWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of World Constructors' Championship titles won by the constructor."
+        },
+        "totalRaceEntries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races entered by the constructor."
+        },
+        "totalRaceStarts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races started by the constructor."
+        },
+        "totalRaceWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races won by the constructor."
+        },
+        "total1And2Finishes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races in which the constructor finished in both 1st and 2nd place."
+        },
+        "totalRaceLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of laps completed by the constructor."
+        },
+        "totalPodiums": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of podium finishes achieved by the constructor."
+        },
+        "totalPodiumRaces": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races in which the constructor finished on the podium."
+        },
+        "totalPoints": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of points accumulated by the constructor."
+        },
+        "totalChampionshipPoints": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of World Constructors' Championship points accumulated by the constructor."
+        },
+        "totalPolePositions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of pole positions achieved by the constructor."
+        },
+        "totalFastestLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of fastest laps set by the constructor."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "fullName",
+        "countryId",
+        "chronology",
+        "bestChampionshipPosition",
+        "bestStartingGridPosition",
+        "bestRaceResult",
+        "totalChampionshipWins",
+        "totalRaceEntries",
+        "totalRaceStarts",
+        "totalRaceWins",
+        "total1And2Finishes",
+        "totalRaceLaps",
+        "totalPodiums",
+        "totalPodiumRaces",
+        "totalPoints",
+        "totalChampionshipPoints",
+        "totalPolePositions",
+        "totalFastestLaps"
+      ]
+    },
+    "ConstructorChronology": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order of the constructor within the chronological sequence of the parent constructor."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "yearFrom": {
+          "type": "integer",
+          "description": "The year from."
+        },
+        "yearTo": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The year to, or null if it is still active."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "constructorId",
+        "yearFrom",
+        "yearTo"
+      ]
+    },
+    "Chassis": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the chassis."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor associated with the chassis."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the chassis."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "The full name of the chassis."
+        }
+      },
+      "required": [
+        "id",
+        "constructorId",
+        "name",
+        "fullName"
+      ]
+    },
+    "EngineManufacturer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the engine manufacturer."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the engine manufacturer."
+        },
+        "countryId": {
+          "type": "string",
+          "description": "The identifier of the country of origin of the engine manufacturer."
+        },
+        "bestChampionshipPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the engine manufacturer in a World Constructors' Championship."
+        },
+        "bestStartingGridPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best starting grid position achieved by the engine manufacturer in a race."
+        },
+        "bestRaceResult": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the engine manufacturer in a race."
+        },
+        "totalChampionshipWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of World Constructors' Championship titles won by the engine manufacturer."
+        },
+        "totalRaceEntries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races entered by the engine manufacturer."
+        },
+        "totalRaceStarts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races started by the engine manufacturer."
+        },
+        "totalRaceWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races won by the engine manufacturer."
+        },
+        "totalRaceLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of laps completed by the engine manufacturer."
+        },
+        "totalPodiums": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of podium finishes achieved by the engine manufacturer."
+        },
+        "totalPodiumRaces": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races in which the engine manufacturer finished on the podium."
+        },
+        "totalPoints": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of points accumulated by the engine manufacturer."
+        },
+        "totalChampionshipPoints": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of World Constructors' Championship points accumulated by the engine manufacturer."
+        },
+        "totalPolePositions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of pole positions achieved by the engine manufacturer."
+        },
+        "totalFastestLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of fastest laps set by the engine manufacturer."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "countryId",
+        "bestChampionshipPosition",
+        "bestStartingGridPosition",
+        "bestRaceResult",
+        "totalChampionshipWins",
+        "totalRaceEntries",
+        "totalRaceStarts",
+        "totalRaceWins",
+        "totalRaceLaps",
+        "totalPodiums",
+        "totalPodiumRaces",
+        "totalPoints",
+        "totalChampionshipPoints",
+        "totalPolePositions",
+        "totalFastestLaps"
+      ]
+    },
+    "Engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the engine."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer associated with the engine."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the engine."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "The full name of the engine."
+        },
+        "capacity": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0.0,
+          "multipleOf": 0.1,
+          "description": "The capacity of the engine, measured in liters."
+        },
+        "configuration": {
+          "$ref": "#/definitions/EngineConfiguration",
+          "description": "The configuration of the engine, such as V6, V8, etc."
+        },
+        "aspiration": {
+          "$ref": "#/definitions/EngineAspiration",
+          "description": "The aspiration of the engine, such as naturally aspirated or turbocharged."
+        }
+      },
+      "required": [
+        "id",
+        "engineManufacturerId",
+        "name",
+        "fullName",
+        "capacity",
+        "configuration",
+        "aspiration"
+      ]
+    },
+    "TyreManufacturer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the tyre manufacturer."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the tyre manufacturer."
+        },
+        "countryId": {
+          "type": "string",
+          "description": "The identifier of the country of origin of the tyre manufacturer."
+        },
+        "bestStartingGridPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best starting grid position achieved by the tyre manufacturer in a race."
+        },
+        "bestRaceResult": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the tyre manufacturer in a race."
+        },
+        "totalRaceEntries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races entered by the tyre manufacturer."
+        },
+        "totalRaceStarts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races started by the tyre manufacturer."
+        },
+        "totalRaceWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races won by the tyre manufacturer."
+        },
+        "totalRaceLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of laps completed by the tyre manufacturer."
+        },
+        "totalPodiums": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of podium finishes achieved by the tyre manufacturer."
+        },
+        "totalPodiumRaces": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races in which the tyre manufacturer finished on the podium."
+        },
+        "totalPolePositions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of pole positions achieved by the tyre manufacturer."
+        },
+        "totalFastestLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of fastest laps set by the tyre manufacturer."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "countryId",
+        "bestStartingGridPosition",
+        "bestRaceResult",
+        "totalRaceEntries",
+        "totalRaceStarts",
+        "totalRaceWins",
+        "totalRaceLaps",
+        "totalPodiums",
+        "totalPodiumRaces",
+        "totalPolePositions",
+        "totalFastestLaps"
+      ]
+    },
+    "Entrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the entrant."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the entrant."
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "Circuit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the circuit."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the circuit, typically used for display purposes."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "The full official name of the circuit."
+        },
+        "previousNames": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "The previous names used for the circuit."
+        },
+        "type": {
+          "$ref": "#/definitions/CircuitType",
+          "description": "The type of the circuit."
+        },
+        "direction": {
+          "$ref": "#/definitions/Direction",
+          "description": "The direction of the current or most recently used configuration of the circuit."
+        },
+        "placeName": {
+          "type": "string",
+          "description": "The place name where the circuit is located."
+        },
+        "countryId": {
+          "type": "string",
+          "description": "The identifier of the country where the circuit is located."
+        },
+        "latitude": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90,
+          "description": "The latitude coordinate where the circuit is located."
+        },
+        "longitude": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180,
+          "description": "The longitude coordinate where the circuit is located."
+        },
+        "length": {
+          "type": "number",
+          "minimum": 0,
+          "description": "The length of the current or most recently used configuration of the circuit in kilometers."
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The number of turns (corners) in the current or most recently used configuration of the circuit."
+        },
+        "totalRacesHeld": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races held at the circuit."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "fullName",
+        "previousNames",
+        "type",
+        "direction",
+        "placeName",
+        "countryId",
+        "latitude",
+        "longitude",
+        "length",
+        "turns",
+        "totalRacesHeld"
+      ]
+    },
+    "GrandPrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the Grand Prix."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the Grand Prix, typically used for display purposes."
+        },
+        "fullName": {
+          "type": "string",
+          "description": "The full name of the Grand Prix."
+        },
+        "shortName": {
+          "type": "string",
+          "description": "The short name of the Grand Prix."
+        },
+        "abbreviation": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "^[A-Z0-9]{3}$",
+          "description": "The three-character abbreviation of the Grand Prix."
+        },
+        "countryId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The identifier of the country where the Grand Prix is held."
+        },
+        "totalRacesHeld": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races held for this Grand Prix."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "fullName",
+        "shortName",
+        "abbreviation",
+        "countryId",
+        "totalRacesHeld"
+      ]
+    },
+    "Season": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "year": {
+          "type": "integer",
+          "description": "The year of the season."
+        },
+        "entrants": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/SeasonEntrant"
+          },
+          "description": "The entrants competing in the season."
+        },
+        "constructors": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/SeasonConstructor"
+          },
+          "description": "The constructors competing in the season."
+        },
+        "engineManufacturers": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/SeasonEngineManufacturer"
+          },
+          "description": "The engine manufacturers competing in the season."
+        },
+        "tyreManufacturers": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/SeasonTyreManufacturer"
+          },
+          "description": "The tyre manufacturers competing in the season."
+        },
+        "drivers": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/SeasonDriver"
+          },
+          "description": "The drivers competing in the season."
+        },
+        "driverStandings": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/SeasonDriverStanding"
+          },
+          "description": "The driver standings of the season."
+        },
+        "constructorStandings": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/SeasonConstructorStanding"
+          },
+          "description": "The constructor standings of the season."
+        }
+      },
+      "required": [
+        "year",
+        "entrants",
+        "constructors",
+        "engineManufacturers",
+        "tyreManufacturers",
+        "drivers",
+        "driverStandings",
+        "constructorStandings"
+      ]
+    },
+    "SeasonEntrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entrantId": {
+          "type": "string",
+          "description": "The identifier of the entrant."
+        },
+        "countryId": {
+          "type": "string",
+          "description": "The identifier of the country of the entrant."
+        },
+        "constructors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SeasonEntrantConstructor"
+          },
+          "description": "The constructors associated with the entrant."
+        }
+      },
+      "required": [
+        "entrantId",
+        "countryId",
+        "constructors"
+      ]
+    },
+    "SeasonEntrantConstructor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "chassis": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SeasonEntrantChassis"
+          },
+          "description": "The chassis used by the constructor."
+        },
+        "engines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SeasonEntrantEngine"
+          },
+          "description": "The engines used by the constructor."
+        },
+        "tyreManufacturers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SeasonEntrantTyreManufacturer"
+          },
+          "description": "The tyre manufacturers used by the constructor."
+        },
+        "drivers": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/SeasonEntrantDriver"
+          },
+          "description": "The drivers who drove for the constructor."
+        }
+      },
+      "required": [
+        "constructorId",
+        "engineManufacturerId",
+        "chassis",
+        "engines",
+        "tyreManufacturers",
+        "drivers"
+      ]
+    },
+    "SeasonEntrantChassis": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "chassisId": {
+          "type": "string",
+          "description": "The identifier of the chassis."
+        }
+      },
+      "required": [
+        "chassisId"
+      ]
+    },
+    "SeasonEntrantEngine": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "engineId": {
+          "type": "string",
+          "description": "The identifier of the engine."
+        }
+      },
+      "required": [
+        "engineId"
+      ]
+    },
+    "SeasonEntrantTyreManufacturer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tyreManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the tyre manufacturer."
+        }
+      },
+      "required": [
+        "tyreManufacturerId"
+      ]
+    },
+    "SeasonEntrantDriver": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "rounds": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": "The rounds in which the driver participated."
+        },
+        "roundsText": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[1-9][0-9]*([-|,][1-9][0-9]*)*$",
+          "description": "The textual representation of the rounds in which the driver participated."
+        },
+        "testDriver": {
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether the driver was a test / free practice driver."
+        }
+      },
+      "required": [
+        "driverId",
+        "rounds",
+        "roundsText",
+        "testDriver"
+      ]
+    },
+    "SeasonConstructor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "year": {
+          "type": "integer",
+          "description": "The year of the season."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the constructor in the season standings."
+        },
+        "positionText": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9]+|DSQ|EX$",
+          "description": "The textual representation of the constructor's position in the season standings, including special statuses."
+        },
+        "bestStartingGridPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best starting grid position achieved by the constructor during the season."
+        },
+        "bestRaceResult": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the constructor during the season."
+        },
+        "totalRaceEntries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races entered by the constructor during the season."
+        },
+        "totalRaceStarts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races started by the constructor during the season."
+        },
+        "totalRaceWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races won by the constructor during the season."
+        },
+        "total1And2Finishes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races in which the constructor finished in both 1st and 2nd place during the season."
+        },
+        "totalRaceLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of laps completed by the constructor during the season."
+        },
+        "totalPodiums": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of podium finishes achieved by the constructor during the season."
+        },
+        "totalPodiumRaces": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races in which the constructor finished on the podium during the season."
+        },
+        "totalPoints": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of points accumulated by the constructor during the season."
+        },
+        "totalPolePositions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of pole positions achieved by the constructor during the season."
+        },
+        "totalFastestLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of fastest laps set by the constructor during the season."
+        }
+      },
+      "required": [
+        "year",
+        "constructorId",
+        "positionNumber",
+        "positionText",
+        "bestStartingGridPosition",
+        "bestRaceResult",
+        "totalRaceEntries",
+        "totalRaceStarts",
+        "totalRaceWins",
+        "total1And2Finishes",
+        "totalRaceLaps",
+        "totalPodiums",
+        "totalPodiumRaces",
+        "totalPoints",
+        "totalPolePositions",
+        "totalFastestLaps"
+      ]
+    },
+    "SeasonEngineManufacturer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "year": {
+          "type": "integer",
+          "description": "The year of the season."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the engine manufacturer in the season standings."
+        },
+        "positionText": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9]+|DSQ|EX$",
+          "description": "The textual representation of the engine manufacturer's position in the season standings, including special statuses."
+        },
+        "bestStartingGridPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best starting grid position achieved by the engine manufacturer during the season."
+        },
+        "bestRaceResult": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the engine manufacturer during the season."
+        },
+        "totalRaceEntries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races entered by the engine manufacturer during the season."
+        },
+        "totalRaceStarts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races started by the engine manufacturer during the season."
+        },
+        "totalRaceWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races won by the engine manufacturer during the season."
+        },
+        "totalRaceLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of laps completed by the engine manufacturer during the season."
+        },
+        "totalPodiums": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of podium finishes achieved by the engine manufacturer during the season."
+        },
+        "totalPodiumRaces": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races in which the engine manufacturer finished on the podium during the season."
+        },
+        "totalPoints": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of points accumulated by the engine manufacturer during the season."
+        },
+        "totalPolePositions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of pole positions achieved by the engine manufacturer during the season."
+        },
+        "totalFastestLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of fastest laps set by the engine manufacturer during the season."
+        }
+      },
+      "required": [
+        "year",
+        "engineManufacturerId",
+        "positionNumber",
+        "positionText",
+        "bestStartingGridPosition",
+        "bestRaceResult",
+        "totalRaceEntries",
+        "totalRaceStarts",
+        "totalRaceWins",
+        "totalRaceLaps",
+        "totalPodiums",
+        "totalPodiumRaces",
+        "totalPoints",
+        "totalPolePositions",
+        "totalFastestLaps"
+      ]
+    },
+    "SeasonTyreManufacturer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "year": {
+          "type": "integer",
+          "description": "The year of the season."
+        },
+        "tyreManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the tyre manufacturer."
+        },
+        "bestStartingGridPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best starting grid position achieved by the tyre manufacturer during the season."
+        },
+        "bestRaceResult": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the tyre manufacturer during the season."
+        },
+        "totalRaceEntries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races entered by the tyre manufacturer during the season."
+        },
+        "totalRaceStarts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races started by the tyre manufacturer during the season."
+        },
+        "totalRaceWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races won by the tyre manufacturer during the season."
+        },
+        "totalRaceLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of laps completed by the tyre manufacturer during the season."
+        },
+        "totalPodiums": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of podium finishes achieved by the tyre manufacturer during the season."
+        },
+        "totalPodiumRaces": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races in which the tyre manufacturer finished on the podium during the season."
+        },
+        "totalPolePositions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of pole positions achieved by the tyre manufacturer during the season."
+        },
+        "totalFastestLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of fastest laps set by the tyre manufacturer during the season."
+        }
+      },
+      "required": [
+        "year",
+        "tyreManufacturerId",
+        "bestStartingGridPosition",
+        "bestRaceResult",
+        "totalRaceEntries",
+        "totalRaceStarts",
+        "totalRaceWins",
+        "totalRaceLaps",
+        "totalPodiums",
+        "totalPodiumRaces",
+        "totalPolePositions",
+        "totalFastestLaps"
+      ]
+    },
+    "SeasonDriver": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "year": {
+          "type": "integer",
+          "description": "The year of the season."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the driver in the season standings."
+        },
+        "positionText": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9]+|DSQ|EX$",
+          "description": "The textual representation of the driver's position in the season standings, including special statuses."
+        },
+        "bestStartingGridPosition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best starting grid position achieved by the driver during the season."
+        },
+        "bestRaceResult": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The best finishing position achieved by the driver during the season."
+        },
+        "totalRaceEntries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races entered by the driver during the season."
+        },
+        "totalRaceStarts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races started by the driver during the season."
+        },
+        "totalRaceWins": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of races won by the driver during the season."
+        },
+        "totalRaceLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of laps completed by the driver during the season."
+        },
+        "totalPodiums": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of podium finishes achieved by the driver during the season."
+        },
+        "totalPoints": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of points accumulated by the driver during the season."
+        },
+        "totalPolePositions": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of pole positions achieved by the driver during the season."
+        },
+        "totalFastestLaps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of fastest laps set by the driver during the season."
+        },
+        "totalDriverOfTheDay": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of Driver of the Day awards received by the driver during the season."
+        },
+        "totalGrandSlams": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of Grand Slams achieved by the driver during the season, defined as pole position, fastest lap, and leading every lap of the race."
+        }
+      },
+      "required": [
+        "year",
+        "driverId",
+        "positionNumber",
+        "positionText",
+        "bestStartingGridPosition",
+        "bestRaceResult",
+        "totalRaceEntries",
+        "totalRaceStarts",
+        "totalRaceWins",
+        "totalRaceLaps",
+        "totalPodiums",
+        "totalPoints",
+        "totalPolePositions",
+        "totalFastestLaps",
+        "totalDriverOfTheDay",
+        "totalGrandSlams"
+      ]
+    },
+    "SeasonDriverStanding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order of the driver's position in the standings."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the driver in the standings."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DSQ|EX$",
+          "description": "The textual representation of the driver's position in the standings, including special statuses."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "points": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of points determining the driver's position in the standings."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "driverId",
+        "points"
+      ]
+    },
+    "SeasonConstructorStanding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order for the constructor's position in the standings."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the constructor in the standings."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DSQ|EX$",
+          "description": "The textual representation of the constructor's position in the standings, including special statuses."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "points": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of points determining the constructor's position in the standings."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "constructorId",
+        "engineManufacturerId",
+        "points"
+      ]
+    },
+    "Race": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "The unique identifier of the race."
+        },
+        "year": {
+          "type": "integer",
+          "description": "The year of the season."
+        },
+        "round": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The round number of the race in the season."
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date of the race in UTC."
+        },
+        "time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the race in UTC."
+        },
+        "grandPrixId": {
+          "type": "string",
+          "description": "The identifier of the Grand Prix associated with the race."
+        },
+        "officialName": {
+          "type": "string",
+          "description": "The official name of the race."
+        },
+        "qualifyingFormat": {
+          "$ref": "#/definitions/QualifyingFormat",
+          "description": "The qualifying format of the race."
+        },
+        "sprintQualifyingFormat": {
+          "$ref": "#/definitions/SprintQualifyingFormat",
+          "description": "The sprint qualifying format of the race."
+        },
+        "circuitId": {
+          "type": "string",
+          "description": "The identifier of the circuit where the race takes place."
+        },
+        "circuitType": {
+          "$ref": "#/definitions/CircuitType",
+          "description": "The type of the circuit."
+        },
+        "direction": {
+          "$ref": "#/definitions/Direction",
+          "description": "The direction of the circuit."
+        },
+        "courseLength": {
+          "type": "number",
+          "minimum": 0,
+          "description": "The length of the circuit (race course) in kilometers."
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The number of turns (corners) in the configuration of the circuit."
+        },
+        "laps": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of laps of the race."
+        },
+        "distance": {
+          "type": "number",
+          "minimum": 0,
+          "description": "The total distance of the race in kilometers."
+        },
+        "scheduledLaps": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "The scheduled number of laps of the race."
+        },
+        "scheduledDistance": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "The scheduled distance of the race in kilometers."
+        },
+        "driversChampionshipDecider": {
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether this race was the decider of the World Drivers' Championship."
+        },
+        "constructorsChampionshipDecider": {
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether this race was the decider of the World Constructors' Championship."
+        },
+        "preQualifyingDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the pre-qualifying session in UTC."
+        },
+        "preQualifyingTime": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the pre-qualifying session in UTC."
+        },
+        "preQualifyingResults": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/QualifyingResult"
+          },
+          "description": "The results of the pre-qualifying session."
+        },
+        "freePractice1Date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the 1st free practice session in UTC."
+        },
+        "freePractice1Time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the 1st free practice session in UTC."
+        },
+        "freePractice1Results": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/PracticeResult"
+          },
+          "description": "The results of the 1st free practice session."
+        },
+        "freePractice2Date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the 2nd free practice session in UTC."
+        },
+        "freePractice2Time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the 2nd free practice session in UTC."
+        },
+        "freePractice2Results": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/PracticeResult"
+          },
+          "description": "The results of the 2nd free practice session."
+        },
+        "freePractice3Date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the 3rd free practice session in UTC."
+        },
+        "freePractice3Time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the 3rd free practice session in UTC."
+        },
+        "freePractice3Results": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/PracticeResult"
+          },
+          "description": "The results of the 3rd free practice session."
+        },
+        "freePractice4Date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the 4th free practice session UTC."
+        },
+        "freePractice4Time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the 4th free practice session in UTC."
+        },
+        "freePractice4Results": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/PracticeResult"
+          },
+          "description": "The results of the 4th free practice session."
+        },
+        "qualifying1Date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the 1st qualifying session in UTC."
+        },
+        "qualifying1Time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the 1st qualifying session in UTC."
+        },
+        "qualifying1Results": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/QualifyingResult"
+          },
+          "description": "The results of the 1st qualifying session."
+        },
+        "qualifying2Date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the 2nd qualifying session UTC."
+        },
+        "qualifying2Time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the 2nd qualifying session UTC."
+        },
+        "qualifying2Results": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/QualifyingResult"
+          },
+          "description": "The results of the 2nd qualifying session."
+        },
+        "qualifyingDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the qualifying session UTC."
+        },
+        "qualifyingTime": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the qualifying session UTC."
+        },
+        "qualifyingResults": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/QualifyingResult"
+          },
+          "description": "The results of the qualifying session."
+        },
+        "sprintQualifyingDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the sprint qualifying session in UTC."
+        },
+        "sprintQualifyingTime": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the sprint qualifying session in UTC."
+        },
+        "sprintQualifyingResults": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/QualifyingResult"
+          },
+          "description": "The results of the sprint qualifying session."
+        },
+        "sprintStartingGridPositions": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/StartingGridPosition"
+          },
+          "description": "The starting grid positions for the sprint race."
+        },
+        "sprintRaceDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the sprint race in UTC."
+        },
+        "sprintRaceTime": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the sprint race in UTC."
+        },
+        "sprintRaceResults": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/RaceResult"
+          },
+          "description": "The results of the sprint race."
+        },
+        "warmingUpDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date",
+          "description": "The date of the warming-up session in UTC."
+        },
+        "warmingUpTime": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 5,
+          "maxLength": 5,
+          "pattern": "^([01][0-9]|2[0-3]):([0-5][0-9])$",
+          "description": "The start time of the warming-up session in UTC."
+        },
+        "warmingUpResults": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/PracticeResult"
+          },
+          "description": "The results of the warming-up session."
+        },
+        "startingGridPositions": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/StartingGridPosition"
+          },
+          "description": "The starting grid positions for the race."
+        },
+        "raceResults": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/RaceResult"
+          },
+          "description": "The results of the race."
+        },
+        "fastestLaps": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/FastestLap"
+          },
+          "description": "The fastest laps recorded during the race.."
+        },
+        "pitStops": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/PitStop"
+          },
+          "description": "The pit stops made during the race."
+        },
+        "driverOfTheDayResults": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/DriverOfTheDayResult"
+          },
+          "description": "The results of the Driver of the Day vote."
+        },
+        "driverStandings": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/RaceDriverStanding"
+          },
+          "description": "The driver standings after the race."
+        },
+        "constructorStandings": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/RaceConstructorStanding"
+          },
+          "description": "The constructor standings after the race."
+        }
+      },
+      "required": [
+        "id",
+        "year",
+        "round",
+        "date",
+        "time",
+        "grandPrixId",
+        "officialName",
+        "qualifyingFormat",
+        "sprintQualifyingFormat",
+        "circuitId",
+        "circuitType",
+        "direction",
+        "courseLength",
+        "turns",
+        "laps",
+        "distance",
+        "scheduledLaps",
+        "scheduledDistance",
+        "driversChampionshipDecider",
+        "constructorsChampionshipDecider",
+        "preQualifyingDate",
+        "preQualifyingTime",
+        "preQualifyingResults",
+        "freePractice1Date",
+        "freePractice1Time",
+        "freePractice1Results",
+        "freePractice2Date",
+        "freePractice2Time",
+        "freePractice2Results",
+        "freePractice3Date",
+        "freePractice3Time",
+        "freePractice3Results",
+        "freePractice4Date",
+        "freePractice4Time",
+        "freePractice4Results",
+        "qualifying1Date",
+        "qualifying1Time",
+        "qualifying1Results",
+        "qualifying2Date",
+        "qualifying2Time",
+        "qualifying2Results",
+        "qualifyingDate",
+        "qualifyingTime",
+        "qualifyingResults",
+        "sprintQualifyingDate",
+        "sprintQualifyingTime",
+        "sprintQualifyingResults",
+        "sprintStartingGridPositions",
+        "sprintRaceDate",
+        "sprintRaceTime",
+        "sprintRaceResults",
+        "warmingUpDate",
+        "warmingUpTime",
+        "warmingUpResults",
+        "startingGridPositions",
+        "raceResults",
+        "fastestLaps",
+        "pitStops",
+        "driverOfTheDayResults",
+        "driverStandings",
+        "constructorStandings"
+      ]
+    },
+    "PracticeResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order of the driver's position in the practice session."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the driver in the practice session."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DNP|DNPQ|DNQ|DNS|DNF|NC|DSQ|EX|PL$",
+          "description": "The textual representation of the driver's position in the practice session, including special statuses."
+        },
+        "driverNumber": {
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "description": "The car number of the driver."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "tyreManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the tyre manufacturer."
+        },
+        "time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The lap time recorded for the driver during the practice session."
+        },
+        "timeMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The lap time in milliseconds."
+        },
+        "gap": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The gap between the driver and the leader."
+        },
+        "gapMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The gap in milliseconds."
+        },
+        "interval": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The interval between the driver and the car ahead."
+        },
+        "intervalMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The interval in milliseconds."
+        },
+        "laps": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "The number of laps completed by the driver during the practice session."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "driverNumber",
+        "driverId",
+        "constructorId",
+        "engineManufacturerId",
+        "tyreManufacturerId",
+        "time",
+        "timeMillis",
+        "gap",
+        "gapMillis",
+        "interval",
+        "intervalMillis",
+        "laps"
+      ]
+    },
+    "QualifyingResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order of the driver's position in the qualifying session."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the driver in the qualifying session."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DNP|DNPQ|DNQ|DNS|DNF|NC|DSQ|EX|PL$",
+          "description": "The textual representation of the driver's position in the qualifying session, including special statuses."
+        },
+        "driverNumber": {
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "description": "The car number of the driver."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "tyreManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the tyre manufacturer."
+        },
+        "time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The lap time recorded for the driver during the qualifying session."
+        },
+        "timeMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The lap time in milliseconds."
+        },
+        "q1": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The Q1 lap time recorded for the driver during the qualifying session."
+        },
+        "q1Millis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The Q1 lap time in milliseconds."
+        },
+        "q2": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The Q2 lap time recorded for the driver during the qualifying session."
+        },
+        "q2Millis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The Q2 lap time in milliseconds."
+        },
+        "q3": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The Q3 lap time recorded for the driver during the qualifying session."
+        },
+        "q3Millis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The Q3 lap time in milliseconds."
+        },
+        "gap": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The gap between the driver and the leader."
+        },
+        "gapMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The gap in milliseconds."
+        },
+        "interval": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The interval between the driver and the car ahead."
+        },
+        "intervalMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The interval in milliseconds."
+        },
+        "laps": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "The number of laps completed by the driver during the qualifying session."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "driverNumber",
+        "driverId",
+        "constructorId",
+        "engineManufacturerId",
+        "tyreManufacturerId",
+        "time",
+        "timeMillis",
+        "q1",
+        "q1Millis",
+        "q2",
+        "q2Millis",
+        "q3",
+        "q3Millis",
+        "gap",
+        "gapMillis",
+        "interval",
+        "intervalMillis",
+        "laps"
+      ]
+    },
+    "StartingGridPosition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order of the driver's starting grid position."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical starting grid position."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DNP|DNPQ|DNQ|DNS|DNF|NC|DSQ|EX|PL$",
+          "description": "The textual representation of the starting grid position, including special statuses."
+        },
+        "driverNumber": {
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "description": "The car number of the driver."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "tyreManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the tyre manufacturer."
+        },
+        "qualificationPositionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position achieved in the qualification session."
+        },
+        "qualificationPositionText": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9]+|DNS|DNF|NC|DSQ|EX$",
+          "description": "The textual representation of the qualification position, including special statuses."
+        },
+        "gridPenalty": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9]+|SFB$",
+          "description": "The grid penalty applied, either as a number of positions or as 'SFB' (Start from Back) or 'PL' (Pit Lane)."
+        },
+        "gridPenaltyPositions": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "The number of grid positions lost due to penalties."
+        },
+        "time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The lap time recorded for the position."
+        },
+        "timeMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The lap time in milliseconds."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "driverNumber",
+        "driverId",
+        "constructorId",
+        "engineManufacturerId",
+        "tyreManufacturerId",
+        "qualificationPositionNumber",
+        "qualificationPositionText",
+        "gridPenalty",
+        "gridPenaltyPositions",
+        "time",
+        "timeMillis"
+      ]
+    },
+    "RaceResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order of the driver's position in the race."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical finishing position of the driver in the race."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DNP|DNPQ|DNQ|DNS|DNF|NC|DSQ|EX|PL$",
+          "description": "The textual representation of the driver's finishing position in the race."
+        },
+        "driverNumber": {
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "description": "The car number of the driver."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "tyreManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the tyre manufacturer."
+        },
+        "sharedCar": {
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether the driver shared the car with another driver."
+        },
+        "laps": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "The total number of laps completed by the driver."
+        },
+        "time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The race time recorded for the driver."
+        },
+        "timeMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The race time in milliseconds."
+        },
+        "timePenalty": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The time penalty imposed on the driver."
+        },
+        "timePenaltyMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The time penalty in milliseconds."
+        },
+        "gap": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The gap between the driver and the leader."
+        },
+        "gapMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The gap in milliseconds."
+        },
+        "gapLaps": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "The gap measured in laps between the driver and the leader."
+        },
+        "interval": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The interval between the driver and the car ahead."
+        },
+        "intervalMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The interval in milliseconds."
+        },
+        "reasonRetired": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The reason for the driver's retirement from the race, if applicable."
+        },
+        "points": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The points awarded to the driver for the race."
+        },
+        "polePosition": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "default": "false",
+          "description": "Whether the driver was awarded the pole position honour."
+        },
+        "qualificationPositionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position achieved in the qualification session."
+        },
+        "qualificationPositionText": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9]+|DNS|DNF|NC|DSQ|EX$",
+          "description": "The textual representation of the qualification position, including special statuses."
+        },
+        "gridPositionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical starting grid position."
+        },
+        "gridPositionText": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9]+|PL$",
+          "description": "The textual representation of the starting grid position, including special statuses."
+        },
+        "positionsGained": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The number of positions gained by the driver during the race."
+        },
+        "pitStops": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "The total number of pit stops made by the driver during the race."
+        },
+        "fastestLap": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "default": "false",
+          "description": "Whether the driver set the fastest lap during the race."
+        },
+        "driverOfTheDay": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "default": "false",
+          "description": "Whether the driver was voted Driver of the Day."
+        },
+        "grandSlam": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "default": "false",
+          "description": "Whether the driver achieved a Grand Slam, defined as pole position, fastest lap, and leading every lap of the race."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "driverNumber",
+        "driverId",
+        "constructorId",
+        "engineManufacturerId",
+        "tyreManufacturerId",
+        "sharedCar",
+        "laps",
+        "time",
+        "timeMillis",
+        "timePenalty",
+        "timePenaltyMillis",
+        "gap",
+        "gapMillis",
+        "gapLaps",
+        "interval",
+        "intervalMillis",
+        "reasonRetired",
+        "points",
+        "polePosition",
+        "qualificationPositionNumber",
+        "qualificationPositionText",
+        "gridPositionNumber",
+        "gridPositionText",
+        "positionsGained",
+        "pitStops",
+        "fastestLap",
+        "driverOfTheDay",
+        "grandSlam"
+      ]
+    },
+    "FastestLap": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order of the driver's position in the fastest laps."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the driver's position in the fastest laps."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DNP|DNPQ|DNQ|DNS|DNF|NC|DSQ|EX|PL$",
+          "description": "The textual representation of the driver's position in the fastest laps, including special statuses."
+        },
+        "driverNumber": {
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "description": "The car number of the driver."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "tyreManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the tyre manufacturer."
+        },
+        "lap": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "The lap number on which the driver recorded the fastest lap."
+        },
+        "time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The fastest lap time recorded for the driver."
+        },
+        "timeMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The lap time in milliseconds."
+        },
+        "gap": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The gap between the driver the top fastest lap."
+        },
+        "gapMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The gap in milliseconds."
+        },
+        "interval": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The interval between the driver and the previous fastest lap."
+        },
+        "intervalMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The interval in milliseconds."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "driverNumber",
+        "driverId",
+        "constructorId",
+        "engineManufacturerId",
+        "tyreManufacturerId",
+        "lap",
+        "time",
+        "timeMillis",
+        "gap",
+        "gapMillis",
+        "interval",
+        "intervalMillis"
+      ]
+    },
+    "PitStop": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The position display order of the pit stop."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the pit stop."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DNP|DNPQ|DNQ|DNS|DNF|NC|DSQ|EX|PL$",
+          "description": "The textual representation of the position of the pit stop, including special statuses."
+        },
+        "driverNumber": {
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "description": "The car number of the driver."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "tyreManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the tyre manufacturer."
+        },
+        "stop": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The number of the pit stop for the driver during the race."
+        },
+        "lap": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The lap number on which the pit stop occurred."
+        },
+        "time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The total time of the pit stop."
+        },
+        "timeMillis": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The total time in milliseconds."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "driverNumber",
+        "driverId",
+        "constructorId",
+        "engineManufacturerId",
+        "tyreManufacturerId",
+        "stop",
+        "lap",
+        "time",
+        "timeMillis"
+      ]
+    },
+    "DriverOfTheDayResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order of the driver's position in the Driver of the Day vote."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the driver's position in the Driver of the Day vote."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DNP|DNPQ|DNQ|DNS|DNF|NC|DSQ|EX|PL$",
+          "description": "The textual representation of the driver's position in the Driver of the Day vote, including special statuses."
+        },
+        "driverNumber": {
+          "type": "string",
+          "pattern": "^[0-9]+$",
+          "description": "The car number of the driver."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "tyreManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the tyre manufacturer."
+        },
+        "percentage": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "The percentage of votes received by the driver."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "driverNumber",
+        "driverId",
+        "constructorId",
+        "engineManufacturerId",
+        "tyreManufacturerId",
+        "percentage"
+      ]
+    },
+    "RaceDriverStanding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order of the driver's position in the standings."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the driver in the standings."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DSQ|EX$",
+          "description": "The textual representation of the driver's position in the standings, including special statuses."
+        },
+        "driverId": {
+          "type": "string",
+          "description": "The identifier of the driver."
+        },
+        "points": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The total number of points determining the driver's position in the standings."
+        },
+        "positionsGained": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The positions gained in the standings since the previous race."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "driverId",
+        "points",
+        "positionsGained"
+      ]
+    },
+    "RaceConstructorStanding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positionDisplayOrder": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The display order for the constructor's position in the standings."
+        },
+        "positionNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "description": "The numerical position of the constructor in the standings."
+        },
+        "positionText": {
+          "type": "string",
+          "pattern": "^[0-9]+|DSQ|EX$",
+          "description": "The textual representation of the constructor's position in the standings, including special statuses."
+        },
+        "constructorId": {
+          "type": "string",
+          "description": "The identifier of the constructor."
+        },
+        "engineManufacturerId": {
+          "type": "string",
+          "description": "The identifier of the engine manufacturer."
+        },
+        "points": {
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 0.01,
+          "description": "The points."
+        },
+        "positionsGained": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "The total number of points determining the constructor's position in the standings."
+        }
+      },
+      "required": [
+        "positionDisplayOrder",
+        "positionNumber",
+        "positionText",
+        "constructorId",
+        "engineManufacturerId",
+        "points",
+        "positionsGained"
+      ]
+    },
+    "Continent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the continent."
+        },
+        "code": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2,
+          "pattern": "^[A-Z]{2}$",
+          "description": "The unique code of the continent."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the continent."
+        },
+        "demonym": {
+          "type": "string",
+          "description": "The demonym used for people from the continent."
+        }
+      },
+      "required": [
+        "id",
+        "code",
+        "name",
+        "demonym"
+      ]
+    },
+    "Country": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the country."
+        },
+        "alpha2Code": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2,
+          "pattern": "^[A-Z]{2}$",
+          "description": "The unique ISO 3166-1 alpha-2 code of the country."
+        },
+        "alpha3Code": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "^[A-Z]{3}$",
+          "description": "The unique ISO 3166-1 alpha-3 code of the country."
+        },
+        "iocCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 3,
+          "maxLength": 3,
+          "pattern": "^[A-Z]{3}$",
+          "description": "The unique International Olympic Committee (IOC) code of the country."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the country."
+        },
+        "demonym": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The demonym for citizens of the country."
+        },
+        "continentId": {
+          "type": "string",
+          "description": "The identifier for the continent where the country is located."
+        }
+      },
+      "required": [
+        "id",
+        "alpha2Code",
+        "alpha3Code",
+        "iocCode",
+        "name",
+        "demonym",
+        "continentId"
+      ]
+    },
+    "CircuitType": {
+      "type": "string",
+      "enum": [
+        "RACE",
+        "ROAD",
+        "STREET"
+      ],
+      "description": "The circuit type."
+    },
+    "Direction": {
+      "type": "string",
+      "enum": [
+        "CLOCKWISE",
+        "ANTI_CLOCKWISE"
+      ],
+      "description": "The circuit direction."
+    },
+    "Gender": {
+      "type": "string",
+      "enum": [
+        "MALE",
+        "FEMALE"
+      ],
+      "description": "The gender."
+    },
+    "FamilyRelationshipType": {
+      "type": "string",
+      "enum": [
+        "PARENT",
+        "PARENT_IN_LAW",
+        "CHILD",
+        "CHILD_IN_LAW",
+        "SPOUSE",
+        "SIBLING",
+        "SIBLING_IN_LAW",
+        "HALF_SIBLING",
+        "GRANDPARENT",
+        "GRANDCHILD",
+        "PARENTS_SIBLING",
+        "PARENTS_SIBLINGS_CHILD",
+        "SIBLINGS_CHILD",
+        "SIBLINGS_CHILD_IN_LAW",
+        "SIBLINGS_GRANDCHILD",
+        "GRANDPARENTS_SIBLING"
+      ],
+      "description": "The family relationship type."
+    },
+    "EngineConfiguration": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "F4",
+        "F8",
+        "F12",
+        "H16",
+        "L4",
+        "L6",
+        "L8",
+        "V2",
+        "V6",
+        "V8",
+        "V10",
+        "V12",
+        "V16",
+        "W12",
+        null
+      ],
+      "description": "The engine configuration."
+    },
+    "EngineAspiration": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "NATURALLY_ASPIRATED",
+        "SUPERCHARGED",
+        "TURBOCHARGED",
+        "TURBOCHARGED_HYBRID",
+        null
+      ],
+      "description": "The engine aspiration."
+    },
+    "QualifyingFormat": {
+      "type": "string",
+      "enum": [
+        "FOUR_LAPS",
+        "TWO_SESSION",
+        "ONE_SESSION",
+        "ONE_LAP",
+        "AGGREGATE",
+        "KNOCKOUT",
+        "ELIMINATION",
+        "SPRINT_RACE"
+      ],
+      "description": "The qualifying format."
+    },
+    "SprintQualifyingFormat": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "SPRINT_SHOOTOUT",
+        null
+      ],
+      "description": "The sprint qualifying format."
+    }
+  }
+}

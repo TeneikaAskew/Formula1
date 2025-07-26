@@ -19,7 +19,11 @@
       "Bash(source:*)",
       "Bash(touch:*)",
       "Bash(jupyter nbconvert:*)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(for f in f1db-*.csv)",
+      "Bash(do mv \"$f\" \"$f#f1db-\")",
+      "Bash(done)",
+      "WebFetch(domain:www.visualcrossing.com)"
     ],
     "deny": []
   }

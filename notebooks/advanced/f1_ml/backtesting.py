@@ -40,10 +40,28 @@ def prepare_backtest_data(results, races, drivers, constructors, qualifying=None
     pd.DataFrame
         Prepared backtest data
     """
-    # Merge core data
-    df = results.merge(races[['raceId', 'year', 'round', 'circuitId', 'date', 'name']], on='raceId')
-    df = df.merge(drivers[['driverId', 'surname']], on='driverId')
-    df = df.merge(constructors[['constructorId', 'name']], on='constructorId', suffixes=('', '_constructor'))
+    # Start with results data
+    df = results.copy()
+    
+    # Merge with races data (avoiding duplicate columns)
+    race_cols = ['raceId', 'circuitId', 'date', 'name']
+    if 'year' not in df.columns:
+        race_cols.append('year')
+    if 'round' not in df.columns:
+        race_cols.append('round')
+    
+    # Only select columns that exist in races
+    available_race_cols = [col for col in race_cols if col in races.columns]
+    if available_race_cols:
+        df = df.merge(races[available_race_cols], on='raceId', how='left', suffixes=('', '_race'))
+    
+    # Merge with drivers
+    if 'surname' in drivers.columns:
+        df = df.merge(drivers[['driverId', 'surname']], on='driverId', how='left')
+    
+    # Merge with constructors
+    if 'name' in constructors.columns:
+        df = df.merge(constructors[['constructorId', 'name']], on='constructorId', how='left', suffixes=('', '_constructor'))
     
     # Rename constructor name column
     if 'name_constructor' in df.columns:
@@ -275,7 +293,7 @@ class F1BacktestEngine:
                 combined_prob = np.prod(top_picks['true_prob'])
                 
                 # Calculate bet size (simplified Kelly)
-                from ..optimization import PrizePicksBetTypes
+                from .optimization import PrizePicksBetTypes
                 payout = PrizePicksBetTypes.PAYOUTS[n_picks]
                 bet_size = min(self.bankroll * 0.05, 50)  # Max 5% or $50
                 

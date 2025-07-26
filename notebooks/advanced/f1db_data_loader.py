@@ -21,6 +21,7 @@ from datetime import datetime
 import hashlib
 import logging
 import traceback
+import sys
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -138,9 +139,7 @@ class F1DBDataLoader:
             possible_names = [
                 table_name,
                 table_name.replace('_', '-'),
-                table_name.replace('-', '_'),
-                f"f1db-{table_name}",
-                f"f1db_{table_name}"
+                table_name.replace('-', '_')
             ]
             
             for name in possible_names:
@@ -261,6 +260,14 @@ class F1DBDataLoader:
             # Clean up zip file
             zip_path.unlink()
             
+            # Rename files to remove f1db- prefix
+            print("Renaming files to remove f1db- prefix...")
+            for file_path in self.data_dir.glob("f1db-*.csv"):
+                new_name = file_path.name[5:]  # Remove 'f1db-' prefix
+                new_path = file_path.parent / new_name
+                file_path.rename(new_path)
+                print(f"  Renamed {file_path.name} to {new_name}")
+            
             # Save version marker
             with open(marker_file, 'w') as f:
                 f.write(latest_version)
@@ -295,11 +302,8 @@ class F1DBDataLoader:
         if validate:
             self.download_schema()
         
-        # Load all CSV files (try with f1db- prefix first)
-        csv_files = list(self.data_dir.glob("f1db-*.csv"))
-        if not csv_files:
-            # Fallback to files without prefix
-            csv_files = list(self.data_dir.glob("*.csv"))
+        # Load all CSV files
+        csv_files = list(self.data_dir.glob("*.csv"))
             
         if not csv_files:
             raise FileNotFoundError("No CSV files found. Data may not be downloaded correctly.")
@@ -308,11 +312,9 @@ class F1DBDataLoader:
         validation_summary = {'valid': 0, 'warnings': 0, 'errors': 0}
         
         for csv_file in csv_files:
-            # Get the table name, removing f1db- prefix if present
+            # Get the table name
             table_name = csv_file.stem
             original_table_name = table_name
-            if table_name.startswith('f1db-'):
-                table_name = table_name[5:]  # Remove 'f1db-' prefix
             
             # Replace dashes with underscores for consistency
             table_name = table_name.replace('-', '_')
@@ -346,7 +348,7 @@ class F1DBDataLoader:
         
         return dataframes
     
-    def get_core_datasets(self) -> Dict[str, pd.DataFrame]:
+    def get_core_datasets(self, fix_columns: bool = True) -> Dict[str, pd.DataFrame]:
         """Get the core datasets commonly used for analysis"""
         all_data = self.load_csv_data()
         
@@ -411,6 +413,11 @@ class F1DBDataLoader:
                 results_df['positionOrder'] = results_df['positionNumber']
                 core_data['results'] = results_df
                 print("  → Added positionOrder column to results for compatibility")
+        
+        # Apply column mappings if requested
+        if fix_columns:
+            core_data = self.fix_column_mappings(core_data)
+            print("  → Applied column mappings for ML pipeline compatibility")
         
         return core_data
     
@@ -509,17 +516,19 @@ class F1DBDataLoader:
                 logger.info(f"  - {item.name} {'(dir)' if item.is_dir() else ''}")
             
             # Check for CSV files in subdirectories
-            csv_path = self.data_dir / "f1db-csv"
+            csv_path = self.data_dir / "csv"
             if csv_path.exists():
                 csv_files = list(csv_path.glob("*.csv"))
                 logger.info(f"Found {len(csv_files)} CSV files in {csv_path}")
                 
                 # Move CSV files to main data directory if needed
                 for csv_file in csv_files:
-                    dest = self.data_dir / csv_file.name
+                    # Remove f1db- prefix if present
+                    dest_name = csv_file.name[5:] if csv_file.name.startswith('f1db-') else csv_file.name
+                    dest = self.data_dir / dest_name
                     if not dest.exists():
                         csv_file.rename(dest)
-                        logger.info(f"Moved {csv_file.name} to data directory")
+                        logger.info(f"Moved {csv_file.name} to {dest_name}")
             
             # Check for any remaining zip files
             zip_files = list(self.data_dir.glob("*.zip"))
@@ -564,9 +573,8 @@ class F1DBDataLoader:
             # Try different naming conventions
             possible_names = [
                 dataset_name,
-                f'f1db-{dataset_name}',
-                f'f1db-races-{dataset_name}',
-                f'f1db-races-race-{dataset_name}',
+                f'races-{dataset_name}',
+                f'races-race-{dataset_name}',
                 f'races_race_{dataset_name}',
                 f'races_{dataset_name}'
             ]
@@ -724,6 +732,279 @@ class F1DBDataLoader:
         
         return validation_results
     
+    def fix_column_mappings(self, data: Dict[str, pd.DataFrame]) -> Dict[str, pd.DataFrame]:
+        """
+        Fix column mappings to ensure compatibility with ML pipeline
+        
+        Args:
+            data: Dictionary of DataFrames from F1DB
+            
+        Returns:
+            Dictionary with fixed column mappings
+        """
+        # Fix results columns
+        if 'results' in data:
+            df = data['results']
+            
+            # Map grid column
+            if 'grid' not in df.columns and 'gridPositionNumber' in df.columns:
+                df['grid'] = df['gridPositionNumber']
+                
+            # Map position column
+            if 'position' not in df.columns and 'positionNumber' in df.columns:
+                df['position'] = df['positionNumber']
+                
+            # Create statusId from reasonRetired
+            if 'statusId' not in df.columns and 'reasonRetired' in df.columns:
+                # Map common retirement reasons to status IDs
+                status_mapping = {
+                    'Finished': 1,
+                    'Accident': 2,
+                    'Collision': 3,
+                    'Engine': 4,
+                    'Gearbox': 5,
+                    'Transmission': 6,
+                    'Clutch': 7,
+                    'Hydraulics': 8,
+                    'Electrical': 9,
+                    '+1 Lap': 11,
+                    '+2 Laps': 12,
+                    '+3 Laps': 13,
+                    '+4 Laps': 14,
+                    '+5 Laps': 15,
+                    '+6 Laps': 16,
+                    '+7 Laps': 17,
+                    '+8 Laps': 18,
+                    '+9 Laps': 19,
+                    'Spun off': 20,
+                    'Radiator': 21,
+                    'Suspension': 22,
+                    'Brakes': 23,
+                    'Differential': 24,
+                    'Overheating': 25,
+                    'Mechanical': 26,
+                    'Tyre': 27,
+                    'Driver Seat': 28,
+                    'Puncture': 29,
+                    'Disqualified': 30,
+                    'Wheel': 31,
+                    'Fuel system': 32,
+                    'Throttle': 33,
+                    'Steering': 34,
+                    'Technical': 35,
+                    'Electronics': 36,
+                    'Broken wing': 37,
+                    'Heat shield fire': 38,
+                    'Exhaust': 39,
+                    'Oil leak': 40
+                }
+                
+                # Create statusId column
+                df['statusId'] = df['reasonRetired'].fillna('Finished').map(
+                    lambda x: status_mapping.get(x, 50)  # 50 for unknown
+                )
+                
+            # Create status column if missing
+            if 'status' not in df.columns:
+                df['status'] = df['reasonRetired'].fillna('Finished')
+                
+            # Add DNF indicator
+            df['dnf'] = (df['statusId'] > 1).astype(int)
+            
+            # Add win, podium, points columns
+            df['win'] = (df['positionOrder'] == 1).astype(int)
+            df['podium'] = (df['positionOrder'] <= 3).astype(int)
+            df['points_finish'] = (df['points'] > 0).astype(int)
+            
+            # Map race_id to raceId if needed
+            if 'raceId' not in df.columns and 'race_id' in df.columns:
+                df['raceId'] = df['race_id']
+                
+            # Map driver_id to driverId if needed
+            if 'driverId' not in df.columns and 'driver_id' in df.columns:
+                df['driverId'] = df['driver_id']
+                
+            # Map constructor_id to constructorId if needed
+            if 'constructorId' not in df.columns and 'constructor_id' in df.columns:
+                df['constructorId'] = df['constructor_id']
+                
+            # Ensure we save the changes
+            data['results'] = df
+            
+        # Fix races columns
+        if 'races' in data:
+            df = data['races']
+            
+            # Map id to raceId
+            if 'raceId' not in df.columns and 'id' in df.columns:
+                df['raceId'] = df['id']
+                
+            # Map officialName to name
+            if 'name' not in df.columns and 'officialName' in df.columns:
+                df['name'] = df['officialName']
+                
+            # Ensure we have the columns we need
+            data['races'] = df
+                
+        # Fix drivers columns
+        if 'drivers' in data:
+            df = data['drivers']
+            
+            # Map id to driverId
+            if 'driverId' not in df.columns and 'id' in df.columns:
+                df['driverId'] = df['id']
+                
+            # Map names
+            if 'forename' not in df.columns and 'firstName' in df.columns:
+                df['forename'] = df['firstName']
+                
+            if 'surname' not in df.columns and 'lastName' in df.columns:
+                df['surname'] = df['lastName']
+                
+            if 'driverRef' not in df.columns and 'abbreviation' in df.columns:
+                df['driverRef'] = df['abbreviation']
+                
+            if 'code' not in df.columns and 'abbreviation' in df.columns:
+                df['code'] = df['abbreviation']
+                
+            if 'dob' not in df.columns and 'dateOfBirth' in df.columns:
+                df['dob'] = df['dateOfBirth']
+                
+            if 'nationality' not in df.columns and 'nationalityCountryId' in df.columns:
+                df['nationality'] = df['nationalityCountryId']
+                
+            if 'number' not in df.columns and 'permanentNumber' in df.columns:
+                df['number'] = df['permanentNumber']
+                
+            # Ensure we save the changes
+            data['drivers'] = df
+                
+        # Fix constructors columns
+        if 'constructors' in data:
+            df = data['constructors']
+            
+            # Map id to constructorId
+            if 'constructorId' not in df.columns and 'id' in df.columns:
+                df['constructorId'] = df['id']
+                
+            if 'constructorRef' not in df.columns and 'name' in df.columns:
+                df['constructorRef'] = df['name']
+                
+            if 'nationality' not in df.columns and 'countryId' in df.columns:
+                df['nationality'] = df['countryId']
+                
+            # Ensure we save the changes
+            data['constructors'] = df
+                
+        return data
+    
+    def merge_race_data(self, data: Dict[str, pd.DataFrame]) -> pd.DataFrame:
+        """
+        Merge race-related data into a single DataFrame for analysis
+        
+        Args:
+            data: Dictionary of DataFrames from F1DB
+            
+        Returns:
+            Merged DataFrame with race results and related data
+        """
+        # Start with results
+        if 'results' not in data:
+            raise ValueError("No results data found")
+            
+        df = data['results'].copy()
+        
+        # Merge with races
+        if 'races' in data:
+            races_cols = ['raceId', 'year', 'round', 'circuitId', 'name', 'date']
+            races_data = data['races'][races_cols].drop_duplicates(subset=['raceId'])
+            df = df.merge(races_data, on='raceId', how='left', suffixes=('', '_race'))
+            
+            # Handle duplicate columns
+            if 'year_race' in df.columns:
+                df['year'] = df['year'].fillna(df['year_race'])
+                df.drop('year_race', axis=1, inplace=True)
+                
+            if 'round_race' in df.columns:
+                df['round'] = df['round'].fillna(df['round_race'])
+                df.drop('round_race', axis=1, inplace=True)
+        
+        # Merge with drivers
+        if 'drivers' in data:
+            driver_cols = ['driverId', 'forename', 'surname', 'dob', 'nationality', 'driverRef']
+            driver_data = data['drivers'][driver_cols].drop_duplicates(subset=['driverId'])
+            df = df.merge(driver_data, on='driverId', how='left')
+            
+            # Calculate driver age at race time
+            if 'date' in df.columns and 'dob' in df.columns:
+                df['date'] = pd.to_datetime(df['date'])
+                df['dob'] = pd.to_datetime(df['dob'])
+                df['driver_age'] = (df['date'] - df['dob']).dt.days / 365.25
+        
+        # Merge with constructors
+        if 'constructors' in data:
+            const_cols = ['constructorId', 'name', 'nationality']
+            const_data = data['constructors'][const_cols].drop_duplicates(subset=['constructorId'])
+            const_data.columns = ['constructorId', 'constructor_name', 'constructor_nationality']
+            df = df.merge(const_data, on='constructorId', how='left')
+            
+        # Sort by race and finishing position
+        df = df.sort_values(['raceId', 'positionOrder'])
+        
+        return df
+    
+    def get_recent_results(self, data: Dict[str, pd.DataFrame], n_years: int = 5) -> pd.DataFrame:
+        """
+        Get recent race results for analysis
+        
+        Args:
+            data: Dictionary of DataFrames from F1DB
+            n_years: Number of recent years to include
+            
+        Returns:
+            DataFrame with recent results
+        """
+        df = self.merge_race_data(data)
+        
+        # Filter to recent years
+        if 'year' in df.columns:
+            max_year = df['year'].max()
+            min_year = max_year - n_years + 1
+            df = df[df['year'] >= min_year]
+        
+        return df
+    
+    def calculate_driver_stats(self, results_df: pd.DataFrame, driver_id: str) -> Dict:
+        """
+        Calculate driver statistics from results
+        
+        Args:
+            results_df: DataFrame with race results
+            driver_id: Driver ID to calculate stats for
+            
+        Returns:
+            Dictionary of driver statistics
+        """
+        driver_results = results_df[results_df['driverId'] == driver_id]
+        
+        if len(driver_results) == 0:
+            return {}
+        
+        stats = {
+            'driverId': driver_id,
+            'races': len(driver_results),
+            'wins': (driver_results['positionOrder'] == 1).sum(),
+            'podiums': (driver_results['positionOrder'] <= 3).sum(),
+            'points': driver_results['points'].sum(),
+            'dnf_rate': driver_results['dnf'].mean() if 'dnf' in driver_results else 0,
+            'avg_position': driver_results['positionOrder'].mean(),
+            'avg_grid': driver_results['grid'].mean() if 'grid' in driver_results else None,
+            'best_result': driver_results['positionOrder'].min(),
+            'points_finishes': (driver_results['points'] > 0).sum()
+        }
+        
+        return stats
+    
     def print_data_summary(self) -> None:
         """
         Print a comprehensive summary of the F1DB data
@@ -781,10 +1062,81 @@ class F1DBDataLoader:
         for table, stats in validation['statistics'].items():
             print(f"  - {table}: {stats['row_count']:,} rows, "
                   f"{stats['null_percentage']:.1f}% null values")
+    
+    def test_data_loading(self) -> None:
+        """
+        Test data loading to understand actual data structure
+        """
+        print("Testing F1DB data loading...")
+        print("=" * 60)
+        
+        # Load data
+        data = self.get_core_datasets()
+        
+        if data:
+            print(f"\nLoaded {len(data)} datasets:")
+            for name, df in data.items():
+                if hasattr(df, 'shape'):
+                    print(f"  - {name}: {df.shape[0]} rows, {df.shape[1]} columns")
+                    if hasattr(df, 'columns'):
+                        print(f"    Columns: {', '.join(df.columns[:5])}{', ...' if len(df.columns) > 5 else ''}")
+                else:
+                    print(f"  - {name}: {type(df)}")
+        else:
+            print("\nNo data loaded. Checking for existing data files...")
+            
+            # Check what files exist
+            possible_paths = [
+                Path("../../data/f1db"),
+                Path("../data/f1db"),
+                Path("data/f1db"),
+                Path("./data/f1db"),
+                Path("/workspace/data/f1db")
+            ]
+            
+            for path in possible_paths:
+                if path.exists():
+                    print(f"\nChecking {path}:")
+                    # List CSV files
+                    csv_files = list(path.glob("*.csv"))
+                    if csv_files:
+                        print(f"  Found {len(csv_files)} CSV files:")
+                        for f in csv_files[:10]:  # Show first 10
+                            print(f"    - {f.name}")
+                    else:
+                        print("  No CSV files found")
+                        # Check subdirectories
+                        subdirs = [d for d in path.iterdir() if d.is_dir()]
+                        if subdirs:
+                            print(f"  Subdirectories: {', '.join(d.name for d in subdirs)}")
+        
+        # Test the data loader directly
+        print("\n" + "=" * 60)
+        print("Testing F1DBDataLoader directly...")
+        
+        print(f"Data directory: {self.data_dir}")
+        
+        # Check if data needs to be downloaded
+        data_path = self.data_dir / "csv"
+        if not data_path.exists():
+            print("\nF1DB data not found locally. Would need to download.")
+            print("Run: loader.download_latest_data() to fetch data")
+        else:
+            print(f"\nData found at: {data_path}")
+            csv_files = list(data_path.glob("*.csv"))
+            print(f"Found {len(csv_files)} CSV files")
+            
+            if csv_files:
+                # Try loading a sample file
+                sample_file = csv_files[0]
+                print(f"\nSample file: {sample_file.name}")
+                df = pd.read_csv(sample_file)
+                print(f"Shape: {df.shape}")
+                print(f"Columns: {', '.join(df.columns[:5])}{', ...' if len(df.columns) > 5 else ''}")
 
 
 # Convenience function for notebook usage
-def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_download: bool = False, validate: bool = True, fix_issues: bool = False) -> Dict[str, pd.DataFrame]:
+def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_download: bool = False, validate: bool = True, fix_issues: bool = False, fix_columns: bool = True) -> Dict[str, pd.DataFrame]:
     """
     Load F1DB data with a simple function call
     
@@ -794,6 +1146,7 @@ def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_do
         force_download: Force re-download of data
         validate: Validate data against schema
         fix_issues: Attempt to fix any data download/extraction issues
+        fix_columns: Apply column mappings for ML pipeline compatibility
         
     Returns:
         Dictionary of DataFrames with F1 data
@@ -812,8 +1165,39 @@ def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_do
     else:
         loader.download_latest_data(force=force_download)
     
-    return loader.get_core_datasets()
+    return loader.get_core_datasets(fix_columns=fix_columns)
 
+
+# Additional convenience functions from data_utils
+def fix_column_mappings(data: Dict[str, pd.DataFrame]) -> Dict[str, pd.DataFrame]:
+    """Convenience function that uses the loader's fix_column_mappings method"""
+    loader = F1DBDataLoader()
+    return loader.fix_column_mappings(data)
+
+def merge_race_data(data: Dict[str, pd.DataFrame]) -> pd.DataFrame:
+    """Convenience function that uses the loader's merge_race_data method"""
+    loader = F1DBDataLoader()
+    return loader.merge_race_data(data)
+
+def get_recent_results(data: Dict[str, pd.DataFrame], n_years: int = 5) -> pd.DataFrame:
+    """Convenience function that uses the loader's get_recent_results method"""
+    loader = F1DBDataLoader()
+    return loader.get_recent_results(data, n_years)
+
+def calculate_driver_stats(results_df: pd.DataFrame, driver_id: str) -> Dict:
+    """Convenience function that uses the loader's calculate_driver_stats method"""
+    loader = F1DBDataLoader()
+    return loader.calculate_driver_stats(results_df, driver_id)
+
+# Export key functions and classes
+__all__ = [
+    'F1DBDataLoader',
+    'load_f1db_data',
+    'fix_column_mappings',
+    'merge_race_data',
+    'get_recent_results',
+    'calculate_driver_stats'
+]
 
 # Example usage in notebooks:
 # from f1db_data_loader import load_f1db_data
@@ -862,3 +1246,9 @@ if __name__ == "__main__":
     if 'races' in data:
         print(f"\nSample races data:")
         print(data['races'].head())
+    
+    # Test data loading functionality
+    print("\n" + "=" * 80)
+    print("TESTING DATA LOADING")
+    print("=" * 80)
+    loader.test_data_loading()
