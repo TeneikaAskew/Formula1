@@ -265,8 +265,14 @@ class F1DBDataLoader:
             for file_path in self.data_dir.glob("f1db-*.csv"):
                 new_name = file_path.name[5:]  # Remove 'f1db-' prefix
                 new_path = file_path.parent / new_name
-                file_path.rename(new_path)
-                print(f"  Renamed {file_path.name} to {new_name}")
+                # Only rename if target doesn't exist
+                if not new_path.exists():
+                    file_path.rename(new_path)
+                    print(f"  Renamed {file_path.name} to {new_name}")
+                else:
+                    # If target exists, remove the f1db- prefixed file
+                    file_path.unlink()
+                    print(f"  Removed {file_path.name} (target {new_name} already exists)")
             
             # Save version marker
             with open(marker_file, 'w') as f:
@@ -1205,50 +1211,60 @@ __all__ = [
 # races_df = data['races']
 # drivers_df = data['drivers']
 
+def main():
+    """Command line interface for F1DB Data Loader"""
+    import sys
+    
+    if len(sys.argv) > 1:
+        command = sys.argv[1]
+    else:
+        command = "summary"
+    
+    loader = F1DBDataLoader()
+    
+    if command == "check":
+        print("Checking data structure...")
+        loader.check_data_structure()
+    elif command == "validate":
+        print("Validating data integrity...")
+        loader.validate_data_integrity()
+    elif command == "summary":
+        print("Data summary:")
+        loader.print_data_summary()
+    elif command == "fix":
+        print("Fixing data issues...")
+        data = load_f1db_data(fix_issues=True)
+        print(f"Data loaded and fixed: {len(data)} datasets")
+    elif command == "load":
+        print("Loading all data...")
+        data = load_f1db_data()
+        print(f"\nLoaded datasets:")
+        for name, df in data.items():
+            print(f"  - {name}: {len(df)} rows")
+    elif command == "download":
+        print("Downloading latest F1DB data...")
+        loader.download_latest_data(force=True)
+        print("Download complete!")
+    elif command == "version":
+        current = loader.get_current_version()
+        latest = loader.get_latest_version()
+        print(f"Current version: {current}")
+        print(f"Latest version: {latest}")
+        if current != latest:
+            print("Update available! Run 'python f1db_data_loader.py download' to update")
+    else:
+        print("Usage: python f1db_data_loader.py [check|validate|summary|fix|load|download|version]")
+        print()
+        print("Commands:")
+        print("  check     - Check data structure and columns")
+        print("  validate  - Validate data integrity")
+        print("  summary   - Print comprehensive data summary")
+        print("  fix       - Load data and fix any issues")
+        print("  load      - Load all datasets and show counts")
+        print("  download  - Download latest F1DB data")
+        print("  version   - Check current vs latest version")
+
+
 # Test functionality if run directly
 if __name__ == "__main__":
-    print("\nTesting F1DB data loader with enhanced functionality...")
-    
-    # Show where data will be saved
-    current_file = Path(__file__).resolve()
-    project_root = current_file.parent.parent.parent
-    default_data_dir = project_root / "data" / "f1db"
-    print(f"Default data directory: {default_data_dir}")
-    
-    # Initialize loader
-    loader = F1DBDataLoader(str(default_data_dir))
-    
-    # Test schema loading
-    print("\nTesting schema functionality...")
-    schema = loader.download_schema()
-    print(f"Schema loaded: {'definitions' in schema}")
-    
-    # Load data with validation
-    data = load_f1db_data(validate=True)
-    print(f"\nSuccessfully loaded {len(data)} datasets!")
-    print("\nAvailable datasets:")
-    for name in sorted(data.keys()):
-        print(f"  - {name}: {len(data[name])} rows")
-    
-    # Show sample table info
-    print("\nSample table information:")
-    loader.print_table_info('races')
-    
-    # Test new functionality
-    print("\n" + "=" * 80)
-    print("TESTING NEW FUNCTIONALITY")
-    print("=" * 80)
-    
-    # Print comprehensive data summary
-    loader.print_data_summary()
-    
-    # Show sample of races data
-    if 'races' in data:
-        print(f"\nSample races data:")
-        print(data['races'].head())
-    
-    # Test data loading functionality
-    print("\n" + "=" * 80)
-    print("TESTING DATA LOADING")
-    print("=" * 80)
-    loader.test_data_loading()
+    main()
