@@ -36,13 +36,51 @@ REM Install Jupyter kernel
 echo Installing Jupyter kernel...
 python -m ipykernel install --user --name=f1-venv --display-name="F1 Project (venv)"
 
+REM Create helper scripts in the virtual environment
+echo.
+echo Creating helper scripts...
+
+REM Create activate_and_cd.bat
+(
+echo @echo off
+echo REM Activate venv and navigate to notebooks/advanced
+echo call "%%~dp0activate.bat"
+echo cd /d "%%~dp0..\..\notebooks\advanced" 2^>nul
+echo echo Virtual environment activated and moved to notebooks/advanced
+) > .venv\Scripts\activate_and_cd.bat
+
+REM Create run_weather_fetch.bat
+(
+echo @echo off
+echo REM Run weather fetch script with venv Python
+echo "%%~dp0python.exe" "%%~dp0..\..\notebooks\advanced\fetch_weather_data.py" %%*
+) > .venv\Scripts\run_weather_fetch.bat
+
+REM Create run_pipeline.bat
+(
+echo @echo off
+echo REM Run F1 pipeline with venv Python
+echo "%%~dp0python.exe" "%%~dp0..\..\notebooks\advanced\run_f1_pipeline.py" %%*
+) > .venv\Scripts\run_pipeline.bat
+
 echo.
 echo ========================================
 echo Virtual environment created successfully!
 echo ========================================
 echo.
+echo Helper scripts created in .venv\Scripts\:
+echo   activate_and_cd.bat     - Activates venv and moves to notebooks/advanced
+echo   run_weather_fetch.bat   - Runs weather fetch script directly
+echo   run_pipeline.bat        - Runs F1 pipeline directly
+echo.
 echo To activate the environment manually, run:
 echo   .venv\Scripts\activate.bat
+echo   OR
+echo   .venv\Scripts\activate_and_cd.bat
+echo.
+echo To run scripts directly without activation:
+echo   .venv\Scripts\run_weather_fetch.bat --status
+echo   .venv\Scripts\run_pipeline.bat
 echo.
 echo In VS Code:
 echo 1. Press Ctrl+Shift+P to open command palette
