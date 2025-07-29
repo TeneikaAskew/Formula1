@@ -65,7 +65,7 @@ jobs:
         VISUAL_CROSSING_API_KEY: ${{ secrets.VISUAL_CROSSING_API_KEY }}
       run: |
         cd notebooks/advanced
-        python -c "
+        cat > check_api.py << 'EOF'
         import requests
         import os
         
@@ -94,7 +94,8 @@ jobs:
         except Exception as e:
             print(f'Error checking API: {e}')
             print('api_available=false')
-        " >> $GITHUB_OUTPUT
+        EOF
+        python check_api.py >> $GITHUB_OUTPUT
     
     - name: Fetch weather data
       if: steps.api_check.outputs.api_available == 'true'
@@ -112,24 +113,29 @@ jobs:
         
         echo "Fetching weather data for year: $YEAR"
         
-        python -c "
+        cat > fetch_weather.py << 'EOF'
         import sys
         sys.path.append('.')
         from fetch_weather_data import main
         import os
         
-        # Set the API key
-        os.environ['VISUAL_CROSSING_API_KEY'] = '${{ secrets.VISUAL_CROSSING_API_KEY }}'
+        # Get year from environment
+        year = int(os.environ.get('YEAR', '2024'))
+        force_update = os.environ.get('FORCE_UPDATE', 'false').lower() == 'true'
         
         # Run the weather fetcher
-        main(year=$YEAR, force_update=${{ github.event.inputs.force_update || 'false' }})
-        "
+        main(year=year, force_update=force_update)
+        EOF
+        
+        export YEAR=$YEAR
+        export FORCE_UPDATE=${{ github.event.inputs.force_update || 'false' }}
+        python fetch_weather.py
     
     - name: Generate weather report
       if: steps.api_check.outputs.api_available == 'true'
       run: |
         cd notebooks/advanced
-        python -c "
+        cat > generate_report.py << 'EOF'
         import pandas as pd
         from pathlib import Path
         import json
@@ -163,7 +169,8 @@ jobs:
             print(f'  Wet races: {len(wet_races)}')
         else:
             print('No weather cache found')
-        "
+        EOF
+        python generate_report.py
     
     - name: Upload weather data
       if: steps.api_check.outputs.api_available == 'true'
@@ -213,15 +220,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: 'Visual Crossing API Key Required',
-              body: `The weather data fetching workflow requires a Visual Crossing API key.
-              
-Please:
-1. Sign up for a free account at https://www.visualcrossing.com/
-2. Get your API key from the account dashboard
-3. Add it as a repository secret named \`VISUAL_CROSSING_API_KEY\`
-4. Re-run this workflow
-
-The free tier provides 1000 API calls per day, which is sufficient for fetching F1 race weather data.`,
+              body: `The weather data fetching workflow requires a Visual Crossing API key.\n\nPlease:\n1. Sign up for a free account at https://www.visualcrossing.com/\n2. Get your API key from the account dashboard\n3. Add it as a repository secret named \`VISUAL_CROSSING_API_KEY\`\n4. Re-run this workflow\n\nThe free tier provides 1000 API calls per day, which is sufficient for fetching F1 race weather data.`,
               labels: ['weather-api', 'configuration']
             });
           }

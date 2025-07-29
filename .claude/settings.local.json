@@ -23,7 +23,11 @@
       "Bash(for f in f1db-*.csv)",
       "Bash(do mv \"$f\" \"$f#f1db-\")",
       "Bash(done)",
-      "WebFetch(domain:www.visualcrossing.com)"
+      "WebFetch(domain:www.visualcrossing.com)",
+      "Bash(yamllint:*)",
+      "Bash(for f in .github/workflows/*.yml)",
+      "Bash(do echo \"=== $f ===\")",
+      "Bash(head:*)"
     ],
     "deny": []
   }
