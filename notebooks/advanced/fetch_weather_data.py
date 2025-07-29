@@ -14,7 +14,7 @@ import pandas as pd
 from datetime import datetime
 
 # Get API key from environment or use default
-API_KEY = os.environ.get('VISUAL_CROSSING_API_KEY', '852HYSUA4KW2NFS9FCCTYB9FJ')
+API_KEY = os.environ.get('VISUAL_CROSSING_API_KEY')
 
 def check_session_status(weather_provider, target_races, date_column, session_type):
     """Check status for a specific session type"""

@@ -494,7 +494,7 @@ class F1FeatureStore:
             
         # Create weather features
         # Try to use real weather data if API key is available
-        api_key = os.environ.get('VISUAL_CROSSING_API_KEY', '852HYSUA4KW2NFS9FCCTYB9FJ')
+        api_key = os.environ.get('VISUAL_CROSSING_API_KEY')
         weather_features = get_weather_features(df, use_real_weather=True, api_key=api_key)
         self.weather_features = weather_features
         

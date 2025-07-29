@@ -17,7 +17,7 @@ def test_weather_csv_cache():
     print("="*60)
     
     # Initialize provider with API key
-    API_KEY = '852HYSUA4KW2NFS9FCCTYB9FJ'
+    API_KEY = os.environ.get('VISUAL_CROSSING_API_KEY')
     provider = F1WeatherProvider(api_key=API_KEY)
     
     # Test fetching a specific race
@@ -69,7 +69,8 @@ def test_weather_in_pipeline():
     print(f"\nChecking weather for {len(recent_races)} races from 2023:")
     
     # Create weather provider
-    provider = F1WeatherProvider(api_key='852HYSUA4KW2NFS9FCCTYB9FJ')
+    api_key = os.environ.get('VISUAL_CROSSING_API_KEY')
+    provider = F1WeatherProvider(api_key)
     
     # Get weather for these races
     weather_data = provider.get_weather_features_for_races(recent_races)
