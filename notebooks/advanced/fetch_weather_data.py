@@ -13,8 +13,88 @@ from f1db_data_loader import load_f1db_data
 import pandas as pd
 from datetime import datetime
 
-# Get API key from environment or use default
-API_KEY = os.environ.get('VISUAL_CROSSING_API_KEY')
+def check_and_setup_api_key():
+    """Check for API key and help user set it up if missing"""
+    # Get API key from environment
+    api_key = os.environ.get('VISUAL_CROSSING_API_KEY')
+    
+    # Check if already set and valid
+    if api_key and api_key != 'your_visual_crossing_api_key_here':
+        return api_key
+    
+    # Check for .env file
+    env_file = Path(__file__).parent.parent.parent / '.env'
+    if env_file.exists():
+        with open(env_file, 'r') as f:
+            for line in f:
+                if line.startswith('VISUAL_CROSSING_API_KEY='):
+                    key = line.split('=', 1)[1].strip()
+                    if key and key != 'your_visual_crossing_api_key_here':
+                        os.environ['VISUAL_CROSSING_API_KEY'] = key
+                        return key
+    
+    # No API key found - provide setup instructions
+    print("\n" + "="*60)
+    print("⚠️  VISUAL CROSSING API KEY NOT FOUND!")
+    print("="*60)
+    print("\nThis script requires a Visual Crossing API key to fetch weather data.")
+    print("\nTo get your free API key:")
+    print("1. Visit https://www.visualcrossing.com/")
+    print("2. Sign up for a free account")
+    print("3. Get your API key from the dashboard")
+    print("   (Free tier includes 1000 API calls per day)")
+    
+    print("\n" + "-"*60)
+    
+    # Offer to set it up interactively
+    setup_now = input("\nWould you like to set up your API key now? (y/n): ")
+    if setup_now.lower() != 'y':
+        print("\nTo set it up later, use one of these methods:")
+        print("1. Export environment variable:")
+        print("   export VISUAL_CROSSING_API_KEY=your_actual_api_key")
+        print("2. Create .env file with your key")
+        print("3. Pass it when running the script:")
+        print("   VISUAL_CROSSING_API_KEY=your_key python fetch_weather_data.py")
+        sys.exit(1)
+    
+    # Get API key from user
+    api_key = input("\nEnter your Visual Crossing API key: ").strip()
+    if not api_key:
+        print("No API key provided. Exiting.")
+        sys.exit(1)
+    
+    # Ask how to save it
+    print("\nHow would you like to save the API key?")
+    print("1. Create/update .env file (recommended)")
+    print("2. Just use for this session")
+    choice = input("\nEnter choice (1 or 2): ").strip()
+    
+    if choice == '1':
+        # Create or update .env file
+        env_content = []
+        if env_file.exists():
+            with open(env_file, 'r') as f:
+                for line in f:
+                    if not line.startswith('VISUAL_CROSSING_API_KEY='):
+                        env_content.append(line.rstrip())
+        
+        env_content.append(f'VISUAL_CROSSING_API_KEY={api_key}')
+        
+        with open(env_file, 'w') as f:
+            f.write('\n'.join(env_content) + '\n')
+        
+        print(f"\n✓ Saved API key to {env_file}")
+        print("The key will be automatically loaded in future runs.")
+    
+    # Set for current session
+    os.environ['VISUAL_CROSSING_API_KEY'] = api_key
+    print("\n✓ API key set for current session")
+    print("="*60 + "\n")
+    
+    return api_key
+
+# Get API key (with setup if needed)
+API_KEY = check_and_setup_api_key()
 
 def check_session_status(weather_provider, target_races, date_column, session_type):
     """Check status for a specific session type"""

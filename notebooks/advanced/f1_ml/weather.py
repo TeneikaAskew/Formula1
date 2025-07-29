@@ -38,6 +38,23 @@ class F1WeatherProvider:
         """
         self.provider = provider
         self.api_key = api_key or os.environ.get(f'{provider.upper()}_API_KEY')
+        
+        # Also check .env file if no API key in environment
+        if not self.api_key:
+            current_file = Path(__file__).resolve()
+            project_root = current_file.parent.parent.parent.parent
+            env_file = project_root / '.env'
+            if env_file.exists():
+                with open(env_file, 'r') as f:
+                    for line in f:
+                        if line.startswith(f'{provider.upper()}_API_KEY='):
+                            key = line.split('=', 1)[1].strip()
+                            if key and key != 'your_visual_crossing_api_key_here':
+                                self.api_key = key
+                                # Set in environment for future use
+                                os.environ[f'{provider.upper()}_API_KEY'] = key
+                                break
+        
         # Use absolute path to /data/weather_cache
         current_file = Path(__file__).resolve()
         project_root = current_file.parent.parent.parent.parent
