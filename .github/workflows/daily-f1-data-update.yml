@@ -1,0 +1,221 @@
+name: Daily F1DB Data Update
+
+on:
+  schedule:
+    # Run at 6:00 AM UTC every day
+    - cron: '0 6 * * *'
+  workflow_dispatch:  # Allow manual trigger
+    inputs:
+      force_download:
+        description: 'Force re-download of data even if up to date'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  update-f1-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas requests
+    
+    - name: Create data directories
+      run: |
+        mkdir -p data/f1db
+        mkdir -p data/f1db/schema
+    
+    - name: Check current F1 season status
+      id: season_check
+      run: |
+        cd notebooks/advanced
+        python -c "
+import sys
+sys.path.append('.')
+from f1db_data_loader import F1DBDataLoader
+from datetime import datetime
+import json
+
+loader = F1DBDataLoader('../../data/f1db')
+
+# Load current data
+try:
+    data = loader.get_core_datasets()
+    races_df = data.get('races', None)
+    
+    if races_df is not None:
+        current_year = datetime.now().year
+        current_races = races_df[races_df['year'] == current_year]
+        
+        # Check if we have future races
+        today = datetime.now().date()
+        future_races = 0
+        if 'date' in current_races.columns:
+            import pandas as pd
+            current_races['date'] = pd.to_datetime(current_races['date'])
+            future_races = (current_races['date'].dt.date > today).sum()
+        
+        total_races = len(current_races)
+        completed_races = total_races - future_races
+        
+        # Season is complete if no future races remain
+        season_complete = future_races == 0 and total_races > 0
+        
+        print(f'Season {current_year}: {completed_races}/{total_races} races completed')
+        print(f'Future races: {future_races}')
+        print(f'Season complete: {season_complete}')
+        
+        # Set outputs for GitHub Actions
+        with open('$GITHUB_OUTPUT', 'a') as f:
+            f.write(f'season_complete={str(season_complete).lower()}\n')
+            f.write(f'current_year={current_year}\n')
+            f.write(f'completed_races={completed_races}\n')
+            f.write(f'total_races={total_races}\n')
+    else:
+        print('No races data found')
+        with open('$GITHUB_OUTPUT', 'a') as f:
+            f.write('season_complete=false\n')
+except Exception as e:
+    print(f'Error checking season status: {e}')
+    with open('$GITHUB_OUTPUT', 'a') as f:
+        f.write('season_complete=false\n')
+"
+    
+    - name: Update F1DB Data
+      if: steps.season_check.outputs.season_complete != 'true'
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        cd notebooks/advanced
+        
+        # Run the data loader
+        if [ "${{ github.event.inputs.force_download }}" = "true" ]; then
+          echo "Force downloading F1DB data..."
+          python f1db_data_loader.py download
+        else
+          echo "Checking for F1DB updates..."
+          python -c "
+import sys
+sys.path.append('.')
+from f1db_data_loader import F1DBDataLoader
+
+loader = F1DBDataLoader('../../data/f1db')
+updated = loader.download_latest_data(force=False)
+if updated:
+    print('✅ F1DB data updated successfully')
+else:
+    print('ℹ️ F1DB data is already up to date')
+"
+        fi
+    
+    - name: Validate downloaded data
+      if: steps.season_check.outputs.season_complete != 'true'
+      run: |
+        cd notebooks/advanced
+        python f1db_data_loader.py validate
+    
+    - name: Generate data summary
+      if: steps.season_check.outputs.season_complete != 'true'
+      run: |
+        cd notebooks/advanced
+        python f1db_data_loader.py summary > ../../data/f1db/data_summary.txt
+    
+    - name: Cache F1DB data
+      if: steps.season_check.outputs.season_complete != 'true'
+      uses: actions/cache@v3
+      with:
+        path: data/f1db
+        key: f1db-data-${{ hashFiles('data/f1db/.f1db_version') }}-${{ github.run_id }}
+        restore-keys: |
+          f1db-data-${{ hashFiles('data/f1db/.f1db_version') }}
+          f1db-data-
+    
+    - name: Upload data artifacts
+      if: steps.season_check.outputs.season_complete != 'true'
+      uses: actions/upload-artifact@v3
+      with:
+        name: f1db-data-${{ github.run_id }}
+        path: |
+          data/f1db/
+        retention-days: 7
+    
+    - name: Season completion notification
+      if: steps.season_check.outputs.season_complete == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const year = '${{ steps.season_check.outputs.current_year }}';
+          const completed = '${{ steps.season_check.outputs.completed_races }}';
+          const total = '${{ steps.season_check.outputs.total_races }}';
+          
+          // Create an issue to notify about season completion
+          await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: `F1 ${year} Season Complete - Daily Data Updates Finished`,
+            body: `The ${year} F1 season has completed with ${completed}/${total} races.
+            
+The daily F1DB data update workflow will no longer run until the next season begins.
+
+To manually update data, you can:
+1. Trigger this workflow manually using the "Run workflow" button
+2. Run locally: \`python notebooks/advanced/f1db_data_loader.py download\`
+
+This workflow will automatically resume when the next F1 season begins.`,
+            labels: ['season-complete', 'automated', 'f1-data']
+          });
+          
+          console.log(`F1 ${year} season complete. Workflow will pause until next season.`);
+    
+    - name: Create commit with updated data
+      if: steps.season_check.outputs.season_complete != 'true' && success()
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        # Check if there are any changes
+        if [ -n "$(git status --porcelain data/f1db/)" ]; then
+          git add data/f1db/
+          git commit -m "chore: Update F1DB data - $(date +'%Y-%m-%d')" \
+            -m "Automated daily update of F1 data from f1db repository" \
+            -m "Season progress: ${{ steps.season_check.outputs.completed_races }}/${{ steps.season_check.outputs.total_races }} races completed"
+          
+          # Push changes
+          git push
+          echo "✅ F1DB data changes committed and pushed"
+        else
+          echo "ℹ️ No changes to F1DB data"
+        fi
+    
+    - name: Send notification on failure
+      if: failure() && steps.season_check.outputs.season_complete != 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: `F1DB Data Update Failed - ${new Date().toISOString().split('T')[0]}`,
+            body: `The daily F1DB data update failed. Please check the [workflow logs](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}).
+            
+Error occurred during the automated data update process.`,
+            labels: ['data-update-failure', 'automated', 'f1-data']
+          })

@@ -41,9 +41,21 @@ class F1WeatherProvider:
         self.cache_dir = Path('data/weather_cache')
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         
-        # CSV cache file for persistent storage
-        self.csv_cache_file = self.cache_dir / 'f1_weather_data.csv'
-        self._load_csv_cache()
+        # CSV cache files for different session types
+        self.session_types = {
+            'race': 'f1_weather_data.csv',
+            'sprint': 'f1_weather_data_sprint.csv',
+            'qualifying': 'f1_weather_data_qualifying.csv',
+            'practice': 'f1_weather_data_practice.csv'
+        }
+        self.csv_cache_files = {
+            session: self.cache_dir / filename 
+            for session, filename in self.session_types.items()
+        }
+        # Load all caches
+        self._load_all_caches()
+        # For backward compatibility (default to race)
+        self.csv_cache_file = self.csv_cache_files['race']
         
         # Circuit coordinates for weather lookup
         self.circuit_coordinates = {
@@ -178,56 +190,94 @@ class F1WeatherProvider:
         logger.warning(f"No coordinates found for circuit: {circuit_name}")
         return None
     
-    def _load_csv_cache(self):
-        """Load weather data from CSV cache"""
-        if self.csv_cache_file.exists():
+    def _load_csv_cache(self, session_type='race'):
+        """Load weather data from CSV cache for specific session type"""
+        cache_file = self.csv_cache_files.get(session_type, self.csv_cache_files['race'])
+        if cache_file.exists():
             try:
-                self.weather_cache_df = pd.read_csv(self.csv_cache_file)
-                logger.info(f"Loaded {len(self.weather_cache_df)} weather records from CSV cache")
+                cache_df = pd.read_csv(cache_file)
+                logger.info(f"Loaded {len(cache_df)} weather records from {session_type} CSV cache")
+                return cache_df
             except Exception as e:
-                logger.warning(f"Failed to load CSV cache: {e}")
-                self.weather_cache_df = pd.DataFrame()
+                logger.warning(f"Failed to load {session_type} CSV cache: {e}")
+                return pd.DataFrame()
         else:
-            self.weather_cache_df = pd.DataFrame()
+            return pd.DataFrame()
     
-    def _save_to_csv_cache(self, weather_data: Dict, circuit_name: str, date: str):
-        """Save weather data to CSV cache"""
+    def _load_all_caches(self):
+        """Load all CSV caches"""
+        self.weather_cache_dfs = {}
+        for session_type in self.session_types:
+            self.weather_cache_dfs[session_type] = self._load_csv_cache(session_type)
+        # For backward compatibility
+        self.weather_cache_df = self.weather_cache_dfs.get('race', pd.DataFrame())
+    
+    def _save_to_csv_cache(self, weather_data: Dict, circuit_name: str, date: str, session_type='race'):
+        """Save weather data to CSV cache for specific session type"""
         # Add circuit and date info
         weather_data['circuit_name'] = circuit_name
         weather_data['date'] = date
         weather_data['fetch_timestamp'] = datetime.now().isoformat()
         
+        # Get the appropriate cache
+        cache_file = self.csv_cache_files.get(session_type, self.csv_cache_files['race'])
+        
+        # Load existing cache for this session type
+        if cache_file.exists():
+            try:
+                cache_df = pd.read_csv(cache_file)
+            except:
+                cache_df = pd.DataFrame()
+        else:
+            cache_df = pd.DataFrame()
+        
         # Create new row
         new_row = pd.DataFrame([weather_data])
         
         # Append to cache
-        if self.weather_cache_df.empty:
-            self.weather_cache_df = new_row
+        if cache_df.empty:
+            cache_df = new_row
         else:
-            self.weather_cache_df = pd.concat([self.weather_cache_df, new_row], ignore_index=True)
+            cache_df = pd.concat([cache_df, new_row], ignore_index=True)
         
         # Save to CSV
         try:
-            self.weather_cache_df.to_csv(self.csv_cache_file, index=False)
-            logger.info(f"Saved weather data to CSV cache for {circuit_name} on {date}")
+            cache_df.to_csv(cache_file, index=False)
+            logger.info(f"Saved weather data to {session_type} CSV cache for {circuit_name} on {date}")
+            
+            # Update in-memory cache
+            if session_type == 'race':
+                self.weather_cache_df = cache_df
         except Exception as e:
-            logger.error(f"Failed to save to CSV cache: {e}")
+            logger.error(f"Failed to save to {session_type} CSV cache: {e}")
     
-    def _check_csv_cache(self, circuit_name: str, date: str) -> Optional[Dict]:
-        """Check if weather data exists in CSV cache"""
-        if self.weather_cache_df.empty:
+    def _check_csv_cache(self, circuit_name: str, date: str, session_type='race') -> Optional[Dict]:
+        """Check if weather data exists in CSV cache for specific session type"""
+        # Get the appropriate cache
+        cache_file = self.csv_cache_files.get(session_type, self.csv_cache_files['race'])
+        
+        # Load cache for this session type
+        if cache_file.exists():
+            try:
+                cache_df = pd.read_csv(cache_file)
+            except:
+                return None
+        else:
+            return None
+        
+        if cache_df.empty:
             return None
         
         # Look for matching record
-        mask = (self.weather_cache_df['circuit_name'] == circuit_name) & \
-               (self.weather_cache_df['date'] == date)
+        mask = (cache_df['circuit_name'] == circuit_name) & \
+               (cache_df['date'] == date)
         
-        matches = self.weather_cache_df[mask]
+        matches = cache_df[mask]
         
         if not matches.empty:
             # Return most recent record
             record = matches.iloc[-1].to_dict()
-            logger.info(f"Found weather data in CSV cache for {circuit_name} on {date}")
+            logger.info(f"Found weather data in {session_type} CSV cache for {circuit_name} on {date}")
             
             # Remove metadata fields
             record.pop('circuit_name', None)
@@ -379,21 +429,22 @@ class F1WeatherProvider:
             logger.error(f"OpenWeatherMap API error: {e}")
             return None
     
-    def get_weather_for_race(self, circuit_name: str, date: str, use_cache: bool = True) -> Dict:
+    def get_weather_for_race(self, circuit_name: str, date: str, use_cache: bool = True, session_type: str = 'race') -> Dict:
         """
-        Get weather data for a specific race
+        Get weather data for a specific race or session
         
         Args:
             circuit_name: Name of the circuit
-            date: Date of the race (YYYY-MM-DD format)
+            date: Date of the race/session (YYYY-MM-DD format)
             use_cache: Whether to use cached data if available
+            session_type: Type of session ('race', 'sprint', 'qualifying', 'practice')
             
         Returns:
             Dictionary with weather features
         """
         # Check CSV cache first - this is the primary cache
         if use_cache:
-            csv_cached_data = self._check_csv_cache(circuit_name, date)
+            csv_cached_data = self._check_csv_cache(circuit_name, date, session_type)
             if csv_cached_data:
                 return csv_cached_data
         
@@ -403,14 +454,14 @@ class F1WeatherProvider:
             cached_data = self._load_from_cache(cache_key)
             if cached_data:
                 # Also save to CSV cache for future use
-                self._save_to_csv_cache(cached_data, circuit_name, date)
+                self._save_to_csv_cache(cached_data, circuit_name, date, session_type)
                 return cached_data
         
         # Get circuit coordinates
         coords = self.get_circuit_coordinates(circuit_name)
         if not coords:
-            logger.warning(f"Using default weather for unknown circuit: {circuit_name}")
-            return self._get_default_weather(date)
+            logger.error(f"No coordinates found for circuit: {circuit_name}. Cannot fetch weather data.")
+            return None
         
         lat, lon = coords
         
@@ -430,39 +481,12 @@ class F1WeatherProvider:
             
             # Cache the data in both formats
             self._save_to_cache(cache_key, weather_data)
-            self._save_to_csv_cache(weather_data, circuit_name, date)
+            self._save_to_csv_cache(weather_data, circuit_name, date, session_type)
             return weather_data
         
-        # Fallback to default weather
-        logger.warning(f"Failed to fetch weather data, using defaults for {circuit_name} on {date}")
-        return self._get_default_weather(date)
-    
-    def _get_default_weather(self, date: str) -> Dict:
-        """Get default weather when API fails"""
-        # Use reasonable defaults based on season
-        dt = datetime.strptime(date, '%Y-%m-%d')
-        month = dt.month
-        
-        # Seasonal temperature
-        if month in [12, 1, 2]:  # Winter
-            temp = 15
-        elif month in [6, 7, 8]:  # Summer
-            temp = 25
-        else:  # Spring/Fall
-            temp = 20
-        
-        return {
-            'temperature': temp,
-            'humidity': 60,
-            'wind_speed': 10,
-            'precipitation': 0,
-            'rain_probability': 0.15,
-            'conditions': 'Partly Cloudy',
-            'description': 'Default weather data',
-            'is_wet_race': False,
-            'track_temp': temp + 10,
-            'weather_changeability': 0.1
-        }
+        # No fallback - return None if we can't get real weather data
+        logger.error(f"Failed to fetch weather data for {circuit_name} on {date}. No synthetic data will be used.")
+        return None
     
     def get_weather_features_for_races(self, races_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -485,8 +509,8 @@ class F1WeatherProvider:
             date = race.get('date')
             
             if pd.isna(date):
-                logger.warning(f"No date for race {race_id}")
-                weather = self._get_default_weather('2023-06-01')  # Default date
+                logger.error(f"No date for race {race_id}, skipping weather data")
+                continue
             else:
                 # Convert date to string format
                 if isinstance(date, pd.Timestamp):
@@ -496,9 +520,13 @@ class F1WeatherProvider:
                 
                 weather = self.get_weather_for_race(circuit_name, date_str)
             
-            # Add race ID
-            weather['raceId'] = race_id
-            weather_features.append(weather)
+            # Only add weather if we got real data
+            if weather:
+                # Add race ID
+                weather['raceId'] = race_id
+                weather_features.append(weather)
+            else:
+                logger.warning(f"No weather data available for race {race_id} at {circuit_name} on {date_str}")
         
         return pd.DataFrame(weather_features)
 

@@ -15,58 +15,76 @@ import pandas as pd
 # Set the API key
 API_KEY = '852HYSUA4KW2NFS9FCCTYB9FJ'
 
-def check_weather_status(weather_provider, target_races):
-    """Check current status of weather data collection"""
+def check_session_status(weather_provider, target_races, date_column, session_type):
+    """Check status for a specific session type"""
+    # Count valid dates for this session
+    if date_column not in target_races.columns:
+        return 0, 0, 0
+        
+    valid_dates = target_races[date_column].notna()
+    total_sessions = valid_dates.sum()
+    
+    if total_sessions == 0:
+        return 0, 0, 0
+    
+    # Count cached items by checking each race individually
+    cached_count = 0
+    for _, race in target_races[valid_dates].iterrows():
+        circuit_name = race.get('circuit_name', race.get('circuitId', 'Unknown'))
+        session_date = str(race[date_column])[:10]
+        if weather_provider._check_csv_cache(circuit_name, session_date, session_type):
+            cached_count += 1
+    
+    remaining = total_sessions - cached_count
+    credits_needed = remaining * 24
+    
+    return cached_count, remaining, credits_needed
+
+def check_all_sessions_status(weather_provider, target_races, session_configs, sessions_to_fetch):
+    """Check status for all session types"""
     print("\n" + "="*60)
     print("Weather Data Status Check")
     print("="*60)
     
-    print(f"\nTarget races (specified range): {len(target_races)}")
+    total_cached = 0
+    total_remaining = 0
+    total_credits_needed = 0
     
-    # Check CSV cache
-    if weather_provider.csv_cache_file.exists():
-        cache_df = pd.read_csv(weather_provider.csv_cache_file)
-        print(f"Cached weather records: {len(cache_df)}")
+    for session_type in sessions_to_fetch:
+        print(f"\n{session_type.upper()} Sessions:")
+        session_total_cached = 0
+        session_total_remaining = 0
         
-        # Show year distribution
-        cache_df['year'] = pd.to_datetime(cache_df['date']).dt.year
-        year_counts = cache_df['year'].value_counts().sort_index()
-        print("\nCached data by year:")
-        for year, count in year_counts.items():
-            print(f"  {year}: {count} races")
+        for date_col, _ in session_configs[session_type]:
+            cached, remaining, credits = check_session_status(
+                weather_provider, target_races, date_col, session_type
+            )
+            
+            if date_col in target_races.columns:
+                total_possible = target_races[date_col].notna().sum()
+                if total_possible > 0:
+                    print(f"  {date_col}: {cached}/{total_possible} cached")
+                    session_total_cached += cached
+                    session_total_remaining += remaining
         
-        # Calculate remaining
-        races_fetched = len(cache_df)
-        races_remaining = len(target_races) - races_fetched
+        total_cached += session_total_cached
+        total_remaining += session_total_remaining
+        total_credits_needed += session_total_remaining * 24
         
-        print(f"\nProgress:")
-        print(f"  ✓ Completed: {races_fetched} races ({races_fetched/len(target_races)*100:.1f}%)")
-        print(f"  ⏳ Remaining: {races_remaining} races")
-        
-        # Calculate API credits needed
-        # Visual Crossing uses credit-based pricing
-        # Each API call costs credits based on data requested
-        credits_per_race = 24  # Approximate based on your account showing 985 credits for 41 races
-        credits_needed = races_remaining * credits_per_race
-        days_needed = (credits_needed + 999) // 1000  # Ceiling division
-        
-        print(f"\nAPI Credits Estimate:")
-        print(f"  - Credits per race: ~{credits_per_race} (based on historical usage)")
-        print(f"  - Total credits needed: {credits_needed}")
-        print(f"  - Free tier limit: 1000 credits/day")
-        print(f"  - Days needed to complete: {days_needed}")
-        
-        return races_fetched, races_remaining, credits_needed
-    else:
-        print("No weather cache found!")
-        print(f"Need to fetch all {len(target_races)} races")
-        credits_needed = len(target_races) * 24
-        days_needed = (credits_needed + 999) // 1000
-        print(f"This will require approximately {days_needed} days with the free tier")
-        return 0, len(target_races), credits_needed
+        print(f"  Total: {session_total_cached} cached, {session_total_remaining} remaining")
+    
+    print(f"\nOVERALL SUMMARY:")
+    print(f"  Total cached: {total_cached}")
+    print(f"  Total remaining: {total_remaining}")
+    print(f"  Credits needed: {total_credits_needed}")
+    print(f"  Days needed: {(total_credits_needed + 999) // 1000}")
+
+def check_weather_status(weather_provider, target_races):
+    """Check current status of weather data collection (backward compatibility)"""
+    return check_session_status(weather_provider, target_races, 'date', 'race')
 
 def fetch_historical_weather_data():
-    """Fetch weather data for recent F1 races"""
+    """Fetch weather data for recent F1 races and all session types"""
     
     # Parse arguments
     import argparse
@@ -76,6 +94,9 @@ def fetch_historical_weather_data():
     parser.add_argument('--all', action='store_true', help='Fetch all available races')
     parser.add_argument('--status', action='store_true', help='Only show status, do not fetch')
     parser.add_argument('--max-credits', type=int, default=990, help='Maximum credits to use (default: 990)')
+    parser.add_argument('--session', type=str, default='all', 
+                       choices=['all', 'race', 'sprint', 'qualifying', 'practice'],
+                       help='Session type to fetch (default: all)')
     args, unknown = parser.parse_known_args()
     
     # Initialize weather provider with the API key
@@ -87,128 +108,204 @@ def fetch_historical_weather_data():
     print("\nLoading F1 race data...")
     data = load_f1db_data()
     races_df = data['races']
+    circuits_df = data['circuits']
+    
+    # Merge races with circuits to get circuit names and coordinates
+    races_with_circuits = races_df.merge(
+        circuits_df[['id', 'name', 'placeName', 'latitude', 'longitude']], 
+        left_on='circuitId', 
+        right_on='id', 
+        suffixes=('', '_circuit')
+    )
+    races_with_circuits['circuit_name'] = races_with_circuits['name_circuit']
     
     # Get races from specified range
     if args.all:
-        recent_races = races_df.copy()
+        recent_races = races_with_circuits.copy()
     else:
-        recent_races = races_df[(races_df['year'] >= args.start_year) & (races_df['year'] <= args.end_year)]
+        recent_races = races_with_circuits[(races_with_circuits['year'] >= args.start_year) & (races_with_circuits['year'] <= args.end_year)]
     
     recent_races = recent_races.sort_values('date')
     
     print(f"\nFound {len(recent_races)} races from {recent_races['year'].min()}-{recent_races['year'].max()}")
-    print(f"CSV cache location: {weather_provider.csv_cache_file}")
     
-    # Check status first
-    races_cached, races_remaining, credits_needed = check_weather_status(weather_provider, recent_races)
+    # Define session types and their date columns
+    session_configs = {
+        'race': [('date', 'race')],
+        'sprint': [('sprintRaceDate', 'sprint')],
+        'qualifying': [
+            ('qualifyingDate', 'qualifying'),
+            ('qualifying1Date', 'qualifying'),
+            ('qualifying2Date', 'qualifying'),
+            ('sprintQualifyingDate', 'qualifying')
+        ],
+        'practice': [
+            ('freePractice1Date', 'practice'),
+            ('freePractice2Date', 'practice'),
+            ('freePractice3Date', 'practice'),
+            ('freePractice4Date', 'practice')
+        ]
+    }
     
-    # If status only mode, exit here
+    # Determine which sessions to fetch
+    if args.session == 'all':
+        sessions_to_fetch = list(session_configs.keys())
+    else:
+        sessions_to_fetch = [args.session]
+    
+    print(f"Session types to fetch: {', '.join(sessions_to_fetch)}")
+    
+    # Check status for all session types
     if args.status:
+        check_all_sessions_status(weather_provider, recent_races, session_configs, sessions_to_fetch)
         return
     
-    # Calculate how many races we can fetch today
-    credits_per_race = 24  # Based on observed usage
-    max_races_today = args.max_credits // credits_per_race
+    # Calculate how many items we can fetch today
+    credits_per_fetch = 24  # Based on observed usage
+    max_fetches_today = args.max_credits // credits_per_fetch
     
     print(f"\n" + "="*60)
     print(f"Fetching Weather Data")
     print(f"="*60)
     print(f"Daily credit limit: 1000")
     print(f"Max credits to use: {args.max_credits}")
-    print(f"Credits per race: ~{credits_per_race}")
-    print(f"Max races to fetch today: {max_races_today}")
+    print(f"Credits per fetch: ~{credits_per_fetch}")
+    print(f"Max fetches today: {max_fetches_today}")
     
-    # Fetch weather for each race
+    # Fetch weather for each session type
     weather_fetched = 0
     weather_cached = 0
     weather_errors = 0
     credits_used = 0
     
-    for idx, (_, race) in enumerate(recent_races.iterrows(), 1):
-        race_name = race.get('name', race.get('officialName', 'Unknown'))
-        race_date = str(race['date'])[:10]  # YYYY-MM-DD format
+    # Track items to fetch
+    fetch_items = []
+    
+    # Build list of all items to fetch
+    for session_type in sessions_to_fetch:
+        for date_col, session_label in session_configs[session_type]:
+            if date_col not in recent_races.columns:
+                continue
+                
+            # Get races with valid dates for this column
+            valid_races = recent_races[recent_races[date_col].notna()]
+            
+            for _, race in valid_races.iterrows():
+                race_name = race.get('name', race.get('officialName', 'Unknown'))
+                circuit_name = race.get('circuit_name', race.get('circuitId', 'Unknown'))
+                session_date = str(race[date_col])[:10]  # YYYY-MM-DD format
+                
+                # Check if already cached using circuit name
+                if not weather_provider._check_csv_cache(circuit_name, session_date, session_type):
+                    fetch_items.append({
+                        'race_name': race_name,
+                        'circuit_name': circuit_name,
+                        'date': session_date,
+                        'session_type': session_type,
+                        'date_column': date_col,
+                        'year': race['year'],
+                        'latitude': race.get('latitude'),
+                        'longitude': race.get('longitude')
+                    })
+    
+    print(f"\nTotal items to fetch: {len(fetch_items)}")
+    print(f"Items that can be fetched today: {min(len(fetch_items), max_fetches_today)}")
+    
+    # Sort by year and date to fetch oldest first
+    fetch_items.sort(key=lambda x: (x['year'], x['date']))
+    
+    # Fetch weather data
+    import time
+    for idx, item in enumerate(fetch_items, 1):
+        if weather_fetched >= max_fetches_today:
+            print(f"\n⚠️  Daily limit reached ({weather_fetched} items fetched, ~{credits_used} credits used)")
+            print(f"Run again tomorrow to continue fetching remaining {len(fetch_items) - weather_fetched} items")
+            break
+            
+        race_name = item['race_name']
+        circuit_name = item['circuit_name']
+        session_date = item['date']
+        session_type = item['session_type']
+        date_column = item['date_column']
         
-        print(f"\n[{idx}/{len(recent_races)}] Checking weather for {race_name} on {race_date}...")
+        print(f"\n[{idx}/{len(fetch_items)}] Fetching {session_type} weather for {circuit_name} ({race_name}) on {session_date}...")
         
-        # Check if already in cache
-        cached_data = weather_provider._check_csv_cache(race_name, race_date)
-        
-        if cached_data:
-            print(f"  ✓ Already cached")
-            weather_cached += 1
-        else:
-            # Check if we have credits left
-            if weather_fetched >= max_races_today:
-                print(f"\n⚠️  Daily limit reached ({weather_fetched} races fetched, ~{credits_used} credits used)")
-                print(f"Run again tomorrow to continue fetching remaining {races_remaining - weather_fetched} races")
+        try:
+            # If we have coordinates, use them directly
+            if item.get('latitude') and item.get('longitude'):
+                # Temporarily update coordinates for this circuit
+                normalized = circuit_name.lower().replace(' ', '_').replace('-', '_')
+                weather_provider.circuit_coordinates[normalized] = (item['latitude'], item['longitude'])
+            
+            weather_data = weather_provider.get_weather_for_race(circuit_name, session_date, session_type=session_type)
+            print(f"  ✓ Fetched from API - Temp: {weather_data['temperature']:.1f}°C, "
+                  f"Rain prob: {weather_data['rain_probability']:.1%}")
+            weather_fetched += 1
+            credits_used = weather_fetched * credits_per_fetch
+            
+            # Rate limit handling
+            time.sleep(1.0)  # 1 second delay between requests
+            
+        except Exception as e:
+            print(f"  ✗ Error: {e}")
+            weather_errors += 1
+            
+            # Handle rate limit errors specifically
+            if "429" in str(e):
+                print("\n⚠️  API credit limit reached!")
+                print("The data fetched so far has been saved.")
+                print("Run again tomorrow to continue.")
                 break
-                
-            # Fetch from API
-            try:
-                weather_data = weather_provider.get_weather_for_race(race_name, race_date)
-                print(f"  ✓ Fetched from API - Temp: {weather_data['temperature']:.1f}°C, "
-                      f"Rain prob: {weather_data['rain_probability']:.1%}")
-                weather_fetched += 1
-                credits_used = weather_fetched * credits_per_race
-                
-                # Rate limit handling
-                import time
-                time.sleep(1.0)  # 1 second delay between requests
-                
-            except Exception as e:
-                print(f"  ✗ Error: {e}")
-                weather_errors += 1
-                
-                # Handle rate limit errors specifically
-                if "429" in str(e):
-                    print("\n⚠️  API credit limit reached!")
-                    print("The data fetched so far has been saved.")
-                    print("Run again tomorrow to continue.")
-                    break
+    
+    # Count cached items
+    total_cached = 0
+    for session_type in sessions_to_fetch:
+        cache_file = weather_provider.csv_cache_files.get(session_type)
+        if cache_file and cache_file.exists():
+            cache_df = pd.read_csv(cache_file)
+            total_cached += len(cache_df)
     
     print(f"\n" + "="*60)
     print(f"Summary:")
-    print(f"  - Weather data already cached: {weather_cached}")
+    print(f"  - Weather data already cached: {total_cached}")
     print(f"  - Weather data fetched from API: {weather_fetched}")
     print(f"  - Errors encountered: {weather_errors}")
-    print(f"  - Total races processed: {weather_cached + weather_fetched + weather_errors}")
+    print(f"  - Items remaining to fetch: {len(fetch_items) - weather_fetched}")
     
     # Calculate API usage
     print(f"\nAPI Credits Usage:")
-    print(f"  - Credits used today: ~{credits_used} (at ~{credits_per_race} credits per race)")
+    print(f"  - Credits used today: ~{credits_used} (at ~{credits_per_fetch} credits per item)")
     print(f"  - Daily credit limit: 1000")
     print(f"  - Credits remaining today: ~{1000 - credits_used}")
     
     # Calculate remaining work
-    total_races = len(recent_races)
-    races_complete = weather_cached + weather_fetched
-    races_remaining_now = total_races - races_complete
-    if races_remaining_now > 0:
-        credits_needed = races_remaining_now * credits_per_race
+    items_remaining = len(fetch_items) - weather_fetched
+    if items_remaining > 0:
+        credits_needed = items_remaining * credits_per_fetch
         days_needed = (credits_needed + 999) // 1000  # Ceiling division
         print(f"\nRemaining work:")
-        print(f"  - Races still to fetch: {races_remaining_now}")
+        print(f"  - Items still to fetch: {items_remaining}")
         print(f"  - Credits needed: {credits_needed}")
         print(f"  - Days needed: {days_needed}")
         print(f"\nTo continue fetching, run:")
-        print(f"  python fetch_weather_data.py --start-year {args.start_year} --end-year {args.end_year}")
+        print(f"  python fetch_weather_data.py --start-year {args.start_year} --end-year {args.end_year} --session {args.session}")
     else:
-        print("\n✅ All weather data fetched successfully!")
+        print(f"\n✅ All {args.session} weather data fetched successfully!")
     
-    # Show sample of cached data
-    if weather_provider.csv_cache_file.exists():
-        cache_df = pd.read_csv(weather_provider.csv_cache_file)
-        print(f"\nTotal cached weather data: {len(cache_df)} records")
-        
-        if len(cache_df) > 0:
-            print("\nSample records:")
-            print(cache_df[['circuit_name', 'date', 'temperature', 'rain_probability', 'is_wet_race']].tail(5))
+    # Show sample of cached data for each session type
+    print("\nCached Data Summary:")
+    for session_type in sessions_to_fetch:
+        cache_file = weather_provider.csv_cache_files.get(session_type)
+        if cache_file and cache_file.exists():
+            cache_df = pd.read_csv(cache_file)
+            print(f"\n{session_type.upper()} weather data: {len(cache_df)} records")
             
-            # Show statistics
-            print(f"\nWeather statistics:")
-            print(f"  - Average temperature: {cache_df['temperature'].mean():.1f}°C")
-            print(f"  - Average rain probability: {cache_df['rain_probability'].mean():.1%}")
-            print(f"  - Wet races: {cache_df['is_wet_race'].sum()} ({cache_df['is_wet_race'].mean():.1%})")
+            if len(cache_df) > 0:
+                # Show statistics
+                print(f"  - Average temperature: {cache_df['temperature'].mean():.1f}°C")
+                print(f"  - Average rain probability: {cache_df['rain_probability'].mean():.1%}")
+                wet_count = cache_df['is_wet_race'].sum()
+                print(f"  - Wet sessions: {wet_count} ({cache_df['is_wet_race'].mean():.1%})")
 
 
 def check_specific_race(circuit_name: str, date: str):
