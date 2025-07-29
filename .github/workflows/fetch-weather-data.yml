@@ -1,0 +1,227 @@
+name: Fetch F1 Weather Data
+
+on:
+  schedule:
+    # Run at 8:00 AM UTC every day
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 'Year to fetch weather data for'
+        required: false
+        type: string
+      force_update:
+        description: 'Force update existing weather data'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  fetch-weather:
+    name: Fetch Weather Data
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r notebooks/requirements.txt
+    
+    - name: Create directories
+      run: |
+        mkdir -p notebooks/advanced/data/weather_cache
+        mkdir -p data/f1db
+    
+    - name: Cache weather data
+      uses: actions/cache@v4
+      with:
+        path: notebooks/advanced/data/weather_cache
+        key: weather-cache-${{ github.run_id }}
+        restore-keys: |
+          weather-cache-
+    
+    - name: Check Visual Crossing API limit
+      id: api_check
+      env:
+        VISUAL_CROSSING_API_KEY: ${{ secrets.VISUAL_CROSSING_API_KEY }}
+      run: |
+        cd notebooks/advanced
+        python -c "
+        import requests
+        import os
+        
+        api_key = os.environ.get('VISUAL_CROSSING_API_KEY', '')
+        if not api_key:
+            print('No API key configured')
+            print('api_available=false')
+            exit(0)
+        
+        # Check API usage
+        try:
+            url = f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/London/2024-01-01'
+            params = {'key': api_key, 'include': 'current'}
+            response = requests.get(url, params=params)
+            
+            if response.status_code == 200:
+                # Extract rate limit headers
+                remaining = response.headers.get('X-RateLimit-Remaining-Day', '0')
+                limit = response.headers.get('X-RateLimit-Limit-Day', '1000')
+                print(f'API calls remaining: {remaining}/{limit}')
+                print(f'api_available=true')
+                print(f'calls_remaining={remaining}')
+            else:
+                print(f'API check failed: {response.status_code}')
+                print('api_available=false')
+        except Exception as e:
+            print(f'Error checking API: {e}')
+            print('api_available=false')
+        " >> $GITHUB_OUTPUT
+    
+    - name: Fetch weather data
+      if: steps.api_check.outputs.api_available == 'true'
+      env:
+        VISUAL_CROSSING_API_KEY: ${{ secrets.VISUAL_CROSSING_API_KEY }}
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        cd notebooks/advanced
+        
+        # Determine year
+        YEAR="${{ github.event.inputs.year }}"
+        if [ -z "$YEAR" ]; then
+          YEAR=$(date +%Y)
+        fi
+        
+        echo "Fetching weather data for year: $YEAR"
+        
+        python -c "
+        import sys
+        sys.path.append('.')
+        from fetch_weather_data import main
+        import os
+        
+        # Set the API key
+        os.environ['VISUAL_CROSSING_API_KEY'] = '${{ secrets.VISUAL_CROSSING_API_KEY }}'
+        
+        # Run the weather fetcher
+        main(year=$YEAR, force_update=${{ github.event.inputs.force_update || 'false' }})
+        "
+    
+    - name: Generate weather report
+      if: steps.api_check.outputs.api_available == 'true'
+      run: |
+        cd notebooks/advanced
+        python -c "
+        import pandas as pd
+        from pathlib import Path
+        import json
+        
+        # Load weather cache
+        cache_file = Path('data/weather_cache/f1_weather_data.csv')
+        if cache_file.exists():
+            df = pd.read_csv(cache_file)
+            
+            # Generate summary
+            total_records = len(df)
+            unique_races = df['circuit_name'].nunique() if 'circuit_name' in df.columns else 0
+            
+            # Check for wet races
+            wet_races = df[df['is_wet_race'] == True] if 'is_wet_race' in df.columns else pd.DataFrame()
+            
+            summary = {
+                'total_records': total_records,
+                'unique_races': unique_races,
+                'wet_races': len(wet_races),
+                'last_updated': pd.Timestamp.now().isoformat()
+            }
+            
+            # Save summary
+            with open('../../weather_summary.json', 'w') as f:
+                json.dump(summary, f, indent=2)
+                
+            print(f'Weather data summary:')
+            print(f'  Total records: {total_records}')
+            print(f'  Unique races: {unique_races}')
+            print(f'  Wet races: {len(wet_races)}')
+        else:
+            print('No weather cache found')
+        "
+    
+    - name: Upload weather data
+      if: steps.api_check.outputs.api_available == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: weather-data-${{ github.run_id }}
+        path: |
+          notebooks/advanced/data/weather_cache/
+          weather_summary.json
+        retention-days: 30
+    
+    - name: Create commit with updated weather data
+      if: steps.api_check.outputs.api_available == 'true' && success()
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        # Check if there are any changes
+        if [ -n "$(git status --porcelain notebooks/advanced/data/weather_cache/)" ]; then
+          git add notebooks/advanced/data/weather_cache/
+          git commit -m "chore: Update F1 weather data - $(date +'%Y-%m-%d')" \
+            -m "Automated weather data update from Visual Crossing API" \
+            -m "API calls remaining: ${{ steps.api_check.outputs.calls_remaining }}"
+          
+          # Push changes
+          git push
+          echo "✅ Weather data changes committed and pushed"
+        else
+          echo "ℹ️ No changes to weather data"
+        fi
+    
+    - name: Notify if API unavailable
+      if: steps.api_check.outputs.api_available != 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          // Check if there's already an open issue about API key
+          const issues = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: 'weather-api',
+            state: 'open'
+          });
+          
+          if (issues.data.length === 0) {
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Visual Crossing API Key Required',
+              body: `The weather data fetching workflow requires a Visual Crossing API key.
+              
+Please:
+1. Sign up for a free account at https://www.visualcrossing.com/
+2. Get your API key from the account dashboard
+3. Add it as a repository secret named \`VISUAL_CROSSING_API_KEY\`
+4. Re-run this workflow
+
+The free tier provides 1000 API calls per day, which is sufficient for fetching F1 race weather data.`,
+              labels: ['weather-api', 'configuration']
+            });
+          }

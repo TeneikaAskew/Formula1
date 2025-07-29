@@ -11,9 +11,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 from f1_ml.weather import F1WeatherProvider
 from f1db_data_loader import load_f1db_data
 import pandas as pd
+from datetime import datetime
 
-# Set the API key
-API_KEY = '852HYSUA4KW2NFS9FCCTYB9FJ'
+# Get API key from environment or use default
+API_KEY = os.environ.get('VISUAL_CROSSING_API_KEY', '852HYSUA4KW2NFS9FCCTYB9FJ')
 
 def check_session_status(weather_provider, target_races, date_column, session_type):
     """Check status for a specific session type"""
@@ -318,6 +319,22 @@ def check_specific_race(circuit_name: str, date: str):
     print("\nWeather data:")
     for key, value in weather.items():
         print(f"  - {key}: {value}")
+
+
+def main(year=None, force_update=False):
+    """Main function for GitHub workflow integration"""
+    import argparse
+    
+    # If called from workflow, use provided parameters
+    if year:
+        # Set up args for fetch_historical_weather_data
+        import sys
+        sys.argv = ['fetch_weather_data.py', '--start-year', str(year), '--end-year', str(year)]
+        if force_update:
+            sys.argv.append('--force')
+    
+    # Run the historical weather fetcher
+    fetch_historical_weather_data()
 
 
 if __name__ == "__main__":

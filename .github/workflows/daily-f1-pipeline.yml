@@ -25,7 +25,7 @@ jobs:
         python-version: '3.9'
     
     - name: Cache pip dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
@@ -33,7 +33,7 @@ jobs:
           ${{ runner.os }}-pip-
     
     - name: Cache F1DB data
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: data/f1db
         key: f1db-data-${{ hashFiles('data/f1db/.f1db_version') }}
@@ -67,7 +67,7 @@ jobs:
         fi
     
     - name: Upload pipeline results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: pipeline-results-${{ github.run_id }}
@@ -78,7 +78,7 @@ jobs:
         retention-days: 30
     
     - name: Upload logs
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: error-logs-${{ github.run_id }}
