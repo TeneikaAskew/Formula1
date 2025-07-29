@@ -27,7 +27,8 @@
       "Bash(yamllint:*)",
       "Bash(for f in .github/workflows/*.yml)",
       "Bash(do echo \"=== $f ===\")",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }

@@ -42,9 +42,9 @@ class F1DBDataLoader:
         self.format = format
         self.base_url = "https://api.github.com/repos/f1db/f1db/releases/latest"
         self.schema_url = "https://raw.githubusercontent.com/f1db/f1db/main/src/schema/current/single/f1db.schema.json"
-        self.data_dir.mkdir(exist_ok=True)
+        self.data_dir.mkdir(parents=True, exist_ok=True)
         self.schema_dir = self.data_dir / "schema"
-        self.schema_dir.mkdir(exist_ok=True)
+        self.schema_dir.mkdir(parents=True, exist_ok=True)
         self._schema_cache = None
         self._schema_version = None
         
@@ -215,13 +215,18 @@ class F1DBDataLoader:
             release_info = self.get_latest_release_info()
             latest_version = release_info['tag_name']
             
-            # Check if we already have this version
+            # Check if we already have this version AND the CSV files
             if marker_file.exists() and not force:
                 with open(marker_file, 'r') as f:
                     current_version = f.read().strip()
                 if current_version == latest_version:
-                    print(f"Already have latest F1DB data (version {latest_version})")
-                    return False
+                    # Also check if CSV files actually exist
+                    csv_files = list(self.data_dir.glob("*.csv"))
+                    if csv_files:
+                        print(f"Already have latest F1DB data (version {latest_version})")
+                        return False
+                    else:
+                        print(f"Version file exists but CSV files are missing. Re-downloading...")
             
             # Find the appropriate asset
             asset_name = f"f1db-{self.format}.zip"

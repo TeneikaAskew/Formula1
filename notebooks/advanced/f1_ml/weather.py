@@ -38,7 +38,10 @@ class F1WeatherProvider:
         """
         self.provider = provider
         self.api_key = api_key or os.environ.get(f'{provider.upper()}_API_KEY')
-        self.cache_dir = Path('data/weather_cache')
+        # Use absolute path to /data/weather_cache
+        current_file = Path(__file__).resolve()
+        project_root = current_file.parent.parent.parent.parent
+        self.cache_dir = project_root / 'data' / 'weather_cache'
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         
         # CSV cache files for different session types

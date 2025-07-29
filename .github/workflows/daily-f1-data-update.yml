@@ -15,6 +15,9 @@ on:
 jobs:
   update-f1-data:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
     
     steps:
     - name: Checkout repository
@@ -129,11 +132,21 @@ jobs:
         from f1db_data_loader import F1DBDataLoader
         
         loader = F1DBDataLoader('../../data/f1db')
+        
+        # First try without force
         updated = loader.download_latest_data(force=False)
         if updated:
             print('F1DB data updated successfully')
         else:
-            print('F1DB data is already up to date')
+            # Check if CSV files actually exist
+            csv_files = list(loader.data_dir.glob("*.csv"))
+            if not csv_files:
+                print('No CSV files found despite version file. Force downloading...')
+                updated = loader.download_latest_data(force=True)
+                if updated:
+                    print('F1DB data force downloaded successfully')
+            else:
+                print('F1DB data is already up to date')
         EOF
         python update_data.py
     

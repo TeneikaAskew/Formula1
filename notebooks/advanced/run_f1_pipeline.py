@@ -77,22 +77,15 @@ class PipelineConfig:
     
     def _find_data_dir(self, current_dir):
         """Find the F1DB data directory"""
-        possible_paths = [
-            current_dir / '../../data/f1db',
-            current_dir.parent.parent / 'data' / 'f1db',
-            current_dir / 'data' / 'f1db',
-            current_dir.parent / 'data' / 'f1db',
-            Path('data/f1db'),
-            Path('../data/f1db'),
-            Path('../../data/f1db')
-        ]
+        # Use absolute path to /data/f1db
+        current_file = Path(__file__).resolve()
+        project_root = current_file.parent.parent.parent
+        data_path = project_root / 'data' / 'f1db'
         
-        for p in possible_paths:
-            if p.exists():
-                return p.resolve()
+        # Create directory if it doesn't exist
+        data_path.mkdir(parents=True, exist_ok=True)
         
-        # Default to relative path
-        return Path('../../data/f1db').resolve()
+        return data_path
     
     def to_dict(self):
         """Convert config to dictionary"""

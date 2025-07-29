@@ -28,6 +28,8 @@ jobs:
   check-race-weekend:
     name: Check if Race Weekend
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       is_race_weekend: ${{ steps.check.outputs.is_race_weekend }}
       race_name: ${{ steps.check.outputs.race_name }}
@@ -90,6 +92,9 @@ jobs:
     needs: check-race-weekend
     if: needs.check-race-weekend.outputs.is_race_weekend == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     
     steps:
     - name: Checkout code

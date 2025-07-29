@@ -23,6 +23,9 @@ jobs:
   fetch-weather:
     name: Fetch Weather Data
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
     
     steps:
     - name: Checkout code
@@ -48,13 +51,13 @@ jobs:
     
     - name: Create directories
       run: |
-        mkdir -p notebooks/advanced/data/weather_cache
+        mkdir -p data/weather_cache
         mkdir -p data/f1db
     
     - name: Cache weather data
       uses: actions/cache@v4
       with:
-        path: notebooks/advanced/data/weather_cache
+        path: data/weather_cache
         key: weather-cache-${{ github.run_id }}
         restore-keys: |
           weather-cache-
@@ -141,7 +144,7 @@ jobs:
         import json
         
         # Load weather cache
-        cache_file = Path('data/weather_cache/f1_weather_data.csv')
+        cache_file = Path('../../data/weather_cache/f1_weather_data.csv')
         if cache_file.exists():
             df = pd.read_csv(cache_file)
             
@@ -178,7 +181,7 @@ jobs:
       with:
         name: weather-data-${{ github.run_id }}
         path: |
-          notebooks/advanced/data/weather_cache/
+          data/weather_cache/
           weather_summary.json
         retention-days: 30
     
@@ -189,8 +192,8 @@ jobs:
         git config --local user.name "github-actions[bot]"
         
         # Check if there are any changes
-        if [ -n "$(git status --porcelain notebooks/advanced/data/weather_cache/)" ]; then
-          git add notebooks/advanced/data/weather_cache/
+        if [ -n "$(git status --porcelain data/weather_cache/)" ]; then
+          git add data/weather_cache/
           git commit -m "chore: Update F1 weather data - $(date +'%Y-%m-%d')" \
             -m "Automated weather data update from Visual Crossing API" \
             -m "API calls remaining: ${{ steps.api_check.outputs.calls_remaining }}"

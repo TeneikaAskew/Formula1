@@ -13,27 +13,20 @@ print(f"Current directory: {Path.cwd()}")
 print(f"Script location: {Path(__file__).parent}")
 
 # Test 1: Check if we can find the data
-possible_data_paths = [
-    Path('../../data/f1db'),
-    Path('../data/f1db'),
-    Path('data/f1db'),
-    Path.cwd().parent.parent / 'data' / 'f1db',
-    Path.cwd().parent / 'data' / 'f1db',
-]
+# Use absolute path to /data/f1db
+current_file = Path(__file__).resolve()
+project_root = current_file.parent.parent.parent
+data_dir = project_root / 'data' / 'f1db'
 
-data_dir = None
-for p in possible_data_paths:
-    if p.exists():
-        data_dir = p.resolve()
-        print(f"\n✓ Found data directory at: {data_dir}")
-        csv_files = list(data_dir.glob('*.csv'))
-        print(f"  Contains {len(csv_files)} CSV files")
-        break
+if data_dir.exists():
+    print(f"\n✓ Found data directory at: {data_dir}")
+    csv_files = list(data_dir.glob('*.csv'))
+    print(f"  Contains {len(csv_files)} CSV files")
 else:
-    print("\n✗ Could not find data/f1db directory")
-    print("  Searched in:")
-    for p in possible_data_paths:
-        print(f"    - {p.resolve()}")
+    print(f"\n✗ Data directory not found at: {data_dir}")
+    print(f"  Creating directory...")
+    data_dir.mkdir(parents=True, exist_ok=True)
+    print(f"  Created: {data_dir}")
 
 # Test 2: Check Python path
 print(f"\nPython path includes:")
