@@ -52,9 +52,7 @@ jobs:
     - name: Create data directories
       run: |
         mkdir -p data/f1db
-        mkdir -p notebooks/advanced/mlflow
-        mkdir -p notebooks/advanced/models
-        mkdir -p reports
+        mkdir -p notebooks/advanced/reports
     
     - name: Run F1 Pipeline
       env:
@@ -76,18 +74,9 @@ jobs:
         name: pipeline-results-${{ github.run_id }}
         path: |
           notebooks/advanced/reports/
-          notebooks/advanced/mlflow/
-          notebooks/advanced/models/
         retention-days: 30
+        if-no-files-found: warn
     
-    - name: Upload logs
-      uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: error-logs-${{ github.run_id }}
-        path: |
-          notebooks/advanced/*.log
-        retention-days: 7
     
     - name: Send notification on failure
       if: failure()

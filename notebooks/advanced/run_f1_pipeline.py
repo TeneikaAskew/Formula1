@@ -34,7 +34,7 @@ from f1_ml.features import F1FeatureStore
 from f1_ml.models import F1ModelTrainer
 from f1_ml.evaluation import IntegratedF1Predictor
 from f1_ml.optimization import PrizePicksOptimizer
-# from f1_ml.explainability import PredictionExplainer, PrizePicksExplainer  # Module not yet created
+from f1_ml.explainability import PredictionExplainer, PrizePicksExplainer
 from f1_ml.backtesting import F1BacktestEngine, prepare_backtest_data, compare_strategies
 from f1db_data_loader import fix_column_mappings
 from f1db_data_loader import load_f1db_data

@@ -131,8 +131,6 @@ jobs:
     - name: Create directories
       run: |
         mkdir -p data/f1db
-        mkdir -p notebooks/advanced/mlflow
-        mkdir -p notebooks/advanced/models
         mkdir -p notebooks/advanced/reports
         mkdir -p artifacts
     
@@ -213,20 +211,15 @@ jobs:
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: pipeline-artifacts-${{ github.run_id }}
         path: |
           notebooks/advanced/reports/
-          notebooks/advanced/models/
           artifacts/
         retention-days: 30
+        if-no-files-found: warn
     
-    - name: Upload MLflow tracking
-      uses: actions/upload-artifact@v4
-      with:
-        name: mlflow-tracking-${{ github.run_id }}
-        path: notebooks/advanced/mlflow/
-        retention-days: 90
 
   deploy-results:
     name: Deploy Results

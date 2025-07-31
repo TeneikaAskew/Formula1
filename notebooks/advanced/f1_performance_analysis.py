@@ -213,9 +213,14 @@ class F1PerformanceAnalyzer:
         if results.empty or grid.empty or races.empty:
             return pd.DataFrame()
         
-        # First, ensure results has year column
-        if 'year' not in results.columns and not races.empty:
-            results = results.merge(races[['id', 'year', 'circuitId']], 
+        # First, ensure results has year and circuitId columns
+        if ('year' not in results.columns or 'circuitId' not in results.columns) and not races.empty:
+            merge_cols = ['id']
+            if 'year' not in results.columns:
+                merge_cols.append('year')
+            if 'circuitId' not in results.columns:
+                merge_cols.append('circuitId')
+            results = results.merge(races[merge_cols], 
                                   left_on='raceId', right_on='id', how='left')
         
         # Get next race info
@@ -293,13 +298,14 @@ class F1PerformanceAnalyzer:
             track_year_analysis['driver_name'] = track_year_analysis['driverId'].map(driver_map)
             overall_stats['driver_name'] = overall_stats.index.map(driver_map)
         
-        # Filter to only show drivers who have raced at this track
-        current_drivers = self.get_current_season_drivers()
-        if current_drivers is not None:
+        # Filter to only show current season drivers
+        active_drivers = self.get_active_drivers()
+        if not active_drivers.empty:
+            current_driver_ids = active_drivers['id'].tolist()
             track_year_analysis = track_year_analysis[
-                track_year_analysis['driverId'].isin(current_drivers)
+                track_year_analysis['driverId'].isin(current_driver_ids)
             ]
-            overall_stats = overall_stats[overall_stats.index.isin(current_drivers)]
+            overall_stats = overall_stats[overall_stats.index.isin(current_driver_ids)]
         
         return {
             'circuit_name': circuit_name,
