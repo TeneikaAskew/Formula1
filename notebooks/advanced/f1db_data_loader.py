@@ -380,7 +380,8 @@ class F1DBDataLoader:
             'seasons': ['seasons', 'season'],
             'lap_times': ['races_laps', 'lap_times', 'lapTimes', 'laps'],
             'status': ['race_result_status', 'status'],
-            'constructor_results': ['races_race_results', 'race_results', 'results']  # Added for constructor results
+            'constructor_results': ['races_race_results', 'race_results', 'results'],  # Added for constructor results
+            'races_starting_grid_positions': ['races_starting_grid_positions', 'races-starting-grid-positions', 'starting_grid_positions']
         }
         
         core_data = {}
@@ -1182,22 +1183,38 @@ def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_do
 # Additional convenience functions from data_utils
 def fix_column_mappings(data: Dict[str, pd.DataFrame]) -> Dict[str, pd.DataFrame]:
     """Convenience function that uses the loader's fix_column_mappings method"""
-    loader = F1DBDataLoader()
+    # Use the same default data directory as load_f1db_data
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent.parent
+    data_dir = str(project_root / "data" / "f1db")
+    loader = F1DBDataLoader(data_dir)
     return loader.fix_column_mappings(data)
 
 def merge_race_data(data: Dict[str, pd.DataFrame]) -> pd.DataFrame:
     """Convenience function that uses the loader's merge_race_data method"""
-    loader = F1DBDataLoader()
+    # Use the same default data directory as load_f1db_data
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent.parent
+    data_dir = str(project_root / "data" / "f1db")
+    loader = F1DBDataLoader(data_dir)
     return loader.merge_race_data(data)
 
 def get_recent_results(data: Dict[str, pd.DataFrame], n_years: int = 5) -> pd.DataFrame:
     """Convenience function that uses the loader's get_recent_results method"""
-    loader = F1DBDataLoader()
+    # Use the same default data directory as load_f1db_data
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent.parent
+    data_dir = str(project_root / "data" / "f1db")
+    loader = F1DBDataLoader(data_dir)
     return loader.get_recent_results(data, n_years)
 
 def calculate_driver_stats(results_df: pd.DataFrame, driver_id: str) -> Dict:
     """Convenience function that uses the loader's calculate_driver_stats method"""
-    loader = F1DBDataLoader()
+    # Use the same default data directory as load_f1db_data
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent.parent
+    data_dir = str(project_root / "data" / "f1db")
+    loader = F1DBDataLoader(data_dir)
     return loader.calculate_driver_stats(results_df, driver_id)
 
 # Export key functions and classes
@@ -1225,7 +1242,11 @@ def main():
     else:
         command = "summary"
     
-    loader = F1DBDataLoader()
+    # Use the same default data directory as load_f1db_data
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent.parent
+    data_dir = str(project_root / "data" / "f1db")
+    loader = F1DBDataLoader(data_dir)
     
     if command == "check":
         print("Checking data structure...")
