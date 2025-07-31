@@ -16,7 +16,7 @@ from .weather import F1WeatherProvider
 from .models import F1ModelTrainer, create_temporal_features, create_prediction_targets
 from .evaluation import IntegratedF1Predictor
 from .optimization import PrizePicksOptimizer
-# from .explainability import PredictionExplainer, PrizePicksExplainer
+from .explainability import PredictionExplainer, PrizePicksExplainer
 # Import data utilities from f1db_data_loader instead
 import sys
 from pathlib import Path
@@ -35,8 +35,8 @@ __all__ = [
     'create_prediction_targets',
     'IntegratedF1Predictor',
     'PrizePicksOptimizer',
-    # 'PredictionExplainer',
-    # 'PrizePicksExplainer',
+    'PredictionExplainer',
+    'PrizePicksExplainer',
     'F1WeatherProvider',
     'fix_column_mappings',
     'merge_race_data',

@@ -1,0 +1,221 @@
+{
+  "generated_at": "2025-07-29T20:49:23.447900",
+  "config": {
+    "data_dir": "C:\\Users\\tenei\\Documents\\GitHub\\Formula1\\data\\f1db",
+    "model_dir": ".",
+    "output_dir": "pipeline_outputs",
+    "bankroll": 1000,
+    "kelly_fraction": 0.25,
+    "max_correlation": 0.5,
+    "min_edge": 0.05,
+    "max_exposure": 0.25,
+    "constraints": {
+      "max_per_driver": 2,
+      "max_per_type": 3,
+      "min_avg_edge": 0.08
+    }
+  },
+  "predictions": [
+    {
+      "driver": "Piastri",
+      "driver_id": "oscar-piastri",
+      "top10_prob": 0.845,
+      "top5_prob": 0.592,
+      "top3_prob": 0.411,
+      "points_prob": 0.825,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.879
+    },
+    {
+      "driver": "Norris",
+      "driver_id": "lando-norris",
+      "top10_prob": 0.845,
+      "top5_prob": 0.52,
+      "top3_prob": 0.23,
+      "points_prob": 0.825,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.864
+    },
+    {
+      "driver": "Verstappen",
+      "driver_id": "max-verstappen",
+      "top10_prob": 0.87,
+      "top5_prob": 0.715,
+      "top3_prob": 0.421,
+      "points_prob": 0.85,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.861
+    },
+    {
+      "driver": "Leclerc",
+      "driver_id": "charles-leclerc",
+      "top10_prob": 0.82,
+      "top5_prob": 0.428,
+      "top3_prob": 0.254,
+      "points_prob": 0.8,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.849
+    },
+    {
+      "driver": "Russell",
+      "driver_id": "george-russell",
+      "top10_prob": 0.66,
+      "top5_prob": 0.3,
+      "top3_prob": 0.15,
+      "points_prob": 0.64,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.847
+    },
+    {
+      "driver": "Hamilton",
+      "driver_id": "lewis-hamilton",
+      "top10_prob": 0.904,
+      "top5_prob": 0.556,
+      "top3_prob": 0.434,
+      "points_prob": 0.879,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.844
+    },
+    {
+      "driver": "Albon",
+      "driver_id": "alexander-albon",
+      "top10_prob": 0.571,
+      "top5_prob": 0.134,
+      "top3_prob": 0.062,
+      "points_prob": 0.551,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.819
+    },
+    {
+      "driver": "Antonelli",
+      "driver_id": "andrea-kimi-antonelli",
+      "top10_prob": 0.64,
+      "top5_prob": 0.167,
+      "top3_prob": 0.108,
+      "points_prob": 0.62,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.817
+    },
+    {
+      "driver": "Hadjar",
+      "driver_id": "isack-hadjar",
+      "top10_prob": 0.342,
+      "top5_prob": 0.05,
+      "top3_prob": 0.05,
+      "points_prob": 0.292,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.798
+    },
+    {
+      "driver": "Alonso",
+      "driver_id": "fernando-alonso",
+      "top10_prob": 0.513,
+      "top5_prob": 0.324,
+      "top3_prob": 0.228,
+      "points_prob": 0.451,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.794
+    },
+    {
+      "driver": "Sainz Jr.",
+      "driver_id": "carlos-sainz-jr",
+      "top10_prob": 0.511,
+      "top5_prob": 0.235,
+      "top3_prob": 0.136,
+      "points_prob": 0.461,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.794
+    },
+    {
+      "driver": "P\u00e9rez",
+      "driver_id": "sergio-perez",
+      "top10_prob": 0.51,
+      "top5_prob": 0.236,
+      "top3_prob": 0.146,
+      "points_prob": 0.46,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.792
+    },
+    {
+      "driver": "H\u00fclkenberg",
+      "driver_id": "nico-hulkenberg",
+      "top10_prob": 0.377,
+      "top5_prob": 0.09,
+      "top3_prob": 0.053,
+      "points_prob": 0.327,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.791
+    },
+    {
+      "driver": "Gasly",
+      "driver_id": "pierre-gasly",
+      "top10_prob": 0.358,
+      "top5_prob": 0.113,
+      "top3_prob": 0.071,
+      "points_prob": 0.308,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.79
+    },
+    {
+      "driver": "Ocon",
+      "driver_id": "esteban-ocon",
+      "top10_prob": 0.425,
+      "top5_prob": 0.104,
+      "top3_prob": 0.067,
+      "points_prob": 0.375,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.781
+    },
+    {
+      "driver": "Lawson",
+      "driver_id": "liam-lawson",
+      "top10_prob": 0.202,
+      "top5_prob": 0.05,
+      "top3_prob": 0.05,
+      "points_prob": 0.152,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.78
+    },
+    {
+      "driver": "Ricciardo",
+      "driver_id": "daniel-ricciardo",
+      "top10_prob": 0.418,
+      "top5_prob": 0.246,
+      "top3_prob": 0.137,
+      "points_prob": 0.368,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.777
+    },
+    {
+      "driver": "Bearman",
+      "driver_id": "oliver-bearman",
+      "top10_prob": 0.283,
+      "top5_prob": 0.05,
+      "top3_prob": 0.05,
+      "points_prob": 0.233,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.776
+    },
+    {
+      "driver": "Tsunoda",
+      "driver_id": "yuki-tsunoda",
+      "top10_prob": 0.249,
+      "top5_prob": 0.057,
+      "top3_prob": 0.05,
+      "points_prob": 0.199,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.773
+    },
+    {
+      "driver": "Magnussen",
+      "driver_id": "kevin-magnussen",
+      "top10_prob": 0.234,
+      "top5_prob": 0.069,
+      "top3_prob": 0.054,
+      "points_prob": 0.184,
+      "beat_teammate_prob": 0.5,
+      "confidence": 0.769
+    }
+  ],
+  "portfolio": []
+}

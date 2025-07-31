@@ -1,4 +1,15 @@
-# F1 Models Module Extraction Summary
+2025-07-29 16:43:29,523 - F1Pipeline - INFO - Loaded 55 datasets
+2025-07-29 16:43:29,524 - F1Pipeline - INFO - Generating predictions...
+2025-07-29 16:43:29,673 - F1Pipeline - INFO - Generated predictions for 20 drivers
+2025-07-29 16:43:29,673 - F1Pipeline - INFO - Optimizing Prize Picks...
+2025-07-29 16:58:14,908 - F1Pipeline - INFO - Optimized portfolio with 0 parlays
+2025-07-29 16:58:14,908 - F1Pipeline - INFO - Generating report...
+2025-07-29 16:58:14,947 - F1Pipeline - INFO - Report saved to pipeline_outputs\report_20250729_165814.json
+2025-07-29 16:58:14,950 - F1Pipeline - INFO - Pipeline completed successfully!
+
+No recommendations generated. This could mean:
+- No bets met the minimum edge requirement
+- Try adjusting config.min_edge or config.kelly_fraction# F1 Models Module Extraction Summary
 
 ## Overview
 Successfully extracted model-related classes and functions from `F1_Core_Models.ipynb` into a reusable module: `f1_models.py`
