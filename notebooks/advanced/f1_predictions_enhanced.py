@@ -500,78 +500,100 @@ class F1PrizePicksPredictor:
                 })
         
         # Print Overtakes Table
-        print("\n## Overtakes (Over/Under 2.5)")
-        print("\n| Driver | Predicted | Confidence Interval | Over 2.5% | Under 2.5% | Recommendation |")
-        print("|--------|-----------|-------------------|-----------|------------|----------------|")
+        print("\n" + "="*120)
+        print("OVERTAKES (Over/Under 2.5)")
+        print("="*120)
+        print(f"{'Driver':<25} {'Predicted':<10} {'Confidence Interval':<20} {'Over 2.5%':<12} {'Under 2.5%':<12} {'Recommendation':<15}")
+        print("-"*120)
         
         # Sort by predicted overtakes descending
         overtakes_data.sort(key=lambda x: x['predicted'], reverse=True)
         
         for row in overtakes_data:
-            rec = f"**{row['recommendation']}**" if row['recommendation'] != 'PASS' else row['recommendation']
+            rec = row['recommendation']
+            if rec != 'PASS':
+                rec = f">>> {rec} <<<"
             ci_str = f"[{row['ci'][0]:.2f}, {row['ci'][1]:.2f}]"
-            print(f"| {row['driver']} | {row['predicted']:.2f} | {ci_str} | "
-                  f"{row['over_prob']*100:.1f}% | {row['under_prob']*100:.1f}% | {rec} |")
+            print(f"{row['driver']:<25} {row['predicted']:<10.2f} {ci_str:<20} "
+                  f"{row['over_prob']*100:<12.1f}% {row['under_prob']*100:<12.1f}% {rec:<15}")
         
         # Print Points Table
-        print("\n## Points Finish (Over/Under 0.5)")
-        print("\n| Driver | Points Finish Rate | Predicted | Over 0.5% | Under 0.5% | Recommendation |")
-        print("|--------|-------------------|-----------|-----------|------------|----------------|")
+        print("\n" + "="*120)
+        print("POINTS FINISH (Over/Under 0.5)")
+        print("="*120)
+        print(f"{'Driver':<25} {'Points Rate':<15} {'Predicted':<12} {'Over 0.5%':<12} {'Under 0.5%':<12} {'Recommendation':<15}")
+        print("-"*120)
         
         # Sort by points finish rate descending
         points_data.sort(key=lambda x: x['points_rate'], reverse=True)
         
         for row in points_data:
-            rec = f"**{row['recommendation']}**" if row['recommendation'] != 'PASS' else row['recommendation']
-            print(f"| {row['driver']} | {row['points_rate']*100:.1f}% | {row['predicted']:.2f} | "
-                  f"{row['over_prob']*100:.1f}% | {row['under_prob']*100:.1f}% | {rec} |")
+            rec = row['recommendation']
+            if rec != 'PASS':
+                rec = f">>> {rec} <<<"
+            print(f"{row['driver']:<25} {row['points_rate']*100:<15.1f}% {row['predicted']:<12.2f} "
+                  f"{row['over_prob']*100:<12.1f}% {row['under_prob']*100:<12.1f}% {rec:<15}")
         
         # Print Starting Position Table
-        print("\n## Starting Position (Over/Under 10.5)")
-        print("\n| Driver | Predicted | Confidence Interval | Over 10.5% | Under 10.5% | Recommendation |")
-        print("|--------|-----------|-------------------|------------|-------------|----------------|")
+        print("\n" + "="*120)
+        print("STARTING POSITION (Over/Under 10.5)")
+        print("="*120)
+        print(f"{'Driver':<25} {'Predicted':<10} {'Confidence Interval':<20} {'Over 10.5%':<12} {'Under 10.5%':<13} {'Recommendation':<15}")
+        print("-"*120)
         
         # Sort by predicted position descending (higher position = worse starting spot)
         starting_pos_data.sort(key=lambda x: x['predicted'], reverse=True)
         
         for row in starting_pos_data:
-            rec = f"**{row['recommendation']}**" if row['recommendation'] != 'PASS' else row['recommendation']
+            rec = row['recommendation']
+            if rec != 'PASS':
+                rec = f">>> {rec} <<<"
             ci_str = f"[{row['ci'][0]:.1f}, {row['ci'][1]:.1f}]"
-            print(f"| {row['driver']} | {row['predicted']:.1f} | {ci_str} | "
-                  f"{row['over_prob']*100:.1f}% | {row['under_prob']*100:.1f}% | {rec} |")
+            print(f"{row['driver']:<25} {row['predicted']:<10.1f} {ci_str:<20} "
+                  f"{row['over_prob']*100:<12.1f}% {row['under_prob']*100:<13.1f}% {rec:<15}")
         
         # Print Pit Stops Table
-        print("\n## Pit Stops (Over/Under 2.5)")
-        print("\n| Driver | Predicted | Confidence Interval | Over 2.5% | Under 2.5% | Recommendation |")
-        print("|--------|-----------|-------------------|-----------|------------|----------------|")
+        print("\n" + "="*120)
+        print("PIT STOPS (Over/Under 2.5)")
+        print("="*120)
+        print(f"{'Driver':<25} {'Predicted':<10} {'Confidence Interval':<20} {'Over 2.5%':<12} {'Under 2.5%':<12} {'Recommendation':<15}")
+        print("-"*120)
         
         # Sort by predicted pit stops descending
         pit_stops_data.sort(key=lambda x: x['predicted'], reverse=True)
         
         for row in pit_stops_data:
-            rec = f"**{row['recommendation']}**" if row['recommendation'] != 'PASS' else row['recommendation']
+            rec = row['recommendation']
+            if rec != 'PASS':
+                rec = f">>> {rec} <<<"
             ci_str = f"[{row['ci'][0]:.2f}, {row['ci'][1]:.2f}]"
-            print(f"| {row['driver']} | {row['predicted']:.2f} | {ci_str} | "
-                  f"{row['over_prob']*100:.1f}% | {row['under_prob']*100:.1f}% | {rec} |")
+            print(f"{row['driver']:<25} {row['predicted']:<10.2f} {ci_str:<20} "
+                  f"{row['over_prob']*100:<12.1f}% {row['under_prob']*100:<12.1f}% {rec:<15}")
         
         # Print Teammate Overtakes Table
-        print("\n## Teammate Overtakes - PrizePicks Scoring (Over/Under 0.5)")
-        print("\n| Driver | Predicted Score | Confidence Interval | Over 0.5% | Under 0.5% | Recommendation |")
-        print("|--------|----------------|-------------------|-----------|------------|----------------|")
+        print("\n" + "="*120)
+        print("TEAMMATE OVERTAKES - PrizePicks Scoring (Over/Under 0.5)")
+        print("="*120)
+        print(f"{'Driver':<25} {'Predicted':<12} {'Confidence Interval':<20} {'Over 0.5%':<12} {'Under 0.5%':<12} {'Recommendation':<15}")
+        print("-"*120)
         
         # Sort by predicted score descending
         teammate_data.sort(key=lambda x: x['predicted'], reverse=True)
         
         for row in teammate_data:
-            rec = f"**{row['recommendation']}**" if row['recommendation'] != 'PASS' else row['recommendation']
+            rec = row['recommendation']
+            if rec != 'PASS':
+                rec = f">>> {rec} <<<"
             ci_str = f"[{row['ci'][0]:.2f}, {row['ci'][1]:.2f}]"
-            print(f"| {row['driver']} | {row['predicted']:.2f} | {ci_str} | "
-                  f"{row['over_prob']*100:.1f}% | {row['under_prob']*100:.1f}% | {rec} |")
+            print(f"{row['driver']:<25} {row['predicted']:<12.2f} {ci_str:<20} "
+                  f"{row['over_prob']*100:<12.1f}% {row['under_prob']*100:<12.1f}% {rec:<15}")
         
         # Print DNF Summary
-        print("\n## DNF Probability Summary")
-        print("\n| Driver | DNF Probability | Confidence | Recommendation |")
-        print("|--------|----------------|------------|----------------|")
+        print("\n" + "="*100)
+        print("DNF PROBABILITY SUMMARY")
+        print("="*100)
+        print(f"{'Driver':<25} {'DNF Probability':<20} {'Confidence':<15} {'Recommendation':<15}")
+        print("-"*100)
         
         # Sort by DNF probability descending
         dnf_data.sort(key=lambda x: x['probability'], reverse=True)
@@ -581,21 +603,25 @@ class F1PrizePicksPredictor:
         if len(unique_probs) == 1:
             avg_conf = sum(d['confidence'] for d in dnf_data) / len(dnf_data)
             rec = dnf_data[0]['recommendation']
-            print(f"| All Drivers | {dnf_data[0]['probability']*100:.1f}% | "
-                  f"{min(d['confidence'] for d in dnf_data)*100:.1f}% - "
-                  f"{max(d['confidence'] for d in dnf_data)*100:.1f}% | **{rec}** |")
-            print("\n*Note: All drivers have 0.0% predicted DNF probability with varying confidence levels. "
-                  "The model strongly recommends betting against DNF for all drivers.*")
+            print(f"{'All Drivers':<25} {dnf_data[0]['probability']*100:<20.1f}% "
+                  f"{min(d['confidence'] for d in dnf_data)*100:.1f}% - {max(d['confidence'] for d in dnf_data)*100:.1f}%{'':<5} "
+                  f">>> {rec} <<<")
+            print("\n* Note: All drivers have 0.0% predicted DNF probability with varying confidence levels.")
+            print("* The model strongly recommends betting against DNF for all drivers.")
         else:
             for row in dnf_data[:10]:  # Show top 10 highest DNF risks
-                rec = f"**{row['recommendation']}**" if row['recommendation'] in ['HIGH_RISK', 'NO'] else row['recommendation']
-                print(f"| {row['driver']} | {row['probability']*100:.1f}% | "
-                      f"{row['confidence']*100:.1f}% | {rec} |")
+                rec = row['recommendation']
+                if rec in ['HIGH_RISK', 'NO']:
+                    rec = f">>> {rec} <<<"
+                print(f"{row['driver']:<25} {row['probability']*100:<20.1f}% "
+                      f"{row['confidence']*100:<15.1f}% {rec:<15}")
         
         # Print top betting edges
-        print("\n## Top Betting Edges")
-        print("\n| Driver | Prop Type | Direction | Line | Probability | Edge |")
-        print("|--------|-----------|-----------|------|-------------|------|")
+        print("\n" + "="*110)
+        print("TOP BETTING EDGES (>15% Edge)")
+        print("="*110)
+        print(f"{'Driver':<25} {'Prop Type':<20} {'Direction':<10} {'Line':<8} {'Probability':<12} {'Edge':<10}")
+        print("-"*110)
         
         edges = []
         for driver_id, data in predictions.items():
@@ -620,9 +646,9 @@ class F1PrizePicksPredictor:
         
         edges.sort(key=lambda x: x['edge'], reverse=True)
         
-        for edge in edges[:15]:
-            print(f"| {edge['driver']} | {edge['prop']} | **{edge['direction']}** | "
-                  f"{edge['line']} | {edge['probability']*100:.1f}% | +{edge['edge']*100:.1f}% |")
+        for edge in edges[:20]:
+            print(f"{edge['driver']:<25} {edge['prop']:<20} >>> {edge['direction']:<7} "
+                  f"{str(edge['line']):<8} {edge['probability']*100:<12.1f}% +{edge['edge']*100:<9.1f}%")
 
 def main():
     """Run the enhanced prediction system"""
