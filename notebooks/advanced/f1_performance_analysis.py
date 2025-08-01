@@ -1822,22 +1822,63 @@ class F1PerformanceAnalyzer:
             year_data = track_teammate['year_by_year']
             if not year_data.empty:
                 print("\nYear-by-Year Teammate Battles:")
-                print("=" * 100)
+                print("=" * 120)
                 
-                year_data_sorted = year_data.sort_values(['driver_name', 'year'])
+                # Get unique years and sort
+                all_years = sorted(year_data['year'].unique())
+                recent_years = all_years[-5:] if len(all_years) > 5 else all_years
                 
-                # Display by driver
-                for driver_id in year_data_sorted['driverId'].unique():
-                    driver_data = year_data_sorted[year_data_sorted['driverId'] == driver_id]
-                    driver_name = driver_data.iloc[0]['driver_name']
-                    print(f"\n{driver_name}:")
+                # Header with years
+                header = f"{'Driver':<25}"
+                for year in recent_years:
+                    header += f"{int(year):>20}"
+                print(header)
+                
+                # Sub-header
+                sub_header = f"{'':<25}"
+                for year in recent_years:
+                    sub_header += f"{'W-L (OT) [PP]':>20}"
+                print(sub_header)
+                print("-" * (25 + len(recent_years) * 20))
+                
+                # Sort drivers by total wins
+                driver_wins = year_data.groupby('driverId')['teammate_win'].sum().sort_values(ascending=False)
+                
+                for driver_id in driver_wins.index[:20]:  # Top 20 drivers
+                    driver_data = year_data[year_data['driverId'] == driver_id]
+                    driver_name = driver_data.iloc[0].get('driver_name', driver_id)
                     
-                    for _, row in driver_data.iterrows():
-                        print(f"  {int(row['year'])}: "
-                              f"Wins: {row['teammate_win']}, "
-                              f"Win Rate: {row['teammate_win_rate']:.1%}, "
-                              f"Net OT: {row['teammate_overtake']:+d}, "
-                              f"PrizePicks Pts: {row['prizepicks_points']:+.1f}")
+                    # Truncate long names
+                    if len(driver_name) > 24:
+                        driver_name = driver_name[:21] + "..."
+                    
+                    row_str = f"{driver_name:<25}"
+                    
+                    for year in recent_years:
+                        year_row = driver_data[driver_data['year'] == year]
+                        if not year_row.empty:
+                            row = year_row.iloc[0]
+                            wins = int(row['teammate_win'])
+                            losses = int(row['teammate_battles']) - wins if 'teammate_battles' in row else 1 - wins
+                            net_ot = int(row['teammate_overtake'])
+                            pp_pts = row['prizepicks_points']
+                            
+                            # Format: W-L (OT) [PP]
+                            # Example: 1-0 (+1) [+1.5]
+                            battle_str = f"{wins}-{losses}"
+                            ot_str = f"({net_ot:+d})"
+                            pp_str = f"[{pp_pts:+.1f}]"
+                            
+                            combined = f"{battle_str} {ot_str} {pp_str}"
+                            row_str += f"{combined:>20}"
+                        else:
+                            row_str += f"{'—':^20}"
+                    
+                    print(row_str)
+                
+                if len(all_years) > len(recent_years):
+                    print(f"\n* Showing last {len(recent_years)} years. Full history from {min(all_years)} to {max(all_years)}")
+                print("\n* Format: Wins-Losses (Net Overtakes) [PrizePicks Points]")
             
             # Career stats
             overall_stats = track_teammate['overall_stats']
