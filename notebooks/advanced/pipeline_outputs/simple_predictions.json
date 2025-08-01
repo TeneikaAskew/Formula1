@@ -1,0 +1,342 @@
+{
+  "alexander-albon": {
+    "driver_id": "alexander-albon",
+    "driver_name": "Alexander Albon",
+    "predictions": {
+      "overtakes": {
+        "avg": 2.08,
+        "line": 2.5,
+        "over_prob": 0.308,
+        "under_prob": 0.692,
+        "recommendation": "UNDER"
+      },
+      "points": {
+        "avg": 6.0,
+        "line": 0.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "points_finish_rate": 1.0,
+        "recommendation": "OVER"
+      },
+      "starting_position": {
+        "avg": 10.2,
+        "line": 10.5,
+        "over_prob": 0.5,
+        "under_prob": 0.5,
+        "recommendation": "PASS"
+      },
+      "dnf": {
+        "probability": 0.0,
+        "races_checked": 20,
+        "dnf_count": 0,
+        "recommendation": "LOW_RISK"
+      }
+    }
+  },
+  "andrea-kimi-antonelli": {
+    "driver_id": "andrea-kimi-antonelli",
+    "driver_name": "Andrea Kimi Antonelli",
+    "predictions": {
+      "overtakes": {
+        "avg": 1.88,
+        "line": 2.5,
+        "over_prob": 0.125,
+        "under_prob": 0.875,
+        "recommendation": "UNDER"
+      },
+      "points": {
+        "avg": 9.83,
+        "line": 0.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "points_finish_rate": 1.0,
+        "recommendation": "OVER"
+      },
+      "starting_position": {
+        "avg": 8.4,
+        "line": 10.5,
+        "over_prob": 0.3,
+        "under_prob": 0.7,
+        "recommendation": "UNDER"
+      },
+      "dnf": {
+        "probability": 0.0,
+        "races_checked": 13,
+        "dnf_count": 0,
+        "recommendation": "LOW_RISK"
+      }
+    }
+  },
+  "carlos-sainz-jr": {
+    "driver_id": "carlos-sainz-jr",
+    "driver_name": "Carlos Sainz Jr.",
+    "predictions": {
+      "overtakes": {
+        "avg": 1.47,
+        "line": 2.5,
+        "over_prob": 0.267,
+        "under_prob": 0.733,
+        "recommendation": "UNDER"
+      },
+      "points": {
+        "avg": 8.58,
+        "line": 0.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "points_finish_rate": 1.0,
+        "recommendation": "OVER"
+      },
+      "starting_position": {
+        "avg": 11.7,
+        "line": 10.5,
+        "over_prob": 0.6,
+        "under_prob": 0.4,
+        "recommendation": "OVER"
+      },
+      "dnf": {
+        "probability": 0.0,
+        "races_checked": 20,
+        "dnf_count": 0,
+        "recommendation": "LOW_RISK"
+      }
+    }
+  },
+  "charles-leclerc": {
+    "driver_id": "charles-leclerc",
+    "driver_name": "Charles Leclerc",
+    "predictions": {
+      "overtakes": {
+        "avg": 2.21,
+        "line": 2.5,
+        "over_prob": 0.368,
+        "under_prob": 0.632,
+        "recommendation": "UNDER"
+      },
+      "points": {
+        "avg": 13.11,
+        "line": 0.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "points_finish_rate": 1.0,
+        "recommendation": "OVER"
+      },
+      "starting_position": {
+        "avg": 5.4,
+        "line": 10.5,
+        "over_prob": 0.1,
+        "under_prob": 0.9,
+        "recommendation": "UNDER"
+      },
+      "dnf": {
+        "probability": 0.0,
+        "races_checked": 20,
+        "dnf_count": 0,
+        "recommendation": "LOW_RISK"
+      }
+    }
+  },
+  "daniel-ricciardo": {
+    "driver_id": "daniel-ricciardo",
+    "driver_name": "Daniel Ricciardo",
+    "predictions": {
+      "overtakes": {
+        "avg": 1.56,
+        "line": 2.5,
+        "over_prob": 0.278,
+        "under_prob": 0.722,
+        "recommendation": "UNDER"
+      },
+      "points": {
+        "avg": 2.33,
+        "line": 0.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "points_finish_rate": 1.0,
+        "recommendation": "OVER"
+      },
+      "starting_position": {
+        "avg": 12.9,
+        "line": 10.5,
+        "over_prob": 0.8,
+        "under_prob": 0.2,
+        "recommendation": "OVER"
+      },
+      "dnf": {
+        "probability": 0.0,
+        "races_checked": 20,
+        "dnf_count": 0,
+        "recommendation": "LOW_RISK"
+      }
+    }
+  },
+  "esteban-ocon": {
+    "driver_id": "esteban-ocon",
+    "driver_name": "Esteban Ocon",
+    "predictions": {
+      "overtakes": {
+        "avg": 2.56,
+        "line": 2.5,
+        "over_prob": 0.375,
+        "under_prob": 0.625,
+        "recommendation": "UNDER"
+      },
+      "points": {
+        "avg": 6.83,
+        "line": 0.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "points_finish_rate": 1.0,
+        "recommendation": "OVER"
+      },
+      "starting_position": {
+        "avg": 14.3,
+        "line": 10.5,
+        "over_prob": 0.8,
+        "under_prob": 0.2,
+        "recommendation": "OVER"
+      },
+      "dnf": {
+        "probability": 0.0,
+        "races_checked": 20,
+        "dnf_count": 0,
+        "recommendation": "LOW_RISK"
+      }
+    }
+  },
+  "fernando-alonso": {
+    "driver_id": "fernando-alonso",
+    "driver_name": "Fernando Alonso",
+    "predictions": {
+      "overtakes": {
+        "avg": 1.07,
+        "line": 2.5,
+        "over_prob": 0.133,
+        "under_prob": 0.867,
+        "recommendation": "UNDER"
+      },
+      "points": {
+        "avg": 4.0,
+        "line": 0.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "points_finish_rate": 1.0,
+        "recommendation": "OVER"
+      },
+      "starting_position": {
+        "avg": 11.0,
+        "line": 10.5,
+        "over_prob": 0.5,
+        "under_prob": 0.5,
+        "recommendation": "PASS"
+      },
+      "dnf": {
+        "probability": 0.0,
+        "races_checked": 20,
+        "dnf_count": 0,
+        "recommendation": "LOW_RISK"
+      }
+    }
+  },
+  "franco-colapinto": {
+    "driver_id": "franco-colapinto",
+    "driver_name": "Franco Colapinto",
+    "predictions": {
+      "overtakes": {
+        "avg": 2.18,
+        "line": 2.5,
+        "over_prob": 0.455,
+        "under_prob": 0.545,
+        "recommendation": "PASS"
+      },
+      "points": {
+        "avg": 2.5,
+        "line": 0.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "points_finish_rate": 1.0,
+        "recommendation": "OVER"
+      },
+      "starting_position": {
+        "avg": 16.9,
+        "line": 10.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "recommendation": "OVER"
+      },
+      "dnf": {
+        "probability": 0.0,
+        "races_checked": 16,
+        "dnf_count": 0,
+        "recommendation": "LOW_RISK"
+      }
+    }
+  },
+  "gabriel-bortoleto": {
+    "driver_id": "gabriel-bortoleto",
+    "driver_name": "Gabriel Bortoleto",
+    "predictions": {
+      "overtakes": {
+        "avg": 1.1,
+        "line": 2.5,
+        "over_prob": 0.1,
+        "under_prob": 0.9,
+        "recommendation": "UNDER"
+      },
+      "points": {
+        "avg": 3.0,
+        "line": 0.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "points_finish_rate": 1.0,
+        "recommendation": "OVER"
+      },
+      "starting_position": {
+        "avg": 14.4,
+        "line": 10.5,
+        "over_prob": 0.8,
+        "under_prob": 0.2,
+        "recommendation": "OVER"
+      },
+      "dnf": {
+        "probability": 0.0,
+        "races_checked": 13,
+        "dnf_count": 0,
+        "recommendation": "LOW_RISK"
+      }
+    }
+  },
+  "george-russell": {
+    "driver_id": "george-russell",
+    "driver_name": "George Russell",
+    "predictions": {
+      "overtakes": {
+        "avg": 0.47,
+        "line": 2.5,
+        "over_prob": 0.053,
+        "under_prob": 0.947,
+        "recommendation": "UNDER"
+      },
+      "points": {
+        "avg": 12.42,
+        "line": 0.5,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
+        "points_finish_rate": 1.0,
+        "recommendation": "OVER"
+      },
+      "starting_position": {
+        "avg": 4.7,
+        "line": 10.5,
+        "over_prob": 0.1,
+        "under_prob": 0.9,
+        "recommendation": "UNDER"
+      },
+      "dnf": {
+        "probability": 0.0,
+        "races_checked": 20,
+        "dnf_count": 0,
+        "recommendation": "LOW_RISK"
+      }
+    }
+  }
+}

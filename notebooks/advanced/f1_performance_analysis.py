@@ -1953,19 +1953,29 @@ class F1PerformanceAnalyzer:
             # Career stats
             overall_stats = track_teammate['overall_stats']
             if not overall_stats.empty:
-                print("\n\nCareer Teammate Statistics at this Track:")
-                print("-" * 100)
-                print(f"{'Driver':<25} {'Battles':<10} {'Wins':<8} {'Win Rate':<10} "
-                      f"{'Net OT':<10} {'PP Points':<10}")
-                print("-" * 100)
+                # Get active drivers from past and current season
+                active_drivers = self.get_active_drivers()
+                active_driver_ids = set(active_drivers['id'].unique())
                 
-                overall_sorted = overall_stats.sort_values('win_rate', ascending=False)
+                # Filter overall stats to only include active drivers
+                overall_stats_filtered = overall_stats[overall_stats.index.isin(active_driver_ids)]
                 
-                for driver_id, row in overall_sorted.iterrows():
-                    driver_name = row.get('driver_name', driver_id)
-                    print(f"{driver_name:<25} {row['total_battles']:<10.0f} {row['total_wins']:<8.0f} "
-                          f"{row['win_rate']:<10.1%} {row['net_overtakes']:+10.0f} "
-                          f"{row['career_prizepicks_points']:+10.1f}")
+                if not overall_stats_filtered.empty:
+                    print("\n\nCareer Teammate Statistics at this Track (Active Drivers Only):")
+                    print("-" * 100)
+                    print(f"{'Driver':<25} {'Battles':<10} {'Wins':<8} {'Win Rate':<10} "
+                          f"{'Net OT':<10} {'PP Points':<10}")
+                    print("-" * 100)
+                    
+                    overall_sorted = overall_stats_filtered.sort_values('win_rate', ascending=False)
+                    
+                    for driver_id, row in overall_sorted.iterrows():
+                        driver_name = row.get('driver_name', driver_id)
+                        print(f"{driver_name:<25} {row['total_battles']:<10.0f} {row['total_wins']:<8.0f} "
+                              f"{row['win_rate']:<10.1%} {row['net_overtakes']:+10.0f} "
+                              f"{row['career_prizepicks_points']:+10.1f}")
+                else:
+                    print("\n\nNo career teammate statistics at this track for active drivers")
         else:
             print("No teammate battle data available for this circuit")
         
