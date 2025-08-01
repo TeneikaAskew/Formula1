@@ -70,29 +70,33 @@ class F1PerformanceAnalyzer:
         return upcoming.iloc[0]
     
     def get_active_drivers(self, year=None):
-        """Get list of active drivers for a given year"""
-        if year is None:
-            year = self.current_year
-            
-        results = self.data.get('results', pd.DataFrame())  # Fixed key name
+        """Get list of active drivers for a given year or past 12 months"""
+        results = self.data.get('results', pd.DataFrame())
         if results.empty:
-            return {}  # Return DataFrame not list
+            return pd.DataFrame()  # Return empty DataFrame
             
-        # Get drivers who raced in the specified year
-        if 'year' in results.columns:
-            year_results = results[results['year'] == year]
-        else:
-            # Try to join with races to get year
+        # Get results with year info
+        if 'year' not in results.columns:
             races = self.data.get('races', pd.DataFrame())
             if not races.empty and 'id' in races.columns and 'raceId' in results.columns:
-                results_with_year = results.merge(races[['id', 'year']], left_on='raceId', right_on='id', how='left')
-                year_results = results_with_year[results_with_year['year'] == year]
+                results = results.merge(races[['id', 'year']], left_on='raceId', right_on='id', how='left')
             else:
-                # Fallback: use most recent results
-                year_results = results.tail(1000)
+                return pd.DataFrame()  # Return empty DataFrame
+        
+        # If year specified, get drivers from that year
+        if year is not None:
+            year_results = results[results['year'] == year]
+        else:
+            # Get drivers who raced in the past year (current year and previous year)
+            current_year = self.current_year
+            past_year_results = results[
+                (results['year'] == current_year) | 
+                (results['year'] == current_year - 1)
+            ]
+            year_results = past_year_results
         
         if year_results.empty:
-            return {}  # Return DataFrame not list
+            return pd.DataFrame()  # Return empty DataFrame
             
         # Get unique driver IDs
         driver_ids = year_results['driverId'].unique()
@@ -100,7 +104,7 @@ class F1PerformanceAnalyzer:
         # Get driver details
         drivers = self.data.get('drivers', pd.DataFrame())
         if drivers.empty:
-            return {}  # Return DataFrame not list
+            return pd.DataFrame()  # Return empty DataFrame
             
         active_drivers = drivers[drivers['id'].isin(driver_ids)]
         return active_drivers
@@ -190,6 +194,12 @@ class F1PerformanceAnalyzer:
         
         # Filter to only current season drivers
         final_data = self.filter_current_season_drivers(final_data)
+        
+        # Add driver names
+        drivers = self.data.get('drivers', pd.DataFrame())
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            final_data['driver_name'] = final_data.index.map(driver_map)
         
         # Add circuit-specific prediction for next race
         next_race = self.get_next_race()
@@ -355,6 +365,12 @@ class F1PerformanceAnalyzer:
         # Filter to only current season drivers
         points_analysis = self.filter_current_season_drivers(points_analysis)
         
+        # Add driver names
+        drivers = self.data.get('drivers', pd.DataFrame())
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            points_analysis['driver_name'] = points_analysis.index.map(driver_map)
+        
         # Circuit-specific prediction
         next_race = self.get_next_race()
         if next_race is not None and 'circuitId' in next_race:
@@ -507,6 +523,12 @@ class F1PerformanceAnalyzer:
         # Filter to only current season drivers
         pit_analysis = self.filter_current_season_drivers(pit_analysis)
         
+        # Add driver names
+        drivers = self.data.get('drivers', pd.DataFrame())
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            pit_analysis['driver_name'] = pit_analysis.index.map(driver_map)
+        
         # Circuit-specific prediction
         next_race = self.get_next_race()
         if next_race is not None and 'circuitId' in next_race:
@@ -562,6 +584,12 @@ class F1PerformanceAnalyzer:
         
         # Filter to only current season drivers
         grid_analysis = self.filter_current_season_drivers(grid_analysis)
+        
+        # Add driver names
+        drivers = self.data.get('drivers', pd.DataFrame())
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            grid_analysis['driver_name'] = grid_analysis.index.map(driver_map)
         
         # Circuit-specific prediction
         next_race = self.get_next_race()
@@ -736,6 +764,12 @@ class F1PerformanceAnalyzer:
         
         # Filter to only current season drivers
         sprint_analysis = self.filter_current_season_drivers(sprint_analysis)
+        
+        # Add driver names
+        drivers = self.data.get('drivers', pd.DataFrame())
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            sprint_analysis['driver_name'] = sprint_analysis.index.map(driver_map)
         
         # Circuit-specific prediction
         next_race = self.get_next_race()
@@ -950,6 +984,12 @@ class F1PerformanceAnalyzer:
         # Filter to only current season drivers
         teammate_analysis = self.filter_current_season_drivers(teammate_analysis)
         
+        # Add driver names
+        drivers = self.data.get('drivers', pd.DataFrame())
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            teammate_analysis['driver_name'] = teammate_analysis.index.map(driver_map)
+        
         return teammate_analysis
     
     def analyze_fastest_laps(self):
@@ -999,6 +1039,12 @@ class F1PerformanceAnalyzer:
         
         # Filter to only current season drivers
         lap_analysis = self.filter_current_season_drivers(lap_analysis)
+        
+        # Add driver names
+        drivers = self.data.get('drivers', pd.DataFrame())
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            lap_analysis['driver_name'] = lap_analysis.index.map(driver_map)
         
         return lap_analysis
     
@@ -1315,21 +1361,31 @@ class F1PerformanceAnalyzer:
         print("="*80)
         overtakes = self.analyze_overtakes()
         if not overtakes.empty:
-            display_cols = ['total_overtakes', 'avg_overtakes', 'median_overtakes', 'avg_points', 'races']
+            display_cols = ['driver_name', 'total_overtakes', 'avg_overtakes', 'median_overtakes', 'avg_points', 'races']
             if 'next_circuit_avg' in overtakes.columns:
                 display_cols.append('next_circuit_avg')
+            # Remove driver_name if it doesn't exist
+            display_cols = [col for col in display_cols if col in overtakes.columns]
             print(overtakes[display_cols].head(20).to_string())
             
             # Show drivers with notable statistics
             print("\nNotable insights:")
             if 'total_overtakes' in overtakes.columns:
                 top_overtakers = overtakes.nlargest(5, 'total_overtakes')
-                print(f"Top 5 overtakers: {', '.join(top_overtakers.index.tolist())}")
+                if 'driver_name' in overtakes.columns:
+                    top_names = [overtakes.loc[idx, 'driver_name'] for idx in top_overtakers.index if idx in overtakes.index]
+                    print(f"Top 5 overtakers: {', '.join(top_names)}")
+                else:
+                    print(f"Top 5 overtakers: {', '.join(top_overtakers.index.tolist())}")
                 
                 # Drivers with negative average (lost positions)
                 lost_positions = overtakes[overtakes['avg_positions_gained'] < 0]
                 if not lost_positions.empty:
-                    print(f"Drivers who typically lost positions: {', '.join(lost_positions.index.tolist())}")
+                    if 'driver_name' in overtakes.columns:
+                        lost_names = [overtakes.loc[idx, 'driver_name'] for idx in lost_positions.index if idx in overtakes.index]
+                        print(f"Drivers who typically lost positions: {', '.join(lost_names)}")
+                    else:
+                        print(f"Drivers who typically lost positions: {', '.join(lost_positions.index.tolist())}")
         else:
             print("No overtake data available")
         
@@ -1440,18 +1496,24 @@ class F1PerformanceAnalyzer:
         print("="*80)
         points = self.analyze_points()
         if not points.empty:
-            display_cols = ['total_points', 'avg_points', 'median_points', 'races']
+            display_cols = ['driver_name', 'total_points', 'avg_points', 'median_points', 'races']
             if 'hist_avg_points' in points.columns:
                 display_cols.append('hist_avg_points')
             if 'next_circuit_avg' in points.columns:
                 display_cols.append('next_circuit_avg')
+            # Remove driver_name if it doesn't exist
+            display_cols = [col for col in display_cols if col in points.columns]
             print(points[display_cols].head(20).to_string())
             
             # Explain any zeros
             if not points.empty:
                 zero_points = points[points['total_points'] == 0]
                 if not zero_points.empty:
-                    print(f"\nDrivers with 0 points: {', '.join(zero_points.index.tolist())}")
+                    if 'driver_name' in points.columns:
+                        zero_names = [points.loc[idx, 'driver_name'] for idx in zero_points.index if idx in points.index]
+                        print(f"\nDrivers with 0 points: {', '.join(zero_names)}")
+                    else:
+                        print(f"\nDrivers with 0 points: {', '.join(zero_points.index.tolist())}")
                     print("(These drivers either didn't finish in points positions or had limited races)")
         else:
             print("No points data available")
@@ -1555,9 +1617,11 @@ class F1PerformanceAnalyzer:
         print("="*80)
         pit_stops = self.analyze_pit_stops()
         if not pit_stops.empty:
-            display_cols = ['avg_stop_time', 'median_stop_time', 'best_stop_time', 'total_stops']
+            display_cols = ['driver_name', 'avg_stop_time', 'median_stop_time', 'best_stop_time', 'total_stops']
             if 'next_circuit_avg' in pit_stops.columns:
                 display_cols.append('next_circuit_avg')
+            # Remove driver_name if it doesn't exist
+            display_cols = [col for col in display_cols if col in pit_stops.columns]
             print(pit_stops[display_cols].head(20).to_string())
             
             # Add pit stop explanations
@@ -1573,11 +1637,13 @@ class F1PerformanceAnalyzer:
         print("="*80)
         grid = self.analyze_starting_positions()
         if not grid.empty:
-            display_cols = ['avg_start_position', 'median_start_position', 'best_start_position']
+            display_cols = ['driver_name', 'avg_start_position', 'median_start_position', 'best_start_position']
             if 'avg_points_per_race' in grid.columns:
                 display_cols.append('avg_points_per_race')
             if 'next_circuit_avg' in grid.columns:
                 display_cols.append('next_circuit_avg')
+            # Remove driver_name if it doesn't exist
+            display_cols = [col for col in display_cols if col in grid.columns]
             print(grid[display_cols].head(20).to_string())
         else:
             print("No starting position data available")
@@ -1693,9 +1759,11 @@ class F1PerformanceAnalyzer:
         print("="*80)
         sprint = self.analyze_sprint_points()
         if not sprint.empty:
-            display_cols = ['total_sprint_points', 'avg_sprint_points', 'median_sprint_points', 'sprint_races']
+            display_cols = ['driver_name', 'total_sprint_points', 'avg_sprint_points', 'median_sprint_points', 'sprint_races']
             if 'next_circuit_avg' in sprint.columns:
                 display_cols.append('next_circuit_avg')
+            # Remove driver_name if it doesn't exist
+            display_cols = [col for col in display_cols if col in sprint.columns]
             print(sprint[display_cols].head(20).to_string())
         else:
             print("No sprint race data available")
@@ -1802,9 +1870,11 @@ class F1PerformanceAnalyzer:
         print("="*80)
         teammate = self.analyze_teammate_overtakes()
         if not teammate.empty:
-            display_cols = ['total_battles', 'wins', 'losses', 
+            display_cols = ['driver_name', 'total_battles', 'wins', 'losses', 
                           'win_rate', 'OT_made', 'OT_received',
                           'net_OT', 'prizepicks_pts']
+            # Remove driver_name if it doesn't exist
+            display_cols = [col for col in display_cols if col in teammate.columns]
             print(teammate[display_cols].head(20).to_string())
             print("\nNote: PrizePicks awards +1.5 points for overtaking teammate, -1.5 for being overtaken")
         else:
@@ -1905,8 +1975,10 @@ class F1PerformanceAnalyzer:
         print("="*80)
         fastest = self.analyze_fastest_laps()
         if not fastest.empty:
-            display_cols = ['total_fastest_laps', 'total_races', 'fastest_lap_rate', 
+            display_cols = ['driver_name', 'total_fastest_laps', 'total_races', 'fastest_lap_rate', 
                           'avg_lap_number', 'seasons_with_fl', 'fastest_lap_points']
+            # Remove driver_name if it doesn't exist
+            display_cols = [col for col in display_cols if col in fastest.columns]
             print(fastest[display_cols].head(20).to_string())
             print("\nNote: Fastest lap awards 1 F1 point (if finishing in top 10)")
         else:
