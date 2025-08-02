@@ -10,24 +10,38 @@
           2.25
         ],
         "confidence": 0.431,
-        "line": 2.5,
-        "over_prob": 0.27,
-        "under_prob": 0.73,
+        "line": 2.0,
+        "over_prob": 0.365,
+        "under_prob": 0.635,
         "historical_avg": 1.54,
+        "historical_data": [
+          0.0,
+          0.0,
+          0.0,
+          5.0,
+          0.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 6.0,
+        "predicted": NaN,
         "confidence_interval": [
-          3.23,
-          8.77
+          NaN,
+          NaN
         ],
-        "confidence": 1.202,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.2,
+        "under_prob": 0.8,
         "points_finish_rate": 0.45,
-        "recommendation": "OVER"
+        "historical_data": [
+          NaN,
+          NaN,
+          NaN,
+          4.0,
+          8.0
+        ],
+        "recommendation": "UNDER"
       },
       "starting_position": {
         "predicted": 10.2,
@@ -36,11 +50,18 @@
           12.5
         ],
         "confidence": 0.998,
-        "line": 10.5,
-        "over_prob": 0.46,
-        "under_prob": 0.54,
+        "line": 3.0,
+        "over_prob": 0.992,
+        "under_prob": 0.008,
         "avg_grid": 10.2,
-        "recommendation": "PASS"
+        "historical_data": [
+          11.0,
+          10.0,
+          12.0,
+          14.0,
+          5.0
+        ],
+        "recommendation": "OVER"
       },
       "pit_stops": {
         "predicted": 1.5,
@@ -49,10 +70,21 @@
           1.88
         ],
         "confidence": 0.167,
-        "line": 2.5,
-        "over_prob": 0.023,
-        "under_prob": 0.977,
+        "line": 2.0,
+        "over_prob": 0.159,
+        "under_prob": 0.841,
         "avg_stops": 1.86,
+        "historical_range": [
+          "1",
+          "5"
+        ],
+        "historical_data": [
+          "2",
+          "2",
+          "1",
+          "1",
+          "2"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -67,10 +99,17 @@
           2.29
         ],
         "confidence": 0.5,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.833,
         "under_prob": 0.167,
         "net_overtakes": 0,
+        "historical_data": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
         "recommendation": "OVER"
       }
     }
@@ -86,24 +125,38 @@
           3.16
         ],
         "confidence": 0.919,
-        "line": 2.5,
-        "over_prob": 0.336,
-        "under_prob": 0.664,
+        "line": 2.0,
+        "over_prob": 0.395,
+        "under_prob": 0.605,
         "historical_avg": 1.15,
+        "historical_data": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 9.83,
+        "predicted": NaN,
         "confidence_interval": [
-          6.69,
-          12.98
+          NaN,
+          NaN
         ],
-        "confidence": 1.222,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.462,
+        "under_prob": 0.538,
         "points_finish_rate": 0.46153846153846156,
-        "recommendation": "OVER"
+        "historical_data": [
+          NaN,
+          15.0,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "recommendation": "PASS"
       },
       "starting_position": {
         "predicted": 8.4,
@@ -112,11 +165,18 @@
           12.1
         ],
         "confidence": 1.648,
-        "line": 10.5,
-        "over_prob": 0.335,
-        "under_prob": 0.665,
+        "line": 3.0,
+        "over_prob": 0.863,
+        "under_prob": 0.137,
         "avg_grid": 8.4,
-        "recommendation": "UNDER"
+        "historical_data": [
+          6.0,
+          4.0,
+          9.0,
+          7.0,
+          18.0
+        ],
+        "recommendation": "OVER"
       },
       "pit_stops": {
         "predicted": 1.8,
@@ -125,10 +185,21 @@
           2.36
         ],
         "confidence": 0.249,
-        "line": 2.5,
-        "over_prob": 0.175,
-        "under_prob": 0.825,
+        "line": 2.0,
+        "over_prob": 0.395,
+        "under_prob": 0.605,
         "avg_stops": 2.0,
+        "historical_range": [
+          "1",
+          "5"
+        ],
+        "historical_data": [
+          "2",
+          "2",
+          "2",
+          "3",
+          "2"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -143,10 +214,17 @@
           -1.5
         ],
         "confidence": 0,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.0,
         "under_prob": 1.0,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          -1.5,
+          -1.5,
+          -1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -162,24 +240,38 @@
           1.93
         ],
         "confidence": 0.397,
-        "line": 2.5,
-        "over_prob": 0.209,
-        "under_prob": 0.791,
+        "line": 2.0,
+        "over_prob": 0.301,
+        "under_prob": 0.699,
         "historical_avg": 1.12,
+        "historical_data": [
+          3.0,
+          6.0,
+          0.0,
+          0.0,
+          0.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 8.58,
+        "predicted": NaN,
         "confidence_interval": [
-          3.33,
-          13.84
+          NaN,
+          NaN
         ],
-        "confidence": 2.388,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.25,
+        "under_prob": 0.75,
         "points_finish_rate": 0.6,
-        "recommendation": "OVER"
+        "historical_data": [
+          NaN,
+          1.0,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "recommendation": "UNDER"
       },
       "starting_position": {
         "predicted": 11.7,
@@ -188,10 +280,17 @@
           15.4
         ],
         "confidence": 1.647,
-        "line": 10.5,
-        "over_prob": 0.596,
-        "under_prob": 0.404,
+        "line": 3.0,
+        "over_prob": 0.961,
+        "under_prob": 0.039,
         "avg_grid": 11.7,
+        "historical_data": [
+          18.0,
+          17.0,
+          19.0,
+          11.0,
+          15.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -201,10 +300,21 @@
           2.36
         ],
         "confidence": 0.249,
-        "line": 2.5,
-        "over_prob": 0.175,
-        "under_prob": 0.825,
+        "line": 2.0,
+        "over_prob": 0.395,
+        "under_prob": 0.605,
         "avg_stops": 1.82,
+        "historical_range": [
+          "1",
+          "5"
+        ],
+        "historical_data": [
+          "2",
+          "3",
+          "1",
+          "2",
+          "2"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -219,10 +329,17 @@
           0.29
         ],
         "confidence": 0.5,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.167,
         "under_prob": 0.833,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          -1.5,
+          -1.5,
+          -1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -238,23 +355,37 @@
           3.82
         ],
         "confidence": 0.82,
-        "line": 2.5,
-        "over_prob": 0.455,
-        "under_prob": 0.545,
+        "line": 2.0,
+        "over_prob": 0.511,
+        "under_prob": 0.489,
         "historical_avg": 1.3,
+        "historical_data": [
+          4.0,
+          3.0,
+          0.0,
+          0.0,
+          0.0
+        ],
         "recommendation": "PASS"
       },
       "points": {
-        "predicted": 13.11,
+        "predicted": NaN,
         "confidence_interval": [
-          10.68,
-          15.55
+          NaN,
+          NaN
         ],
-        "confidence": 1.154,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.8,
+        "under_prob": 0.2,
         "points_finish_rate": 0.9,
+        "historical_data": [
+          15.0,
+          10.0,
+          15.0,
+          NaN,
+          15.0
+        ],
         "recommendation": "OVER"
       },
       "starting_position": {
@@ -264,11 +395,18 @@
           7.6
         ],
         "confidence": 0.968,
-        "line": 10.5,
-        "over_prob": 0.04,
-        "under_prob": 0.96,
+        "line": 3.0,
+        "over_prob": 0.796,
+        "under_prob": 0.204,
         "avg_grid": 5.4,
-        "recommendation": "UNDER"
+        "historical_data": [
+          7.0,
+          8.0,
+          2.0,
+          6.0,
+          3.0
+        ],
+        "recommendation": "OVER"
       },
       "pit_stops": {
         "predicted": 1.8,
@@ -277,10 +415,21 @@
           2.25
         ],
         "confidence": 0.2,
-        "line": 2.5,
-        "over_prob": 0.122,
-        "under_prob": 0.878,
+        "line": 2.0,
+        "over_prob": 0.369,
+        "under_prob": 0.631,
         "avg_stops": 1.76,
+        "historical_range": [
+          "1",
+          "5"
+        ],
+        "historical_data": [
+          "3",
+          "2",
+          "2",
+          "2",
+          "1"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -295,10 +444,17 @@
           1.8
         ],
         "confidence": 0.4,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.8,
         "under_prob": 0.2,
         "net_overtakes": 0,
+        "historical_data": [
+          1.5,
+          1.5,
+          1.5,
+          -1.5,
+          1.5
+        ],
         "recommendation": "OVER"
       }
     }
@@ -314,10 +470,17 @@
           2.28
         ],
         "confidence": 0.419,
-        "line": 2.5,
-        "over_prob": 0.274,
-        "under_prob": 0.726,
+        "line": 2.0,
+        "over_prob": 0.371,
+        "under_prob": 0.629,
         "historical_avg": 1.45,
+        "historical_data": [
+          3.0,
+          1.0,
+          0.0,
+          1.0,
+          0.0
+        ],
         "recommendation": "UNDER"
       },
       "starting_position": {
@@ -327,10 +490,17 @@
           15.6
         ],
         "confidence": 1.206,
-        "line": 10.5,
-        "over_prob": 0.746,
-        "under_prob": 0.254,
+        "line": 3.0,
+        "over_prob": 0.997,
+        "under_prob": 0.003,
         "avg_grid": 12.9,
+        "historical_data": [
+          13.0,
+          15.0,
+          12.0,
+          15.0,
+          16.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -340,10 +510,21 @@
           2.25
         ],
         "confidence": 0.2,
-        "line": 2.5,
-        "over_prob": 0.122,
-        "under_prob": 0.878,
+        "line": 2.0,
+        "over_prob": 0.369,
+        "under_prob": 0.631,
         "avg_stops": 1.92,
+        "historical_range": [
+          "1",
+          "5"
+        ],
+        "historical_data": [
+          "2",
+          "1",
+          "1",
+          "1",
+          "3"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -358,10 +539,17 @@
           1.67
         ],
         "confidence": 0.549,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.625,
         "under_prob": 0.375,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          1.5,
+          1.5,
+          -1.5
+        ],
         "recommendation": "OVER"
       }
     }
@@ -377,24 +565,38 @@
           3.29
         ],
         "confidence": 0.591,
-        "line": 2.5,
-        "over_prob": 0.431,
-        "under_prob": 0.569,
+        "line": 2.0,
+        "over_prob": 0.508,
+        "under_prob": 0.492,
         "historical_avg": 2.01,
-        "recommendation": "UNDER"
+        "historical_data": [
+          0.0,
+          5.0,
+          7.0,
+          1.0,
+          0.0
+        ],
+        "recommendation": "PASS"
       },
       "points": {
-        "predicted": 6.83,
+        "predicted": NaN,
         "confidence_interval": [
-          0.18,
-          13.48
+          NaN,
+          NaN
         ],
-        "confidence": 2.587,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.1,
+        "under_prob": 0.9,
         "points_finish_rate": 0.3,
-        "recommendation": "OVER"
+        "historical_data": [
+          NaN,
+          2.0,
+          1.0,
+          NaN,
+          NaN
+        ],
+        "recommendation": "UNDER"
       },
       "starting_position": {
         "predicted": 14.3,
@@ -403,10 +605,17 @@
           17.0
         ],
         "confidence": 1.202,
-        "line": 10.5,
-        "over_prob": 0.854,
-        "under_prob": 0.146,
+        "line": 3.0,
+        "over_prob": 0.999,
+        "under_prob": 0.001,
         "avg_grid": 14.3,
+        "historical_data": [
+          17.0,
+          15.0,
+          17.0,
+          15.0,
+          11.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -416,10 +625,21 @@
           1.88
         ],
         "confidence": 0.167,
-        "line": 2.5,
-        "over_prob": 0.023,
-        "under_prob": 0.977,
+        "line": 2.0,
+        "over_prob": 0.159,
+        "under_prob": 0.841,
         "avg_stops": 1.77,
+        "historical_range": [
+          "1",
+          "6"
+        ],
+        "historical_data": [
+          "2",
+          "1",
+          "2",
+          "2",
+          "1"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -434,10 +654,17 @@
           1.67
         ],
         "confidence": 0.549,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.625,
         "under_prob": 0.375,
         "net_overtakes": 0,
+        "historical_data": [
+          1.5,
+          1.5,
+          1.5,
+          -1.5,
+          -1.5
+        ],
         "recommendation": "OVER"
       }
     }
@@ -453,24 +680,38 @@
           1.47
         ],
         "confidence": 0.321,
-        "line": 2.5,
-        "over_prob": 0.112,
-        "under_prob": 0.888,
+        "line": 2.0,
+        "over_prob": 0.196,
+        "under_prob": 0.804,
         "historical_avg": 1.27,
+        "historical_data": [
+          1.0,
+          0.0,
+          4.0,
+          0.0,
+          0.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 4.0,
+        "predicted": NaN,
         "confidence_interval": [
-          2.15,
-          5.85
+          NaN,
+          NaN
         ],
-        "confidence": 0.756,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.0,
+        "under_prob": 1.0,
         "points_finish_rate": 0.35,
-        "recommendation": "OVER"
+        "historical_data": [
+          2.0,
+          6.0,
+          6.0,
+          2.0,
+          NaN
+        ],
+        "recommendation": "UNDER"
       },
       "starting_position": {
         "predicted": 11.0,
@@ -479,11 +720,18 @@
           14.3
         ],
         "confidence": 1.453,
-        "line": 10.5,
-        "over_prob": 0.546,
-        "under_prob": 0.454,
+        "line": 3.0,
+        "over_prob": 0.967,
+        "under_prob": 0.033,
         "avg_grid": 11.0,
-        "recommendation": "PASS"
+        "historical_data": [
+          10.0,
+          6.0,
+          11.0,
+          9.0,
+          19.0
+        ],
+        "recommendation": "OVER"
       },
       "pit_stops": {
         "predicted": 1.7,
@@ -492,10 +740,21 @@
           2.18
         ],
         "confidence": 0.213,
-        "line": 2.5,
-        "over_prob": 0.106,
-        "under_prob": 0.894,
+        "line": 2.0,
+        "over_prob": 0.32,
+        "under_prob": 0.68,
         "avg_stops": 2.03,
+        "historical_range": [
+          "1",
+          "5"
+        ],
+        "historical_data": [
+          "3",
+          "2",
+          "1",
+          "2",
+          "2"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -510,10 +769,17 @@
           1.91
         ],
         "confidence": 0.491,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.75,
         "under_prob": 0.25,
         "net_overtakes": 0,
+        "historical_data": [
+          1.5,
+          1.5,
+          1.5,
+          -1.5,
+          -1.5
+        ],
         "recommendation": "OVER"
       }
     }
@@ -529,24 +795,38 @@
           2.7
         ],
         "confidence": 0.563,
-        "line": 2.5,
-        "over_prob": 0.323,
-        "under_prob": 0.677,
+        "line": 2.0,
+        "over_prob": 0.409,
+        "under_prob": 0.591,
         "historical_avg": 1.5,
+        "historical_data": [
+          3.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 2.5,
+        "predicted": NaN,
         "confidence_interval": [
-          -16.56,
-          21.56
+          NaN,
+          NaN
         ],
-        "confidence": 1.5,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.0,
+        "under_prob": 1.0,
         "points_finish_rate": 0.125,
-        "recommendation": "OVER"
+        "historical_data": [
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "recommendation": "UNDER"
       },
       "starting_position": {
         "predicted": 16.9,
@@ -555,10 +835,17 @@
           19.0
         ],
         "confidence": 0.924,
-        "line": 10.5,
-        "over_prob": 0.989,
-        "under_prob": 0.011,
+        "line": 3.0,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
         "avg_grid": 16.9,
+        "historical_data": [
+          19.0,
+          12.0,
+          14.0,
+          20.0,
+          17.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -568,10 +855,21 @@
           2.25
         ],
         "confidence": 0.2,
-        "line": 2.5,
-        "over_prob": 0.122,
-        "under_prob": 0.878,
+        "line": 2.0,
+        "over_prob": 0.369,
+        "under_prob": 0.631,
         "avg_stops": 1.57,
+        "historical_range": [
+          "1",
+          "3"
+        ],
+        "historical_data": [
+          "2",
+          "3",
+          "1",
+          "2",
+          "2"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -586,10 +884,17 @@
           0.77
         ],
         "confidence": 0.6,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.2,
         "under_prob": 0.8,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          1.5,
+          -1.5,
+          -1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -605,24 +910,38 @@
           1.73
         ],
         "confidence": 0.406,
-        "line": 2.5,
-        "over_prob": 0.12,
-        "under_prob": 0.88,
+        "line": 2.0,
+        "over_prob": 0.206,
+        "under_prob": 0.794,
         "historical_avg": 0.85,
+        "historical_data": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 3.0,
+        "predicted": NaN,
         "confidence_interval": [
-          -9.71,
-          15.71
+          NaN,
+          NaN
         ],
-        "confidence": 1.0,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.0,
+        "under_prob": 1.0,
         "points_finish_rate": 0.15384615384615385,
-        "recommendation": "OVER"
+        "historical_data": [
+          NaN,
+          NaN,
+          4.0,
+          NaN,
+          2.0
+        ],
+        "recommendation": "UNDER"
       },
       "starting_position": {
         "predicted": 14.4,
@@ -631,10 +950,17 @@
           17.1
         ],
         "confidence": 1.176,
-        "line": 10.5,
-        "over_prob": 0.866,
-        "under_prob": 0.134,
+        "line": 3.0,
+        "over_prob": 0.999,
+        "under_prob": 0.001,
         "avg_grid": 14.4,
+        "historical_data": [
+          12.0,
+          16.0,
+          8.0,
+          17.0,
+          10.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -644,10 +970,21 @@
           2.29
         ],
         "confidence": 0.26,
-        "line": 2.5,
-        "over_prob": 0.153,
-        "under_prob": 0.847,
+        "line": 2.0,
+        "over_prob": 0.35,
+        "under_prob": 0.65,
         "avg_stops": 2.0,
+        "historical_range": [
+          "1",
+          "5"
+        ],
+        "historical_data": [
+          "3",
+          "2",
+          "1",
+          "2",
+          "1"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -662,10 +999,17 @@
           1.27
         ],
         "confidence": 0.606,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.429,
         "under_prob": 0.571,
         "net_overtakes": 0,
+        "historical_data": [
+          1.5,
+          -1.5,
+          -1.5,
+          1.5,
+          1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -681,23 +1025,37 @@
           0.84
         ],
         "confidence": 0.185,
-        "line": 2.5,
-        "over_prob": 0.005,
-        "under_prob": 0.995,
+        "line": 2.0,
+        "over_prob": 0.027,
+        "under_prob": 0.973,
         "historical_avg": 1.4,
+        "historical_data": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 12.42,
+        "predicted": NaN,
         "confidence_interval": [
-          9.65,
-          15.19
+          NaN,
+          NaN
         ],
-        "confidence": 1.319,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.85,
+        "under_prob": 0.15,
         "points_finish_rate": 0.95,
+        "historical_data": [
+          12.0,
+          25.0,
+          10.0,
+          1.0,
+          10.0
+        ],
         "recommendation": "OVER"
       },
       "starting_position": {
@@ -707,11 +1065,18 @@
           7.3
         ],
         "confidence": 1.136,
-        "line": 10.5,
-        "over_prob": 0.044,
-        "under_prob": 0.956,
+        "line": 3.0,
+        "over_prob": 0.691,
+        "under_prob": 0.309,
         "avg_grid": 4.7,
-        "recommendation": "UNDER"
+        "historical_data": [
+          4.0,
+          1.0,
+          5.0,
+          4.0,
+          6.0
+        ],
+        "recommendation": "OVER"
       },
       "pit_stops": {
         "predicted": 1.8,
@@ -720,10 +1085,21 @@
           2.25
         ],
         "confidence": 0.2,
-        "line": 2.5,
-        "over_prob": 0.122,
-        "under_prob": 0.878,
+        "line": 2.0,
+        "over_prob": 0.369,
+        "under_prob": 0.631,
         "avg_stops": 1.92,
+        "historical_range": [
+          "1",
+          "7"
+        ],
+        "historical_data": [
+          "3",
+          "2",
+          "2",
+          "2",
+          "1"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -738,10 +1114,17 @@
           1.5
         ],
         "confidence": 0,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 1.0,
         "under_prob": 0.0,
         "net_overtakes": 0,
+        "historical_data": [
+          1.5,
+          1.5,
+          1.5,
+          1.5,
+          1.5
+        ],
         "recommendation": "OVER"
       }
     }
@@ -757,11 +1140,18 @@
           2.7
         ],
         "confidence": 0.406,
-        "line": 2.5,
-        "over_prob": 0.357,
-        "under_prob": 0.643,
+        "line": 2.0,
+        "over_prob": 0.466,
+        "under_prob": 0.534,
         "historical_avg": 1.9,
-        "recommendation": "UNDER"
+        "historical_data": [
+          4.0,
+          4.0,
+          0.0,
+          4.0,
+          2.0
+        ],
+        "recommendation": "PASS"
       },
       "starting_position": {
         "predicted": 17.8,
@@ -770,10 +1160,17 @@
           20.0
         ],
         "confidence": 0.952,
-        "line": 10.5,
-        "over_prob": 0.995,
-        "under_prob": 0.005,
+        "line": 3.0,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
         "avg_grid": 17.8,
+        "historical_data": [
+          20.0,
+          20.0,
+          13.0,
+          12.0,
+          17.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -783,11 +1180,22 @@
           2.61
         ],
         "confidence": 0.314,
-        "line": 2.5,
-        "over_prob": 0.262,
-        "under_prob": 0.738,
+        "line": 2.0,
+        "over_prob": 0.458,
+        "under_prob": 0.542,
         "avg_stops": 2.11,
-        "recommendation": "UNDER"
+        "historical_range": [
+          "1",
+          "5"
+        ],
+        "historical_data": [
+          "1",
+          "4",
+          "2",
+          "3",
+          "2"
+        ],
+        "recommendation": "PASS"
       },
       "dnf": {
         "probability": 0.0,
@@ -801,10 +1209,17 @@
           1.05
         ],
         "confidence": 0.527,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.444,
         "under_prob": 0.556,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          -1.5,
+          1.5,
+          1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -820,24 +1235,38 @@
           1.26
         ],
         "confidence": 0.332,
-        "line": 2.5,
-        "over_prob": 0.044,
-        "under_prob": 0.956,
+        "line": 2.0,
+        "over_prob": 0.102,
+        "under_prob": 0.898,
         "historical_avg": 0.54,
+        "historical_data": [
+          2.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 4.2,
+        "predicted": NaN,
         "confidence_interval": [
-          0.64,
-          7.76
+          NaN,
+          NaN
         ],
-        "confidence": 1.281,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.077,
+        "under_prob": 0.923,
         "points_finish_rate": 0.38461538461538464,
-        "recommendation": "OVER"
+        "historical_data": [
+          6.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "recommendation": "UNDER"
       },
       "starting_position": {
         "predicted": 10.4,
@@ -846,11 +1275,18 @@
           12.3
         ],
         "confidence": 0.819,
-        "line": 10.5,
-        "over_prob": 0.484,
-        "under_prob": 0.516,
+        "line": 3.0,
+        "over_prob": 0.999,
+        "under_prob": 0.001,
         "avg_grid": 10.4,
-        "recommendation": "PASS"
+        "historical_data": [
+          9.0,
+          9.0,
+          13.0,
+          13.0,
+          8.0
+        ],
+        "recommendation": "OVER"
       },
       "pit_stops": {
         "predicted": 1.8,
@@ -859,10 +1295,21 @@
           2.25
         ],
         "confidence": 0.2,
-        "line": 2.5,
-        "over_prob": 0.122,
-        "under_prob": 0.878,
+        "line": 2.0,
+        "over_prob": 0.369,
+        "under_prob": 0.631,
         "avg_stops": 1.75,
+        "historical_range": [
+          "1",
+          "3"
+        ],
+        "historical_data": [
+          "3",
+          "2",
+          "2",
+          "1",
+          "2"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -877,10 +1324,17 @@
           2.0
         ],
         "confidence": 0.553,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.714,
         "under_prob": 0.286,
         "net_overtakes": 0,
+        "historical_data": [
+          1.5,
+          1.5,
+          1.5,
+          -1.5,
+          -1.5
+        ],
         "recommendation": "OVER"
       }
     }
@@ -896,10 +1350,37 @@
           3.56
         ],
         "confidence": 0.812,
-        "line": 2.5,
-        "over_prob": 0.32,
-        "under_prob": 0.68,
+        "line": 2.0,
+        "over_prob": 0.415,
+        "under_prob": 0.585,
         "historical_avg": 1.57,
+        "historical_data": [
+          5.0,
+          4.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recommendation": "UNDER"
+      },
+      "points": {
+        "predicted": NaN,
+        "confidence_interval": [
+          NaN,
+          NaN
+        ],
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.0,
+        "under_prob": 1.0,
+        "points_finish_rate": 0.0,
+        "historical_data": [
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN
+        ],
         "recommendation": "UNDER"
       },
       "starting_position": {
@@ -909,10 +1390,17 @@
           19.1
         ],
         "confidence": 1.223,
-        "line": 10.5,
-        "over_prob": 0.97,
-        "under_prob": 0.03,
+        "line": 3.0,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
         "avg_grid": 16.1,
+        "historical_data": [
+          18.0,
+          19.0,
+          11.0,
+          17.0,
+          14.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -922,10 +1410,21 @@
           2.08
         ],
         "confidence": 0.245,
-        "line": 2.5,
-        "over_prob": 0.012,
-        "under_prob": 0.988,
+        "line": 2.0,
+        "over_prob": 0.11,
+        "under_prob": 0.89,
         "avg_stops": 1.4,
+        "historical_range": [
+          "1",
+          "2"
+        ],
+        "historical_data": [
+          "1",
+          "1",
+          "1",
+          "2",
+          "2"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -940,10 +1439,15 @@
           -1.5
         ],
         "confidence": 0,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.0,
         "under_prob": 1.0,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          -1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -959,10 +1463,17 @@
           2.69
         ],
         "confidence": 0.471,
-        "line": 2.5,
-        "over_prob": 0.348,
-        "under_prob": 0.652,
+        "line": 2.0,
+        "over_prob": 0.442,
+        "under_prob": 0.558,
         "historical_avg": 1.21,
+        "historical_data": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
         "recommendation": "UNDER"
       },
       "starting_position": {
@@ -972,10 +1483,17 @@
           14.8
         ],
         "confidence": 0.98,
-        "line": 10.5,
-        "over_prob": 0.763,
-        "under_prob": 0.237,
+        "line": 3.0,
+        "over_prob": 0.999,
+        "under_prob": 0.001,
         "avg_grid": 12.6,
+        "historical_data": [
+          9.0,
+          7.0,
+          12.0,
+          10.0,
+          15.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -985,10 +1503,21 @@
           2.54
         ],
         "confidence": 0.327,
-        "line": 2.5,
-        "over_prob": 0.237,
-        "under_prob": 0.763,
+        "line": 2.0,
+        "over_prob": 0.419,
+        "under_prob": 0.581,
         "avg_stops": 1.92,
+        "historical_range": [
+          "1",
+          "6"
+        ],
+        "historical_data": [
+          "2",
+          "1",
+          "1",
+          "3",
+          "4"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -1003,10 +1532,17 @@
           0.65
         ],
         "confidence": 0.5,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.333,
         "under_prob": 0.667,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          1.5,
+          -1.5,
+          -1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -1022,24 +1558,38 @@
           3.42
         ],
         "confidence": 0.608,
-        "line": 2.5,
-        "over_prob": 0.447,
-        "under_prob": 0.553,
+        "line": 2.0,
+        "over_prob": 0.523,
+        "under_prob": 0.477,
         "historical_avg": 2.42,
-        "recommendation": "UNDER"
+        "historical_data": [
+          0.0,
+          0.0,
+          2.0,
+          10.0,
+          2.0
+        ],
+        "recommendation": "PASS"
       },
       "points": {
-        "predicted": 5.33,
+        "predicted": NaN,
         "confidence_interval": [
-          -2.26,
-          12.92
+          NaN,
+          NaN
         ],
-        "confidence": 1.764,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.05,
+        "under_prob": 0.95,
         "points_finish_rate": 0.15,
-        "recommendation": "OVER"
+        "historical_data": [
+          NaN,
+          NaN,
+          NaN,
+          6.0,
+          NaN
+        ],
+        "recommendation": "UNDER"
       },
       "starting_position": {
         "predicted": 16.7,
@@ -1048,10 +1598,17 @@
           19.2
         ],
         "confidence": 1.126,
-        "line": 10.5,
-        "over_prob": 0.967,
-        "under_prob": 0.033,
+        "line": 3.0,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
         "avg_grid": 16.7,
+        "historical_data": [
+          14.0,
+          18.0,
+          16.0,
+          18.0,
+          20.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -1061,10 +1618,21 @@
           2.43
         ],
         "confidence": 0.233,
-        "line": 2.5,
-        "over_prob": 0.196,
-        "under_prob": 0.804,
+        "line": 2.0,
+        "over_prob": 0.443,
+        "under_prob": 0.557,
         "avg_stops": 1.9,
+        "historical_range": [
+          "1",
+          "7"
+        ],
+        "historical_data": [
+          "2",
+          "3",
+          "2",
+          "3",
+          "1"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -1079,10 +1647,17 @@
           0.41
         ],
         "confidence": 0.491,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.25,
         "under_prob": 0.75,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          -1.5,
+          1.5,
+          1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -1098,23 +1673,37 @@
           1.46
         ],
         "confidence": 0.339,
-        "line": 2.5,
-        "over_prob": 0.118,
-        "under_prob": 0.882,
+        "line": 2.0,
+        "over_prob": 0.199,
+        "under_prob": 0.801,
         "historical_avg": 1.16,
+        "historical_data": [
+          0.0,
+          0.0,
+          0.0,
+          2.0,
+          0.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 17.58,
+        "predicted": NaN,
         "confidence_interval": [
-          14.35,
-          20.81
+          NaN,
+          NaN
         ],
-        "confidence": 1.538,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.9,
+        "under_prob": 0.1,
         "points_finish_rate": 0.95,
+        "historical_data": [
+          18.0,
+          NaN,
+          25.0,
+          25.0,
+          18.0
+        ],
         "recommendation": "OVER"
       },
       "starting_position": {
@@ -1124,11 +1713,18 @@
           5.9
         ],
         "confidence": 0.967,
-        "line": 10.5,
-        "over_prob": 0.01,
-        "under_prob": 0.99,
+        "line": 3.0,
+        "over_prob": 0.595,
+        "under_prob": 0.405,
         "avg_grid": 3.7,
-        "recommendation": "UNDER"
+        "historical_data": [
+          2.0,
+          7.0,
+          1.0,
+          3.0,
+          1.0
+        ],
+        "recommendation": "OVER"
       },
       "pit_stops": {
         "predicted": 1.8,
@@ -1137,10 +1733,21 @@
           2.25
         ],
         "confidence": 0.2,
-        "line": 2.5,
-        "over_prob": 0.122,
-        "under_prob": 0.878,
+        "line": 2.0,
+        "over_prob": 0.369,
+        "under_prob": 0.631,
         "avg_stops": 1.9,
+        "historical_range": [
+          "1",
+          "6"
+        ],
+        "historical_data": [
+          "3",
+          "2",
+          "2",
+          "2",
+          "1"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -1155,10 +1762,17 @@
           0.81
         ],
         "confidence": 0.49,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.4,
         "under_prob": 0.6,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          1.5,
+          1.5,
+          -1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -1174,24 +1788,38 @@
           3.91
         ],
         "confidence": 0.768,
-        "line": 2.5,
-        "over_prob": 0.476,
-        "under_prob": 0.524,
+        "line": 2.0,
+        "over_prob": 0.536,
+        "under_prob": 0.464,
         "historical_avg": 2.01,
+        "historical_data": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
         "recommendation": "PASS"
       },
       "points": {
-        "predicted": 8.59,
+        "predicted": NaN,
         "confidence_interval": [
-          6.33,
-          10.84
+          NaN,
+          NaN
         ],
-        "confidence": 1.064,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.55,
+        "under_prob": 0.45,
         "points_finish_rate": 0.85,
-        "recommendation": "OVER"
+        "historical_data": [
+          8.0,
+          8.0,
+          12.0,
+          12.0,
+          6.0
+        ],
+        "recommendation": "PASS"
       },
       "starting_position": {
         "predicted": 7.9,
@@ -1200,11 +1828,18 @@
           10.9
         ],
         "confidence": 1.32,
-        "line": 10.5,
-        "over_prob": 0.256,
-        "under_prob": 0.744,
+        "line": 3.0,
+        "over_prob": 0.892,
+        "under_prob": 0.108,
         "avg_grid": 7.9,
-        "recommendation": "UNDER"
+        "historical_data": [
+          5.0,
+          5.0,
+          4.0,
+          5.0,
+          16.0
+        ],
+        "recommendation": "OVER"
       },
       "pit_stops": {
         "predicted": 1.8,
@@ -1213,10 +1848,21 @@
           2.25
         ],
         "confidence": 0.2,
-        "line": 2.5,
-        "over_prob": 0.122,
-        "under_prob": 0.878,
+        "line": 2.0,
+        "over_prob": 0.369,
+        "under_prob": 0.631,
         "avg_stops": 1.99,
+        "historical_range": [
+          "1",
+          "6"
+        ],
+        "historical_data": [
+          "3",
+          "2",
+          "2",
+          "2",
+          "1"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -1231,10 +1877,17 @@
           0.0
         ],
         "confidence": 0.4,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.2,
         "under_prob": 0.8,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          -1.5,
+          1.5,
+          -1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -1250,24 +1903,38 @@
           2.02
         ],
         "confidence": 0.51,
-        "line": 2.5,
-        "over_prob": 0.243,
-        "under_prob": 0.757,
+        "line": 2.0,
+        "over_prob": 0.318,
+        "under_prob": 0.682,
         "historical_avg": 1.12,
+        "historical_data": [
+          2.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 4.0,
+        "predicted": NaN,
         "confidence_interval": [
-          0.96,
-          7.04
+          NaN,
+          NaN
         ],
-        "confidence": 1.095,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.05,
+        "under_prob": 0.95,
         "points_finish_rate": 0.25,
-        "recommendation": "OVER"
+        "historical_data": [
+          NaN,
+          NaN,
+          8.0,
+          NaN,
+          4.0
+        ],
+        "recommendation": "UNDER"
       },
       "starting_position": {
         "predicted": 13.2,
@@ -1276,10 +1943,17 @@
           16.2
         ],
         "confidence": 1.315,
-        "line": 10.5,
-        "over_prob": 0.753,
-        "under_prob": 0.247,
+        "line": 3.0,
+        "over_prob": 0.995,
+        "under_prob": 0.005,
         "avg_grid": 13.2,
+        "historical_data": [
+          13.0,
+          19.0,
+          6.0,
+          16.0,
+          9.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -1289,10 +1963,21 @@
           1.77
         ],
         "confidence": 0.163,
-        "line": 2.5,
-        "over_prob": 0.012,
-        "under_prob": 0.988,
+        "line": 2.0,
+        "over_prob": 0.11,
+        "under_prob": 0.89,
         "avg_stops": 2.13,
+        "historical_range": [
+          "1",
+          "7"
+        ],
+        "historical_data": [
+          "2",
+          "2",
+          "1",
+          "1",
+          "1"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -1307,10 +1992,17 @@
           0.71
         ],
         "confidence": 0.553,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.286,
         "under_prob": 0.714,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          -1.5,
+          1.5,
+          1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -1326,10 +2018,17 @@
           2.81
         ],
         "confidence": 0.529,
-        "line": 2.5,
-        "over_prob": 0.364,
-        "under_prob": 0.636,
+        "line": 2.0,
+        "over_prob": 0.448,
+        "under_prob": 0.552,
         "historical_avg": 1.69,
+        "historical_data": [
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          2.0
+        ],
         "recommendation": "UNDER"
       },
       "starting_position": {
@@ -1339,10 +2038,17 @@
           19.0
         ],
         "confidence": 1.042,
-        "line": 10.5,
-        "over_prob": 0.98,
-        "under_prob": 0.02,
+        "line": 3.0,
+        "over_prob": 1.0,
+        "under_prob": 0.0,
         "avg_grid": 16.6,
+        "historical_data": [
+          20.0,
+          19.0,
+          12.0,
+          14.0,
+          19.0
+        ],
         "recommendation": "OVER"
       },
       "pit_stops": {
@@ -1352,10 +2058,21 @@
           2.43
         ],
         "confidence": 0.233,
-        "line": 2.5,
-        "over_prob": 0.196,
-        "under_prob": 0.804,
+        "line": 2.0,
+        "over_prob": 0.443,
+        "under_prob": 0.557,
         "avg_stops": 2.18,
+        "historical_range": [
+          "1",
+          "6"
+        ],
+        "historical_data": [
+          "3",
+          "2",
+          "3",
+          "2",
+          "1"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -1370,10 +2087,17 @@
           -1.5
         ],
         "confidence": 0,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 0.0,
         "under_prob": 1.0,
         "net_overtakes": 0,
+        "historical_data": [
+          -1.5,
+          -1.5,
+          -1.5,
+          -1.5,
+          -1.5
+        ],
         "recommendation": "UNDER"
       }
     }
@@ -1389,23 +2113,37 @@
           2.66
         ],
         "confidence": 0.795,
-        "line": 2.5,
-        "over_prob": 0.333,
-        "under_prob": 0.667,
+        "line": 2.0,
+        "over_prob": 0.386,
+        "under_prob": 0.614,
         "historical_avg": 1.42,
+        "historical_data": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
         "recommendation": "UNDER"
       },
       "points": {
-        "predicted": 14.79,
+        "predicted": NaN,
         "confidence_interval": [
-          11.41,
-          18.17
+          NaN,
+          NaN
         ],
-        "confidence": 1.609,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
+        "confidence": 0,
+        "line": 6.0,
+        "over_prob": 0.9,
+        "under_prob": 0.1,
         "points_finish_rate": 0.95,
+        "historical_data": [
+          1.0,
+          18.0,
+          NaN,
+          10.0,
+          12.0
+        ],
         "recommendation": "OVER"
       },
       "starting_position": {
@@ -1415,11 +2153,18 @@
           5.0
         ],
         "confidence": 0.746,
-        "line": 10.5,
-        "over_prob": 0.001,
-        "under_prob": 0.999,
+        "line": 3.0,
+        "over_prob": 0.553,
+        "under_prob": 0.447,
         "avg_grid": 3.3,
-        "recommendation": "UNDER"
+        "historical_data": [
+          3.0,
+          2.0,
+          7.0,
+          1.0,
+          4.0
+        ],
+        "recommendation": "OVER"
       },
       "pit_stops": {
         "predicted": 1.8,
@@ -1428,10 +2173,21 @@
           2.46
         ],
         "confidence": 0.291,
-        "line": 2.5,
-        "over_prob": 0.211,
-        "under_prob": 0.789,
+        "line": 2.0,
+        "over_prob": 0.409,
+        "under_prob": 0.591,
         "avg_stops": 1.97,
+        "historical_range": [
+          "1",
+          "6"
+        ],
+        "historical_data": [
+          "2",
+          "4",
+          "2",
+          "2",
+          "1"
+        ],
         "recommendation": "UNDER"
       },
       "dnf": {
@@ -1446,517 +2202,18 @@
           1.5
         ],
         "confidence": 0,
-        "line": 0.5,
+        "line": 1.0,
         "over_prob": 1.0,
         "under_prob": 0.0,
         "net_overtakes": 0,
-        "recommendation": "OVER"
-      }
-    }
-  },
-  "nico-hulkenberg": {
-    "driver_id": "nico-hulkenberg",
-    "driver_name": "Nico H\u00fclkenberg",
-    "predictions": {
-      "overtakes": {
-        "predicted": 3.35,
-        "confidence_interval": [
-          1.16,
-          5.54
-        ],
-        "confidence": 1.044,
-        "line": 2.5,
-        "over_prob": 0.574,
-        "under_prob": 0.426,
-        "historical_avg": 1.77,
-        "recommendation": "OVER"
-      },
-      "points": {
-        "predicted": 5.3,
-        "confidence_interval": [
-          2.32,
-          8.28
-        ],
-        "confidence": 1.317,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
-        "points_finish_rate": 0.5,
-        "recommendation": "OVER"
-      },
-      "starting_position": {
-        "predicted": 16.2,
-        "confidence_interval": [
-          14.5,
-          17.9
-        ],
-        "confidence": 0.757,
-        "line": 10.5,
-        "over_prob": 0.994,
-        "under_prob": 0.006,
-        "avg_grid": 16.2,
-        "recommendation": "OVER"
-      },
-      "pit_stops": {
-        "predicted": 1.7,
-        "confidence_interval": [
-          1.22,
-          2.18
-        ],
-        "confidence": 0.213,
-        "line": 2.5,
-        "over_prob": 0.106,
-        "under_prob": 0.894,
-        "avg_stops": 2.0,
-        "recommendation": "UNDER"
-      },
-      "dnf": {
-        "probability": 0.0,
-        "confidence": 0.9,
-        "recommendation": "NO"
-      },
-      "teammate_overtakes": {
-        "predicted": 0.21,
-        "confidence_interval": [
-          -1.27,
-          1.7
-        ],
-        "confidence": 0.606,
-        "line": 0.5,
-        "over_prob": 0.571,
-        "under_prob": 0.429,
-        "net_overtakes": 0,
-        "recommendation": "OVER"
-      }
-    }
-  },
-  "oliver-bearman": {
-    "driver_id": "oliver-bearman",
-    "driver_name": "Oliver Bearman",
-    "predictions": {
-      "overtakes": {
-        "predicted": 3.25,
-        "confidence_interval": [
-          1.41,
-          5.09
-        ],
-        "confidence": 0.864,
-        "line": 2.5,
-        "over_prob": 0.589,
-        "under_prob": 0.411,
-        "historical_avg": 3.25,
-        "recommendation": "OVER"
-      },
-      "points": {
-        "predicted": 2.6,
-        "confidence_interval": [
-          -0.26,
-          5.46
-        ],
-        "confidence": 1.03,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
-        "points_finish_rate": 0.3125,
-        "recommendation": "OVER"
-      },
-      "starting_position": {
-        "predicted": 15.5,
-        "confidence_interval": [
-          12.8,
-          18.2
-        ],
-        "confidence": 1.186,
-        "line": 10.5,
-        "over_prob": 0.92,
-        "under_prob": 0.08,
-        "avg_grid": 15.5,
-        "recommendation": "OVER"
-      },
-      "pit_stops": {
-        "predicted": 1.8,
-        "confidence_interval": [
-          1.35,
-          2.25
-        ],
-        "confidence": 0.2,
-        "line": 2.5,
-        "over_prob": 0.122,
-        "under_prob": 0.878,
-        "avg_stops": 1.87,
-        "recommendation": "UNDER"
-      },
-      "dnf": {
-        "probability": 0.0,
-        "confidence": 0.9,
-        "recommendation": "NO"
-      },
-      "teammate_overtakes": {
-        "predicted": -0.38,
-        "confidence_interval": [
-          -1.67,
-          0.92
-        ],
-        "confidence": 0.549,
-        "line": 0.5,
-        "over_prob": 0.375,
-        "under_prob": 0.625,
-        "net_overtakes": 0,
-        "recommendation": "UNDER"
-      }
-    }
-  },
-  "oscar-piastri": {
-    "driver_id": "oscar-piastri",
-    "driver_name": "Oscar Piastri",
-    "predictions": {
-      "overtakes": {
-        "predicted": 0.95,
-        "confidence_interval": [
-          -0.02,
-          1.92
-        ],
-        "confidence": 0.462,
-        "line": 2.5,
-        "over_prob": 0.221,
-        "under_prob": 0.779,
-        "historical_avg": 1.12,
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 15.0,
-        "confidence_interval": [
-          11.07,
-          18.93
-        ],
-        "confidence": 1.878,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
-        "points_finish_rate": 1.0,
-        "recommendation": "OVER"
-      },
-      "starting_position": {
-        "predicted": 2.2,
-        "confidence_interval": [
+        "historical_data": [
           1.5,
-          2.9
+          1.5,
+          1.5,
+          1.5,
+          1.5
         ],
-        "confidence": 0.327,
-        "line": 10.5,
-        "over_prob": 0.0,
-        "under_prob": 1.0,
-        "avg_grid": 2.2,
-        "recommendation": "UNDER"
-      },
-      "pit_stops": {
-        "predicted": 1.9,
-        "confidence_interval": [
-          1.37,
-          2.43
-        ],
-        "confidence": 0.233,
-        "line": 2.5,
-        "over_prob": 0.196,
-        "under_prob": 0.804,
-        "avg_stops": 1.96,
-        "recommendation": "UNDER"
-      },
-      "dnf": {
-        "probability": 0.0,
-        "confidence": 0.9,
-        "recommendation": "NO"
-      },
-      "teammate_overtakes": {
-        "predicted": 0.3,
-        "confidence_interval": [
-          -0.81,
-          1.41
-        ],
-        "confidence": 0.49,
-        "line": 0.5,
-        "over_prob": 0.6,
-        "under_prob": 0.4,
-        "net_overtakes": 0,
         "recommendation": "OVER"
-      }
-    }
-  },
-  "pierre-gasly": {
-    "driver_id": "pierre-gasly",
-    "driver_name": "Pierre Gasly",
-    "predictions": {
-      "overtakes": {
-        "predicted": 1.1,
-        "confidence_interval": [
-          -0.1,
-          2.3
-        ],
-        "confidence": 0.575,
-        "line": 2.5,
-        "over_prob": 0.288,
-        "under_prob": 0.712,
-        "historical_avg": 1.54,
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 6.38,
-        "confidence_interval": [
-          2.46,
-          10.29
-        ],
-        "confidence": 1.658,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
-        "points_finish_rate": 0.4,
-        "recommendation": "OVER"
-      },
-      "starting_position": {
-        "predicted": 12.1,
-        "confidence_interval": [
-          8.5,
-          15.7
-        ],
-        "confidence": 1.574,
-        "line": 10.5,
-        "over_prob": 0.633,
-        "under_prob": 0.367,
-        "avg_grid": 12.1,
-        "recommendation": "OVER"
-      },
-      "pit_stops": {
-        "predicted": 1.6,
-        "confidence_interval": [
-          1.1,
-          2.1
-        ],
-        "confidence": 0.221,
-        "line": 2.5,
-        "over_prob": 0.087,
-        "under_prob": 0.913,
-        "avg_stops": 1.81,
-        "recommendation": "UNDER"
-      },
-      "dnf": {
-        "probability": 0.0,
-        "confidence": 0.9,
-        "recommendation": "NO"
-      },
-      "teammate_overtakes": {
-        "predicted": 1.0,
-        "confidence_interval": [
-          -0.29,
-          2.29
-        ],
-        "confidence": 0.5,
-        "line": 0.5,
-        "over_prob": 0.833,
-        "under_prob": 0.167,
-        "net_overtakes": 0,
-        "recommendation": "OVER"
-      }
-    }
-  },
-  "sergio-perez": {
-    "driver_id": "sergio-perez",
-    "driver_name": "Sergio P\u00e9rez",
-    "predictions": {
-      "overtakes": {
-        "predicted": 1.4,
-        "confidence_interval": [
-          0.32,
-          2.48
-        ],
-        "confidence": 0.515,
-        "line": 2.5,
-        "over_prob": 0.312,
-        "under_prob": 0.688,
-        "historical_avg": 2.12,
-        "recommendation": "UNDER"
-      },
-      "starting_position": {
-        "predicted": 10.6,
-        "confidence_interval": [
-          7.4,
-          13.8
-        ],
-        "confidence": 1.416,
-        "line": 10.5,
-        "over_prob": 0.509,
-        "under_prob": 0.491,
-        "avg_grid": 10.6,
-        "recommendation": "PASS"
-      },
-      "pit_stops": {
-        "predicted": 1.9,
-        "confidence_interval": [
-          1.27,
-          2.53
-        ],
-        "confidence": 0.277,
-        "line": 2.5,
-        "over_prob": 0.235,
-        "under_prob": 0.765,
-        "avg_stops": 2.01,
-        "recommendation": "UNDER"
-      },
-      "dnf": {
-        "probability": 0.0,
-        "confidence": 0.9,
-        "recommendation": "NO"
-      },
-      "teammate_overtakes": {
-        "predicted": -1.5,
-        "confidence_interval": [
-          -1.5,
-          -1.5
-        ],
-        "confidence": 0,
-        "line": 0.5,
-        "over_prob": 0.0,
-        "under_prob": 1.0,
-        "net_overtakes": 0,
-        "recommendation": "UNDER"
-      }
-    }
-  },
-  "valtteri-bottas": {
-    "driver_id": "valtteri-bottas",
-    "driver_name": "Valtteri Bottas",
-    "predictions": {
-      "overtakes": {
-        "predicted": 0.85,
-        "confidence_interval": [
-          0.26,
-          1.44
-        ],
-        "confidence": 0.284,
-        "line": 2.5,
-        "over_prob": 0.091,
-        "under_prob": 0.909,
-        "historical_avg": 1.18,
-        "recommendation": "UNDER"
-      },
-      "starting_position": {
-        "predicted": 15.7,
-        "confidence_interval": [
-          13.1,
-          18.3
-        ],
-        "confidence": 1.136,
-        "line": 10.5,
-        "over_prob": 0.937,
-        "under_prob": 0.063,
-        "avg_grid": 15.7,
-        "recommendation": "OVER"
-      },
-      "pit_stops": {
-        "predicted": 1.4,
-        "confidence_interval": [
-          0.9,
-          1.9
-        ],
-        "confidence": 0.221,
-        "line": 2.5,
-        "over_prob": 0.049,
-        "under_prob": 0.951,
-        "avg_stops": 1.89,
-        "recommendation": "UNDER"
-      },
-      "dnf": {
-        "probability": 0.0,
-        "confidence": 0.9,
-        "recommendation": "NO"
-      },
-      "teammate_overtakes": {
-        "predicted": 0.17,
-        "confidence_interval": [
-          -1.05,
-          1.38
-        ],
-        "confidence": 0.527,
-        "line": 0.5,
-        "over_prob": 0.556,
-        "under_prob": 0.444,
-        "net_overtakes": 0,
-        "recommendation": "OVER"
-      }
-    }
-  },
-  "yuki-tsunoda": {
-    "driver_id": "yuki-tsunoda",
-    "driver_name": "Yuki Tsunoda",
-    "predictions": {
-      "overtakes": {
-        "predicted": 0.6,
-        "confidence_interval": [
-          -0.07,
-          1.27
-        ],
-        "confidence": 0.32,
-        "line": 2.5,
-        "over_prob": 0.086,
-        "under_prob": 0.914,
-        "historical_avg": 1.35,
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 2.4,
-        "confidence_interval": [
-          -0.17,
-          4.97
-        ],
-        "confidence": 0.927,
-        "line": 0.5,
-        "over_prob": 1.0,
-        "under_prob": 0.0,
-        "points_finish_rate": 0.25,
-        "recommendation": "OVER"
-      },
-      "starting_position": {
-        "predicted": 12.0,
-        "confidence_interval": [
-          8.7,
-          15.3
-        ],
-        "confidence": 1.443,
-        "line": 10.5,
-        "over_prob": 0.643,
-        "under_prob": 0.357,
-        "avg_grid": 12.0,
-        "recommendation": "OVER"
-      },
-      "pit_stops": {
-        "predicted": 1.7,
-        "confidence_interval": [
-          0.94,
-          2.46
-        ],
-        "confidence": 0.335,
-        "line": 2.5,
-        "over_prob": 0.213,
-        "under_prob": 0.787,
-        "avg_stops": 2.1,
-        "recommendation": "UNDER"
-      },
-      "dnf": {
-        "probability": 0.0,
-        "confidence": 0.9,
-        "recommendation": "NO"
-      },
-      "teammate_overtakes": {
-        "predicted": -1.5,
-        "confidence_interval": [
-          -1.5,
-          -1.5
-        ],
-        "confidence": 0,
-        "line": 0.5,
-        "over_prob": 0.0,
-        "under_prob": 1.0,
-        "net_overtakes": 0,
-        "recommendation": "UNDER"
       }
     }
   }

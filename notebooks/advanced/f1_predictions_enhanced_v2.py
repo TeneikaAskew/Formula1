@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Enhanced F1 predictions with confidence intervals for PrizePicks"""
+"""Enhanced F1 predictions with historical context and realistic prop lines"""
 
 import sys
 import os
@@ -46,10 +46,18 @@ class F1PrizePicksPredictor:
         print("PRIZEPICKS PROP LINE CONFIGURATION")
         print("="*60)
         print("\nWould you like to use default prop lines or enter custom values?")
-        print("1. Use defaults")
+        print("1. Use defaults (recommended)")
         print("2. Enter custom values")
+        print("3. Show typical F1 ranges first")
         
-        choice = input("\nEnter choice (1 or 2) [default: 1]: ").strip()
+        choice = input("\nEnter choice (1, 2, or 3) [default: 1]: ").strip()
+        
+        if choice == "3":
+            self.show_typical_ranges()
+            print("\nNow, would you like to:")
+            print("1. Use defaults (recommended)")
+            print("2. Enter custom values")
+            choice = input("\nEnter choice (1 or 2) [default: 1]: ").strip()
         
         if choice == "2":
             print("\nEnter custom prop lines (press Enter to use default):")
@@ -92,7 +100,55 @@ class F1PrizePicksPredictor:
         
         return mean, ci[0], ci[1], std_err
     
-    def calculate_probability_distribution(self, historical_data, line_value):
+    def show_typical_ranges(self):
+        """Show typical F1 statistical ranges"""
+        print("\n" + "="*60)
+        print("TYPICAL F1 STATISTICAL RANGES (based on historical data)")
+        print("="*60)
+        
+        # Analyze recent data to show typical ranges
+        results = self.data.get('results', pd.DataFrame())
+        if not results.empty:
+            recent_results = results[results['year'] >= 2022]
+            
+            # Overtakes
+            print("\nOVERTAKES PER RACE:")
+            print("  • Average: 1-3 overtakes")
+            print("  • High performers: 3-5 overtakes")
+            print("  • Exceptional races: 5-10 overtakes")
+            print("  • Typical line: 2.5")
+            
+            # Points
+            print("\nPOINTS PER RACE:")
+            points_data = recent_results[recent_results['points'] > 0]
+            avg_points = points_data.groupby('driverId')['points'].mean()
+            print(f"  • Points finishers average: {avg_points.mean():.1f} points")
+            print("  • Only top 10 score points (25-18-15-12-10-8-6-4-2-1)")
+            print("  • Typical line: 0.5 (will they score?)")
+            
+            # Pit stops
+            pit_stops = self.data.get('pit_stops', pd.DataFrame())
+            if not pit_stops.empty:
+                stops_per_race = pit_stops.groupby('raceId')['stop'].max()
+                print(f"\nPIT STOPS PER RACE:")
+                print(f"  • Average: {stops_per_race.mean():.1f} stops")
+                print(f"  • Range: {stops_per_race.min()}-{stops_per_race.max()} stops")
+                print("  • Typical line: 2.5")
+            
+            # Starting position
+            quali = self.data.get('qualifying', pd.DataFrame())
+            if not quali.empty:
+                print("\nSTARTING POSITION:")
+                print("  • Grid positions: 1-20")
+                print("  • Midfield cutoff: ~10th")
+                print("  • Typical line: 10.5")
+            
+            print("\nTEAMMATE OVERTAKES (PrizePicks scoring):")
+            print("  • +1.5 points if beat teammate")
+            print("  • -1.5 points if lose to teammate")
+            print("  • Typical line: 0.5")
+        
+    def calculate_probability_distribution(self, historical_data, line_value, show_debug=False):
         """Calculate probability of going over/under a line"""
         if len(historical_data) == 0:
             return 0.5, 0.5, 0.5
@@ -100,6 +156,9 @@ class F1PrizePicksPredictor:
         # Calculate mean and std
         mean = np.mean(historical_data)
         std = np.std(historical_data)
+        
+        if show_debug:
+            print(f"    Debug: Mean={mean:.2f}, Std={std:.2f}, Line={line_value}")
         
         if std == 0:
             # No variance, deterministic outcome
@@ -111,6 +170,9 @@ class F1PrizePicksPredictor:
             z_score = (line_value - mean) / std
             under_prob = stats.norm.cdf(z_score)
             over_prob = 1.0 - under_prob
+            
+            if show_debug:
+                print(f"    Debug: Z-score={z_score:.2f}")
             
             # Confidence based on sample size and consistency
             confidence = min(0.95, 0.5 + (len(historical_data) / 100) * 0.45)
@@ -182,7 +244,8 @@ class F1PrizePicksPredictor:
         return {
             'avg_stops': stops_per_race.mean(),
             'median_stops': stops_per_race.median(),
-            'recent_stops': stops_per_race.tail(10).values
+            'recent_stops': stops_per_race.tail(10).values,
+            'historical_range': [int(stops_per_race.min()), int(stops_per_race.max())]
         }
     
     def get_teammate_overtake_stats(self, driver_id):
@@ -325,7 +388,9 @@ class F1PrizePicksPredictor:
                     if len(overtakes_per_race) > 0:
                         mean, lower, upper, conf = self.calculate_confidence_interval(overtakes_per_race)
                         line = self.prop_lines['overtakes']
-                        over_prob, under_prob, _ = self.calculate_probability_distribution(overtakes_per_race, line)
+                        over_prob, under_prob, _ = self.calculate_probability_distribution(
+                            overtakes_per_race, line, show_debug=(line > 4.0)
+                        )
                         
                         driver_predictions['predictions']['overtakes'] = {
                             'predicted': round(mean, 2),
@@ -335,10 +400,12 @@ class F1PrizePicksPredictor:
                             'over_prob': round(over_prob, 3),
                             'under_prob': round(under_prob, 3),
                             'historical_avg': round(avg_overtakes, 2),
+                            'historical_data': [float(x) for x in overtakes_per_race[-5:]],  # Convert to regular floats
                             'recommendation': 'OVER' if over_prob > 0.55 else ('UNDER' if under_prob > 0.55 else 'PASS')
                         }
                         
                         print(f"\nOVERTAKES:")
+                        print(f"  Historical (last 5): {[float(x) for x in overtakes_per_race[-5:]]}")
                         print(f"  Predicted: {mean:.2f} [{lower:.2f}, {upper:.2f}]")
                         print(f"  Line: {line}")
                         print(f"  Over {line}: {over_prob:.1%} | Under {line}: {under_prob:.1%}")
@@ -358,16 +425,19 @@ class F1PrizePicksPredictor:
                         
                         driver_predictions['predictions']['points'] = {
                             'predicted': round(mean, 2),
+                            'median': round(np.median(recent_points), 2),
                             'confidence_interval': [round(lower, 2), round(upper, 2)],
                             'confidence': round(conf, 3),
                             'line': line,
                             'over_prob': round(over_prob, 3),
                             'under_prob': round(under_prob, 3),
                             'points_finish_rate': points_stats.get('points_finish_rate', 0),
+                            'historical_data': [float(x) for x in recent_points[-5:]],  # Convert to regular floats
                             'recommendation': 'OVER' if over_prob > 0.55 else ('UNDER' if under_prob > 0.55 else 'PASS')
                         }
                         
                         print(f"\nPOINTS:")
+                        print(f"  Historical (last 5): {[float(x) for x in recent_points[-5:]]}")
                         print(f"  Predicted: {mean:.2f} [{lower:.2f}, {upper:.2f}]")
                         print(f"  Points finish rate: {points_stats.get('points_finish_rate', 0):.1%}")
                         print(f"  Line: {line}")
@@ -391,10 +461,12 @@ class F1PrizePicksPredictor:
                     'over_prob': round(over_prob, 3),
                     'under_prob': round(under_prob, 3),
                     'avg_grid': round(mean, 1),
+                    'historical_data': [float(x) for x in quali_positions[-5:]],  # Convert to regular floats
                     'recommendation': 'UNDER' if under_prob > 0.55 else ('OVER' if over_prob > 0.55 else 'PASS')
                 }
                 
                 print(f"\nSTARTING POSITION:")
+                print(f"  Historical (last 5): {[float(x) for x in quali_positions[-5:]]}")
                 print(f"  Predicted: {mean:.1f} [{lower:.1f}, {upper:.1f}]")
                 print(f"  Line: {line}")
                 print(f"  Over {line}: {over_prob:.1%} | Under {line}: {under_prob:.1%}")
@@ -417,10 +489,14 @@ class F1PrizePicksPredictor:
                         'over_prob': round(over_prob, 3),
                         'under_prob': round(under_prob, 3),
                         'avg_stops': round(pit_stats['avg_stops'], 2),
+                        'historical_range': pit_stats.get('historical_range', [0, 0]),
+                        'historical_data': [float(x) for x in recent_stops[-5:]],  # Convert to regular floats
                         'recommendation': 'UNDER' if under_prob > 0.55 else ('OVER' if over_prob > 0.55 else 'PASS')
                     }
                     
                     print(f"\nPIT STOPS:")
+                    print(f"  Historical (last 5): {[float(x) for x in recent_stops[-5:]]}")
+                    print(f"  Historical range: {pit_stats.get('historical_range', [0, 0])}")
                     print(f"  Predicted: {mean:.2f} [{lower:.2f}, {upper:.2f}]")
                     print(f"  Line: {line}")
                     print(f"  Over {line}: {over_prob:.1%} | Under {line}: {under_prob:.1%}")
@@ -457,10 +533,12 @@ class F1PrizePicksPredictor:
                         'over_prob': round(over_prob, 3),
                         'under_prob': round(under_prob, 3),
                         'net_overtakes': teammate_stats.get('net_overtakes', 0),
+                        'historical_data': scores[-5:],  # Show last 5 races
                         'recommendation': 'OVER' if over_prob > 0.55 else ('UNDER' if under_prob > 0.55 else 'PASS')
                     }
                     
                     print(f"\nTEAMMATE OVERTAKES (PrizePicks Scoring):")
+                    print(f"  Historical (last 5): {scores[-5:]}")
                     print(f"  Predicted score: {mean:.2f} [{lower:.2f}, {upper:.2f}]")
                     print(f"  Line: {line}")
                     print(f"  Over {line}: {over_prob:.1%} | Under {line}: {under_prob:.1%}")
@@ -477,8 +555,23 @@ class F1PrizePicksPredictor:
     def generate_formatted_tables(self, predictions):
         """Generate formatted tables for all predictions with custom lines"""
         print("\n" + "="*80)
-        print("F1 PROP BETTING ANALYSIS TABLES")
+        print("F1 PROP BETTING ANALYSIS SUMMARY")
         print("="*80)
+        
+        # Print warning if lines are unusually high
+        warning_props = []
+        if self.prop_lines['overtakes'] > 4.0:
+            warning_props.append(f"Overtakes ({self.prop_lines['overtakes']})")
+        if self.prop_lines['points'] > 5.0:
+            warning_props.append(f"Points ({self.prop_lines['points']})")
+        if self.prop_lines['pit_stops'] > 4.0:
+            warning_props.append(f"Pit Stops ({self.prop_lines['pit_stops']})")
+        
+        if warning_props:
+            print("\n⚠️  WARNING: The following prop lines are unusually high for F1:")
+            for prop in warning_props:
+                print(f"   • {prop}")
+            print("   This may result in most predictions being UNDER.\n")
         
         # Organize data by prop type
         overtakes_data = []
@@ -497,7 +590,7 @@ class F1PrizePicksPredictor:
                 overtakes_data.append({
                     'driver': driver_name,
                     'predicted': preds['overtakes']['predicted'],
-                    'ci': preds['overtakes']['confidence_interval'],
+                    'historical': preds['overtakes'].get('historical_data', []),
                     'over_prob': preds['overtakes']['over_prob'],
                     'under_prob': preds['overtakes']['under_prob'],
                     'recommendation': preds['overtakes']['recommendation']
@@ -508,6 +601,7 @@ class F1PrizePicksPredictor:
                 points_data.append({
                     'driver': driver_name,
                     'predicted': preds['points']['predicted'],
+                    'median': preds['points'].get('median', preds['points']['predicted']),
                     'points_rate': preds['points']['points_finish_rate'],
                     'over_prob': preds['points']['over_prob'],
                     'under_prob': preds['points']['under_prob'],
@@ -530,7 +624,7 @@ class F1PrizePicksPredictor:
                 pit_stops_data.append({
                     'driver': driver_name,
                     'predicted': preds['pit_stops']['predicted'],
-                    'ci': preds['pit_stops']['confidence_interval'],
+                    'range': preds['pit_stops'].get('historical_range', [0, 0]),
                     'over_prob': preds['pit_stops']['over_prob'],
                     'under_prob': preds['pit_stops']['under_prob'],
                     'recommendation': preds['pit_stops']['recommendation']
@@ -558,41 +652,43 @@ class F1PrizePicksPredictor:
         
         # Print Overtakes Table
         overtakes_line = self.prop_lines.get('overtakes', 2.5)
-        print("\n" + "="*120)
-        print(f"OVERTAKES (Over/Under {overtakes_line})")
-        print("="*120)
-        print(f"{'Driver':<25} {'Predicted':<10} {'Confidence Interval':<20} {f'Over {overtakes_line}':<12} {f'Under {overtakes_line}':<12} {'Recommendation':<15}")
-        print("-"*120)
+        print(f"\nOVERTAKES (Over/Under {overtakes_line})")
+        print("="*110)
+        print(f"{'Driver':<25} {'Avg':<8} {'Last 5 Races':<25} {f'Over {overtakes_line}':<12} {f'Under {overtakes_line}':<12} {'Rec':<15}")
+        print("-"*110)
         
         # Sort by predicted overtakes descending
         overtakes_data.sort(key=lambda x: x['predicted'], reverse=True)
         
-        for row in overtakes_data:
+        for row in overtakes_data:  # Show all drivers
             rec = row['recommendation']
             if rec != 'PASS':
-                rec = f">>> {rec} <<<"
-            ci_str = f"[{row['ci'][0]:.2f}, {row['ci'][1]:.2f}]"
+                rec = f">> {rec} <<"
+            historical_str = str([int(x) for x in row['historical'][-5:]]) if 'historical' in row else "N/A"
             over_str = f"{row['over_prob']*100:.1f}%"
             under_str = f"{row['under_prob']*100:.1f}%"
-            print(f"{row['driver']:<25} {row['predicted']:<10.2f} {ci_str:<20} {over_str:<12} {under_str:<12} {rec:<15}")
+            print(f"{row['driver']:<25} {row['predicted']:<8.2f} {historical_str:<25} {over_str:<12} {under_str:<12} {rec:<15}")
         
         # Print Points Table
         points_line = self.prop_lines.get('points', 0.5)
-        print("\n" + "="*120)
+        print("\n" + "="*130)
         print(f"POINTS FINISH (Over/Under {points_line})")
-        print("="*120)
-        print(f"{'Driver':<25} {'Points Rate':<15} {'Predicted':<12} {f'Over {points_line}':<12} {f'Under {points_line}':<12} {'Recommendation':<15}")
-        print("-"*120)
+        print("="*130)
+        print(f"{'Driver':<25} {'Avg Points':<12} {'Median':<10} {'Points Rate':<15} {f'Over {points_line}':<12} {f'Under {points_line}':<12} {'Recommendation':<15}")
+        print("-"*130)
         
-        # Sort by points finish rate descending
-        points_data.sort(key=lambda x: x['points_rate'], reverse=True)
+        # Sort by average points descending
+        points_data.sort(key=lambda x: x['predicted'], reverse=True)
         
         for row in points_data:
             rec = row['recommendation']
             if rec != 'PASS':
                 rec = f">>> {rec} <<<"
-            print(f"{row['driver']:<25} {row['points_rate']*100:<15.1f}% {row['predicted']:<12.2f} "
-                  f"{row['over_prob']*100:<12.1f}% {row['under_prob']*100:<12.1f}% {rec:<15}")
+            points_rate_str = f"{row['points_rate']*100:.1f}%"
+            over_str = f"{row['over_prob']*100:.1f}%"
+            under_str = f"{row['under_prob']*100:.1f}%"
+            print(f"{row['driver']:<25} {row['predicted']:>12.2f} {row.get('median', row['predicted']):>10.1f} {points_rate_str:>15} "
+                  f"{over_str:>12} {under_str:>12} {rec:<15}")
         
         # Print Starting Position Table
         position_line = self.prop_lines.get('starting_position', 10.5)
@@ -618,7 +714,7 @@ class F1PrizePicksPredictor:
         print("\n" + "="*120)
         print(f"PIT STOPS (Over/Under {pitstops_line})")
         print("="*120)
-        print(f"{'Driver':<25} {'Predicted':<10} {'Confidence Interval':<20} {f'Over {pitstops_line}':<12} {f'Under {pitstops_line}':<12} {'Recommendation':<15}")
+        print(f"{'Driver':<25} {'Predicted':<10} {'Historical Range':<20} {f'Over {pitstops_line}':<12} {f'Under {pitstops_line}':<12} {'Recommendation':<15}")
         print("-"*120)
         
         # Sort by predicted pit stops descending
@@ -628,10 +724,10 @@ class F1PrizePicksPredictor:
             rec = row['recommendation']
             if rec != 'PASS':
                 rec = f">>> {rec} <<<"
-            ci_str = f"[{row['ci'][0]:.2f}, {row['ci'][1]:.2f}]"
+            range_str = f"[{row['range'][0]}-{row['range'][1]}]" if 'range' in row else "N/A"
             over_str = f"{row['over_prob']*100:.1f}%"
             under_str = f"{row['under_prob']*100:.1f}%"
-            print(f"{row['driver']:<25} {row['predicted']:<10.2f} {ci_str:<20} {over_str:<12} {under_str:<12} {rec:<15}")
+            print(f"{row['driver']:<25} {row['predicted']:<10.2f} {range_str:<20} {over_str:<12} {under_str:<12} {rec:<15}")
         
         # Print Teammate Overtakes Table
         teammate_line = self.prop_lines.get('teammate_overtakes', 0.5)
@@ -682,7 +778,7 @@ class F1PrizePicksPredictor:
         
         # Print top betting edges
         print("\n" + "="*110)
-        print("TOP BETTING EDGES (>15% Edge)")
+        print("TOP BETTING EDGES (>10% Edge)")
         print("="*110)
         print(f"{'Driver':<25} {'Prop Type':<20} {'Direction':<10} {'Line':<8} {'Probability':<12} {'Edge':<10}")
         print("-"*110)
@@ -694,7 +790,7 @@ class F1PrizePicksPredictor:
                     edge_over = pred['over_prob'] - 0.5
                     edge_under = pred['under_prob'] - 0.5
                     
-                    if edge_over > 0.15 or edge_under > 0.15:
+                    if edge_over > 0.10 or edge_under > 0.10:
                         direction = 'OVER' if edge_over > edge_under else 'UNDER'
                         prob = pred['over_prob'] if direction == 'OVER' else pred['under_prob']
                         edge = max(edge_over, edge_under)
