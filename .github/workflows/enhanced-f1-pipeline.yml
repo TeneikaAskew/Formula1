@@ -1,0 +1,282 @@
+name: Enhanced F1 Pipeline
+
+on:
+  schedule:
+    # Run at 9:00 AM UTC every day (1 hour before old pipeline)
+    - cron: '0 9 * * *'
+  workflow_dispatch:  # Allow manual trigger
+    inputs:
+      race_id:
+        description: 'Specific race ID to process (optional)'
+        required: false
+        type: string
+      skip_weather:
+        description: 'Skip weather predictions'
+        required: false
+        type: boolean
+        default: false
+      sequential:
+        description: 'Run sequentially instead of parallel'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  enhanced-pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-enhanced-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-enhanced-
+          ${{ runner.os }}-pip-
+    
+    - name: Cache F1DB data
+      uses: actions/cache@v4
+      with:
+        path: data/f1db
+        key: f1db-data-${{ hashFiles('data/f1db/.f1db_version') }}
+        restore-keys: |
+          f1db-data-
+    
+    - name: Cache shared data
+      uses: actions/cache@v4
+      with:
+        path: /tmp/f1db_cache
+        key: f1db-shared-cache-${{ github.run_id }}
+        restore-keys: |
+          f1db-shared-cache-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r notebooks/requirements.txt
+        pip install -r notebooks/requirements-dev.txt
+        pip install pyyaml  # Ensure YAML support
+    
+    - name: Create output directories
+      run: |
+        mkdir -p data/f1db
+        mkdir -p notebooks/advanced/pipeline_outputs
+        mkdir -p /tmp/f1db_cache
+    
+    - name: Validate pipeline configuration
+      run: |
+        cd notebooks/advanced
+        python -c "
+        import yaml
+        with open('pipeline_config_enhanced.yaml', 'r') as f:
+            config = yaml.safe_load(f)
+        print(f'Pipeline: {config[\"pipeline\"][\"name\"]} v{config[\"pipeline\"][\"version\"]}')
+        print('Components enabled:')
+        for component in ['performance_analysis', 'predictions_v3', 'predictions_v3_weather', 'predictions_v4']:
+            enabled = config.get(component, {}).get('enabled', False)
+            print(f'  - {component}: {enabled}')
+        "
+    
+    - name: Run Enhanced F1 Pipeline
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      run: |
+        cd notebooks/advanced
+        
+        # Build command with options
+        CMD="python run_enhanced_pipeline.py"
+        
+        if [ "${{ github.event.inputs.skip_weather }}" = "true" ]; then
+          CMD="$CMD --skip-weather"
+          echo "Weather predictions will be skipped"
+        fi
+        
+        if [ "${{ github.event.inputs.sequential }}" = "true" ]; then
+          CMD="$CMD --sequential"
+          echo "Running in sequential mode"
+        else
+          echo "Running with parallel execution"
+        fi
+        
+        if [ -n "${{ github.event.inputs.race_id }}" ]; then
+          echo "Note: Race ID support needs to be added to enhanced pipeline"
+          echo "Running enhanced pipeline for next race"
+        else
+          echo "Running enhanced pipeline for next race"
+        fi
+        
+        echo "Executing: $CMD"
+        $CMD
+    
+    - name: Validate pipeline outputs
+      run: |
+        cd notebooks/advanced
+        echo "Checking pipeline output files..."
+        
+        # Check required output files
+        OUTPUTS=(
+          "pipeline_outputs/performance_analysis_report.json"
+          "pipeline_outputs/enhanced_predictions_v3.json"
+          "pipeline_outputs/portfolio_v4_production.json"
+          "pipeline_outputs/enhanced_pipeline_summary.json"
+          "pipeline_outputs/enhanced_pipeline.log"
+        )
+        
+        for output in "${OUTPUTS[@]}"; do
+          if [ -f "$output" ]; then
+            size=$(stat -c%s "$output")
+            echo "✅ $output (${size} bytes)"
+          else
+            echo "❌ Missing: $output"
+          fi
+        done
+        
+        # Check weather output if enabled
+        if [ "${{ github.event.inputs.skip_weather }}" != "true" ]; then
+          if [ -f "pipeline_outputs/enhanced_predictions_v3_weather.json" ]; then
+            size=$(stat -c%s "pipeline_outputs/enhanced_predictions_v3_weather.json")
+            echo "✅ pipeline_outputs/enhanced_predictions_v3_weather.json (${size} bytes)"
+          else
+            echo "⚠️  Weather predictions file not found"
+          fi
+        fi
+    
+    - name: Generate pipeline report
+      run: |
+        cd notebooks/advanced
+        python -c "
+        import json
+        from pathlib import Path
+        from datetime import datetime
+        
+        # Load summary
+        summary_file = Path('pipeline_outputs/enhanced_pipeline_summary.json')
+        if summary_file.exists():
+            with open(summary_file, 'r') as f:
+                summary = json.load(f)
+            
+            print('=== ENHANCED F1 PIPELINE REPORT ===')
+            print(f'Pipeline: {summary[\"pipeline_name\"]} v{summary.get(\"pipeline_version\", \"unknown\")}')
+            print(f'Execution Date: {summary[\"execution_date\"]}')
+            print(f'Total Time: {summary[\"total_execution_time\"]:.2f}s')
+            print()
+            
+            print('Component Status:')
+            for component, status in summary['results_summary'].items():
+                status_icon = '✅' if status['status'] == 'success' else '❌'
+                print(f'  {status_icon} {component}: {status[\"status\"]}')
+                if status['status'] == 'failed':
+                    print(f'      Error: {status.get(\"error\", \"Unknown\")}')
+            print()
+            
+            print('Execution Times:')
+            for component, time in summary['execution_times'].items():
+                print(f'  - {component}: {time:.2f}s')
+        else:
+            print('Summary file not found')
+        "
+    
+    - name: Upload pipeline artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: enhanced-pipeline-results-${{ github.run_id }}
+        path: |
+          notebooks/advanced/pipeline_outputs/
+        retention-days: 30
+        if-no-files-found: warn
+    
+    - name: Upload logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: enhanced-pipeline-logs-${{ github.run_id }}
+        path: |
+          notebooks/advanced/pipeline_outputs/*.log
+        retention-days: 7
+        if-no-files-found: warn
+    
+    - name: Comment on PR with results (if applicable)
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = 'notebooks/advanced/pipeline_outputs/enhanced_pipeline_summary.json';
+          
+          if (fs.existsSync(path)) {
+            const summary = JSON.parse(fs.readFileSync(path, 'utf8'));
+            
+            let comment = `## 🏎️ Enhanced F1 Pipeline Results\n\n`;
+            comment += `**Pipeline**: ${summary.pipeline_name} v${summary.pipeline_version}\n`;
+            comment += `**Execution Time**: ${summary.total_execution_time.toFixed(2)}s\n\n`;
+            
+            comment += `### Component Status\n`;
+            for (const [component, status] of Object.entries(summary.results_summary)) {
+              const icon = status.status === 'success' ? '✅' : '❌';
+              comment += `- ${icon} **${component}**: ${status.status}\n`;
+              if (status.status === 'failed') {
+                comment += `  - Error: ${status.error}\n`;
+              }
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }
+    
+    - name: Create issue on failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const title = `Enhanced F1 Pipeline Failed - ${new Date().toISOString().split('T')[0]}`;
+          const body = `
+          The enhanced F1 pipeline run failed.
+          
+          **Run Details:**
+          - Workflow: ${context.workflow}
+          - Run ID: ${context.runId}
+          - Commit: ${context.sha}
+          - Skip Weather: ${{ github.event.inputs.skip_weather || 'false' }}
+          - Sequential Mode: ${{ github.event.inputs.sequential || 'false' }}
+          
+          **Logs:** [View workflow logs](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+          
+          **Next Steps:**
+          1. Check the workflow logs for specific error messages
+          2. Verify pipeline configuration is valid
+          3. Ensure all required data files are present
+          4. Test the pipeline locally if needed
+          `;
+          
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: title,
+            body: body,
+            labels: ['pipeline-failure', 'enhanced-pipeline', 'automated']
+          });
+    
+    - name: Success notification
+      if: success()
+      run: |
+        echo "🎉 Enhanced F1 Pipeline completed successfully!"
+        echo "📊 Results available in pipeline_outputs/"
+        echo "🔍 Check artifacts for detailed outputs"

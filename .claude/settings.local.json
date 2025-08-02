@@ -30,7 +30,8 @@
       "Bash(head:*)",
       "Bash(cp:*)",
       "Bash(cat:*)",
-      "Bash(sqlite3:*)"
+      "Bash(sqlite3:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }

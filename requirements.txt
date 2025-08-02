@@ -27,3 +27,12 @@ streamlit>=1.28.0
 fastapi>=0.104.0
 uvicorn>=0.24.0
 dash>=2.14.0
+
+# F1 Pit Stop Data Scraping
+selenium>=4.15.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+openpyxl>=3.1.0
+xlsxwriter>=3.1.0
+python-dateutil>=2.8.0
+pytz>=2023.3

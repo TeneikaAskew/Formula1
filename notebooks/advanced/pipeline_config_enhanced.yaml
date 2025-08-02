@@ -1,0 +1,86 @@
+# Enhanced F1 Pipeline Configuration
+# This configuration file controls the enhanced prediction pipeline
+
+pipeline:
+  name: "F1 Enhanced Predictions Pipeline"
+  version: "1.0"
+  parallel_execution: true
+  continue_on_error: true
+  
+# Data loading configuration
+data:
+  cache_enabled: true
+  cache_directory: "pipeline_outputs/cache"
+  cache_ttl_hours: 24
+  
+# Performance analysis configuration
+performance_analysis:
+  enabled: true
+  output_format: "json"
+  output_file: "pipeline_outputs/performance_analysis_report.json"
+  include_visualizations: true
+  current_season_only: false
+  
+# Predictions v3 configuration
+predictions_v3:
+  enabled: true
+  output_file: "pipeline_outputs/enhanced_predictions_v3.json"
+  prompt_for_custom_lines: false  # Set to true for interactive mode
+  default_lines:
+    overtakes: 3.0
+    points: 0.5
+    pit_stops: 2.0
+    teammate_overtakes: 0.5
+    starting_position: 10.5
+    dnf: 0.5
+    grid_penalty: 0.5
+  calibration_enabled: true
+  hierarchical_priors_enabled: true
+  contextual_enabled: true
+  
+# Predictions v3 weather configuration
+predictions_v3_weather:
+  enabled: true
+  output_file: "pipeline_outputs/enhanced_predictions_v3_weather.json"
+  inherit_from_v3: true  # Use same lines as v3
+  weather:
+    api_provider: "visual_crossing"  # or "openweathermap"
+    use_cache: true
+    fallback_to_historical: true
+    
+# Predictions v4 production configuration
+predictions_v4:
+  enabled: true
+  output_file: "pipeline_outputs/portfolio_v4_production.json"
+  bankroll: 1000
+  default_lines:
+    overtakes: 3.0
+    points: 6.0  # Different from v3
+    pit_stops: 2.0
+    teammate_overtakes: 0.5
+    starting_position: 10.5
+    dnf: 0.5
+  risk_dashboard:
+    enabled: true
+    output_file: "pipeline_outputs/risk_dashboard_v4.png"
+    
+# Summary report configuration
+summary:
+  enabled: true
+  output_file: "pipeline_outputs/enhanced_pipeline_summary.json"
+  include_performance_metrics: true
+  include_prediction_comparison: true
+  include_execution_times: true
+  
+# Logging configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "pipeline_outputs/enhanced_pipeline.log"
+  console: true
+  
+# Notification configuration (optional)
+notifications:
+  enabled: false
+  slack_webhook: ""  # Set in environment variable
+  on_success: true
+  on_failure: true
