@@ -147,9 +147,22 @@ from f1_performance_analysis import F1PerformanceAnalyzer
 analyzer = F1PerformanceAnalyzer(data)
 
 # Run various analyses
+next_race = analyzer.get_next_race()
+active_drivers = analyzer.get_active_drivers()
+
+# Format next race properly
+if hasattr(next_race, 'to_dict'):
+    next_race_dict = next_race.to_dict()
+else:
+    next_race_dict = {
+        'name': str(next_race.get('officialName', 'Unknown')) if hasattr(next_race, 'get') else 'Unknown',
+        'date': str(next_race.get('date', 'TBD')) if hasattr(next_race, 'get') else 'TBD',
+        'circuit': str(next_race.get('circuitId', 'Unknown')) if hasattr(next_race, 'get') else 'Unknown'
+    }
+
 results = {
-    'next_race': analyzer.get_next_race(),
-    'active_drivers': analyzer.get_active_drivers().to_dict() if hasattr(analyzer.get_active_drivers(), 'to_dict') else [],
+    'next_race': next_race_dict,
+    'active_drivers': active_drivers.to_dict() if hasattr(active_drivers, 'to_dict') else [],
     'season_stats': analyzer.get_season_stats() if hasattr(analyzer, 'get_season_stats') else {}
 }
 
@@ -547,6 +560,122 @@ main()
             json.dump(summary, f, indent=2)
             
         self.logger.info(f"Summary report saved to {output_file}")
+        
+        # Generate markdown report
+        self.generate_markdown_report(summary)
+    
+    def generate_markdown_report(self, summary):
+        """Generate a readable markdown report"""
+        self.logger.info("Generating markdown report...")
+        
+        markdown_content = f"""# F1 Enhanced Pipeline Results
+
+**Pipeline:** {summary['pipeline_name']} v{summary['pipeline_version']}  
+**Execution Date:** {summary['execution_date']}  
+**Total Execution Time:** {summary['total_execution_time']:.2f} seconds
+
+## Component Status
+
+"""
+        
+        for component, status in summary['results_summary'].items():
+            status_icon = "✅" if status['status'] == 'success' else "❌"
+            markdown_content += f"- {status_icon} **{component.replace('_', ' ').title()}**: {status['status']}\n"
+            if status['status'] == 'failed':
+                markdown_content += f"  - Error: {status.get('error', 'Unknown')}\n"
+        
+        markdown_content += f"\n## Execution Times\n\n"
+        for component, time in summary['execution_times'].items():
+            markdown_content += f"- **{component.replace('_', ' ').title()}**: {time:.2f}s\n"
+        
+        # Add prediction results if available
+        markdown_content += self._format_prediction_results()
+        
+        # Save markdown report
+        md_file = Path("pipeline_outputs/enhanced_pipeline_report.md")
+        with open(md_file, 'w', encoding='utf-8') as f:
+            f.write(markdown_content)
+        
+        # Also print to console
+        print("\n" + "="*80)
+        print("F1 ENHANCED PIPELINE RESULTS")
+        print("="*80)
+        print(markdown_content)
+        
+        self.logger.info(f"Markdown report saved to {md_file}")
+    
+    def _format_prediction_results(self):
+        """Format prediction results for markdown"""
+        content = "\n## Prediction Results\n\n"
+        
+        # V4 Portfolio Results
+        v4_file = Path("pipeline_outputs/portfolio_v4_production.json")
+        if v4_file.exists():
+            try:
+                with open(v4_file, 'r') as f:
+                    v4_data = json.load(f)
+                
+                content += "### V4 Production Portfolio\n\n"
+                content += f"- **Total Bets**: {len(v4_data.get('bets', []))}\n"
+                content += f"- **Total Stake**: ${v4_data.get('total_stake', 0)}\n"
+                content += f"- **Expected Value**: ${v4_data.get('expected_value', 0):.2f}\n"
+                content += f"- **Expected ROI**: {v4_data.get('expected_roi', 0):.1f}%\n\n"
+                
+                if v4_data.get('bets'):
+                    content += "#### Top Bets:\n\n"
+                    for i, bet in enumerate(v4_data['bets'][:3], 1):
+                        content += f"{i}. **{bet['type']}** - ${bet['stake']} stake, {bet['payout']}x payout\n"
+                        for selection in bet['selections']:
+                            content += f"   - {selection['driver']}: {selection['prop']} {selection['direction']} {selection['line']}\n"
+                
+            except Exception as e:
+                content += f"- V4 Portfolio: Error reading results ({e})\n"
+        
+        # V3 Results
+        v3_file = Path("pipeline_outputs/enhanced_predictions_v3.json")
+        if v3_file.exists():
+            try:
+                with open(v3_file, 'r') as f:
+                    v3_data = json.load(f)
+                
+                content += "\n### V3 Enhanced Predictions\n\n"
+                if 'predictions' in v3_data:
+                    content += f"- **Total Predictions**: {len(v3_data['predictions'])}\n"
+                    
+                    # Show sample predictions
+                    sample_preds = list(v3_data['predictions'].items())[:5]
+                    content += "\n#### Sample Predictions:\n\n"
+                    for driver, preds in sample_preds:
+                        content += f"**{driver}:**\n"
+                        for prop, values in preds.items():
+                            if isinstance(values, dict) and 'over_probability' in values:
+                                content += f"  - {prop}: {values['over_probability']:.1%} over\n"
+                
+            except Exception as e:
+                content += f"- V3 Predictions: Error reading results ({e})\n"
+        
+        # Performance Analysis
+        perf_file = Path("pipeline_outputs/performance_analysis_report.json")
+        if perf_file.exists():
+            try:
+                with open(perf_file, 'r') as f:
+                    perf_data = json.load(f)
+                
+                content += "\n### Performance Analysis\n\n"
+                if 'next_race' in perf_data:
+                    next_race = perf_data['next_race']
+                    content += f"- **Next Race**: {next_race.get('name', 'Unknown')}\n"
+                    content += f"- **Date**: {next_race.get('date', 'TBD')}\n"
+                
+                if 'active_drivers' in perf_data:
+                    active_count = len(perf_data['active_drivers']) if isinstance(perf_data['active_drivers'], list) else 0
+                    content += f"- **Active Drivers**: {active_count}\n"
+                
+            except Exception as e:
+                content += f"- Performance Analysis: Error reading results ({e})\n"
+        
+        content += "\n---\n*Generated by Enhanced F1 Pipeline*\n"
+        return content
     
     def run(self):
         """Run the complete enhanced pipeline"""

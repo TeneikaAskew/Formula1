@@ -729,7 +729,7 @@ def main():
         with open(output_dir / "portfolio_v4_production.json", 'w') as f:
             json.dump(portfolio, f, indent=2, default=str)
             
-        print(f"\n✅ Results saved to {output_dir}/portfolio_v4_production.json")
+        print(f"\nResults saved to {output_dir}/portfolio_v4_production.json")
         
         # Create risk dashboard if we have a portfolio
         if portfolio['bets']:

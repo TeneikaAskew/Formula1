@@ -1,0 +1,29 @@
+{
+  "pipeline_name": "F1 Enhanced Predictions Pipeline",
+  "pipeline_version": "1.0",
+  "execution_date": "2025-08-02T20:59:26.177634",
+  "execution_times": {
+    "data_loading": 5.489322662353516,
+    "performance_analysis": 6.862921237945557,
+    "v4_predictions": 15.823286771774292
+  },
+  "total_execution_time": 28.175530672073364,
+  "results_summary": {
+    "performance_analysis": {
+      "status": "success",
+      "records": 3
+    },
+    "v3_predictions": {
+      "status": "failed",
+      "error": "V3 predictions failed: Traceback (most recent call last):\n  File \"<string>\", line 28, in <module>\n  File \"/workspace/notebooks/advanced/f1_predictions_enhanced_v3.py\", line 55, in __init__\n    self.prop_lines = self.get_prop_lines()\n                      ^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/notebooks/advanced/f1_predictions_enhanced_v3.py\", line 70, in get_prop_lines\n    choice = input(\"\\nEnter choice (1, 2, or 3) [default: 1]: \").strip()\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nEOFError: EOF when reading a line\n"
+    },
+    "v3_weather_predictions": {
+      "status": "success",
+      "records": 0
+    },
+    "v4_predictions": {
+      "status": "success",
+      "records": 4
+    }
+  }
+}

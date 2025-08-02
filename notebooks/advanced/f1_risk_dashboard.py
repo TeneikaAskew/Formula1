@@ -282,7 +282,7 @@ class F1RiskDashboard:
         # Create text summary
         text = f"""
 PORTFOLIO OVERVIEW
-═══════════════════
+==================
 
 Bankroll: ${metrics['bankroll']:,.2f}
 Total Exposure: ${metrics['total_exposure']:.2f} ({metrics['exposure_pct']:.1f}%)
@@ -565,12 +565,12 @@ RISK ASSESSMENT
             report += "Risk Level: HIGH - Aggressive portfolio\n"
             
         if m['exposure_pct'] > 30:
-            report += "⚠️  Warning: High bankroll exposure\n"
+            report += "WARNING: High bankroll exposure\n"
             
         if m['sharpe_ratio'] < 0.5:
-            report += "⚠️  Warning: Low risk-adjusted returns\n"
+            report += "WARNING: Low risk-adjusted returns\n"
             
         if m['bet_count'] < 3:
-            report += "⚠️  Warning: Low diversification\n"
+            report += "WARNING: Low diversification\n"
             
         return report

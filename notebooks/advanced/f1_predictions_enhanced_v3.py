@@ -87,9 +87,9 @@ class F1PrizePicksPredictor:
                 if user_input:
                     try:
                         custom_lines[prop] = float(user_input)
-                        print(f"  ✓ {prop_display} set to {custom_lines[prop]}")
+                        print(f"  [OK] {prop_display} set to {custom_lines[prop]}")
                     except ValueError:
-                        print(f"  ⚠ Invalid input, using default {default_value}")
+                        print(f"  [WARNING] Invalid input, using default {default_value}")
                         custom_lines[prop] = default_value
                 else:
                     custom_lines[prop] = default_value
@@ -99,7 +99,7 @@ class F1PrizePicksPredictor:
         else:
             print("\nUsing default prop lines:")
             for prop, value in self.default_lines.items():
-                print(f"  • {prop.replace('_', ' ').title()}: {value}")
+                print(f"  - {prop.replace('_', ' ').title()}: {value}")
             return self.default_lines.copy()
         
     def calculate_confidence_interval(self, historical_data, confidence=0.95):
@@ -130,40 +130,40 @@ class F1PrizePicksPredictor:
             
             # Overtakes
             print("\nOVERTAKES PER RACE:")
-            print("  • Average: 1-3 overtakes")
-            print("  • High performers: 3-5 overtakes")
-            print("  • Exceptional races: 5-10 overtakes")
-            print("  • Typical line: 2.5")
+            print("  - Average: 1-3 overtakes")
+            print("  - High performers: 3-5 overtakes")
+            print("  - Exceptional races: 5-10 overtakes")
+            print("  - Typical line: 2.5")
             
             # Points
             print("\nPOINTS PER RACE:")
             points_data = recent_results[recent_results['points'] > 0]
             avg_points = points_data.groupby('driverId')['points'].mean()
-            print(f"  • Points finishers average: {avg_points.mean():.1f} points")
-            print("  • Only top 10 score points (25-18-15-12-10-8-6-4-2-1)")
-            print("  • Typical line: 0.5 (will they score?)")
+            print(f"  - Points finishers average: {avg_points.mean():.1f} points")
+            print("  - Only top 10 score points (25-18-15-12-10-8-6-4-2-1)")
+            print("  - Typical line: 0.5 (will they score?)")
             
             # Pit stops
             pit_stops = self.data.get('pit_stops', pd.DataFrame())
             if not pit_stops.empty:
                 stops_per_race = pit_stops.groupby('raceId')['stop'].max()
                 print(f"\nPIT STOPS PER RACE:")
-                print(f"  • Average: {stops_per_race.mean():.1f} stops")
-                print(f"  • Range: {stops_per_race.min()}-{stops_per_race.max()} stops")
-                print("  • Typical line: 2.5")
+                print(f"  - Average: {stops_per_race.mean():.1f} stops")
+                print(f"  - Range: {stops_per_race.min()}-{stops_per_race.max()} stops")
+                print("  - Typical line: 2.5")
             
             # Starting position
             quali = self.data.get('qualifying', pd.DataFrame())
             if not quali.empty:
                 print("\nSTARTING POSITION:")
-                print("  • Grid positions: 1-20")
-                print("  • Midfield cutoff: ~10th")
-                print("  • Typical line: 10.5")
+                print("  - Grid positions: 1-20")
+                print("  - Midfield cutoff: ~10th")
+                print("  - Typical line: 10.5")
             
             print("\nTEAMMATE OVERTAKES (PrizePicks scoring):")
-            print("  • +1.5 points if beat teammate")
-            print("  • -1.5 points if lose to teammate")
-            print("  • Typical line: 0.5")
+            print("  - +1.5 points if beat teammate")
+            print("  - -1.5 points if lose to teammate")
+            print("  - Typical line: 0.5")
         
     def bound_probability(self, prob, min_prob=0.01, max_prob=0.99):
         """Bound probability between min and max to avoid 0% or 100%"""
@@ -786,9 +786,9 @@ class F1PrizePicksPredictor:
             warning_props.append(f"Pit Stops ({self.prop_lines['pit_stops']})")
         
         if warning_props:
-            print("\n⚠️  WARNING: The following prop lines are unusually high for F1:")
+            print("\nWARNING: The following prop lines are unusually high for F1:")
             for prop in warning_props:
-                print(f"   • {prop}")
+                print(f"   - {prop}")
             print("   This may result in most predictions being UNDER.\n")
         
         # Organize data by prop type

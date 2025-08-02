@@ -26,6 +26,8 @@ class F1PerformanceAnalyzer:
         self.current_year = self._get_current_season()
         # Use today's actual date for finding the next race
         self.current_date = datetime.now()
+        # Load DHL pit stop data
+        self.dhl_data = self._load_dhl_data()
     
     def _get_current_season(self):
         """Dynamically determine the current season from race results"""
@@ -52,6 +54,37 @@ class F1PerformanceAnalyzer:
             return int(results['year'].max())
         
         return datetime.now().year
+    
+    def _load_dhl_data(self):
+        """Load DHL pit stop data from CSV file"""
+        try:
+            # Look for DHL data in data/dhl directory
+            dhl_dir = Path("../../data/dhl")  # Relative to notebooks/advanced
+            if not dhl_dir.exists():
+                dhl_dir = Path("../data/dhl")  # Relative to notebooks
+            if not dhl_dir.exists():
+                dhl_dir = Path("data/dhl")  # From workspace root
+            
+            if dhl_dir.exists():
+                # Find the most recent CSV file
+                csv_files = list(dhl_dir.glob("*.csv"))
+                if csv_files:
+                    latest_file = max(csv_files, key=lambda p: p.stat().st_mtime)
+                    print(f"Loading DHL pit stop data from: {latest_file}")
+                    
+                    df = pd.read_csv(latest_file)
+                    # Ensure consistent column names
+                    if 'time' in df.columns:
+                        df['time_seconds'] = df['time']
+                    
+                    return df
+            
+            print("No DHL pit stop data found")
+            return pd.DataFrame()
+            
+        except Exception as e:
+            print(f"Error loading DHL data: {e}")
+            return pd.DataFrame()
         
     def get_next_race(self):
         """Get the next upcoming race"""
@@ -540,6 +573,228 @@ class F1PerformanceAnalyzer:
                 )
         
         return pit_analysis
+    
+    def analyze_dhl_pit_stops(self):
+        """Analyze DHL official pit stop data with avg_time, median_time, best_time, best_time_lap"""
+        dhl_data = self.dhl_data.copy()
+        
+        if dhl_data.empty:
+            return pd.DataFrame()
+        
+        # Map race names to circuit IDs for better integration
+        races = self.data.get('races', pd.DataFrame())
+        drivers = self.data.get('drivers', pd.DataFrame())
+        circuits = self.data.get('circuits', pd.DataFrame())
+        
+        # Clean driver names and match to database
+        if not drivers.empty:
+            # Create mapping from various name formats to driverId
+            driver_mapping = {}
+            for _, driver in drivers.iterrows():
+                full_name = f"{driver.get('forename', '')} {driver.get('surname', '')}".strip()
+                last_name = driver.get('surname', '')
+                code = driver.get('code', '')
+                driver_id = driver.get('id')
+                
+                # Add various name formats to mapping
+                driver_mapping[full_name.lower()] = driver_id
+                driver_mapping[last_name.lower()] = driver_id
+                if code:
+                    driver_mapping[code.lower()] = driver_id
+            
+            # Add driver IDs to DHL data
+            dhl_data['driverId'] = dhl_data['driver'].str.lower().map(driver_mapping)
+            dhl_data = dhl_data.dropna(subset=['driverId'])
+        
+        # Map race names to circuit IDs
+        if not races.empty and not circuits.empty and 'race' in dhl_data.columns:
+            # Create mapping from race names to circuit IDs
+            race_circuit_map = {}
+            circuit_name_map = {}
+            
+            for _, race in races.iterrows():
+                race_name = race.get('name', '')
+                circuit_id = race.get('circuitId')
+                if circuit_id:
+                    # Map various race name formats
+                    race_circuit_map[race_name.lower()] = circuit_id
+                    # Also try to match partial names
+                    for word in race_name.split():
+                        if len(word) > 4:  # Skip short words
+                            race_circuit_map[word.lower()] = circuit_id
+            
+            # Create circuit ID to name mapping
+            for _, circuit in circuits.iterrows():
+                circuit_name_map[circuit['id']] = circuit['name']
+            
+            # Add circuit IDs to DHL data
+            dhl_data['circuitId'] = dhl_data['race'].str.lower().map(
+                lambda x: next((cid for race_name, cid in race_circuit_map.items() 
+                              if race_name in x or x in race_name), None)
+            )
+        
+        # Group by driver and calculate metrics
+        dhl_analysis = dhl_data.groupby('driverId').agg({
+            'time': ['mean', 'median', 'min', 'count'],
+            'lap': lambda x: dhl_data.loc[x.index, 'lap'].iloc[dhl_data.loc[x.index, 'time'].argmin()] if len(x) > 0 else None
+        }).round(3)
+        
+        # Flatten column names
+        dhl_analysis.columns = ['avg_time', 'median_time', 'best_time', 'total_stops', 'best_time_lap']
+        
+        # Add first stop analysis
+        first_stops = dhl_data.sort_values(['driverId', 'year', 'race', 'lap']).groupby(['driverId', 'race']).first()
+        first_stop_analysis = first_stops.groupby('driverId')['time'].agg(['mean', 'median', 'min', 'count']).round(3)
+        first_stop_analysis.columns = ['avg_first_stop', 'median_first_stop', 'best_first_stop', 'first_stop_races']
+        
+        # Join first stop analysis to main analysis
+        dhl_analysis = dhl_analysis.join(first_stop_analysis, how='left')
+        
+        # Add next circuit average if we can determine the next race circuit
+        next_race = self.get_next_race()
+        if next_race is not None and 'circuitId' in next_race and 'circuitId' in dhl_data.columns:
+            next_circuit_id = next_race['circuitId']
+            circuit_stops = dhl_data[dhl_data['circuitId'] == next_circuit_id]
+            
+            if not circuit_stops.empty:
+                # Overall times at this circuit
+                circuit_times = circuit_stops.groupby('driverId')['time'].mean().round(3)
+                dhl_analysis['next_circuit_avg'] = dhl_analysis.index.map(
+                    lambda x: circuit_times.get(x, dhl_analysis.loc[x, 'avg_time'] if x in dhl_analysis.index else None)
+                )
+                
+                # First stop times at this circuit
+                circuit_first_stops = circuit_stops.sort_values(['driverId', 'lap']).groupby('driverId').first()
+                circuit_first_times = circuit_first_stops['time'].round(3)
+                dhl_analysis['next_circuit_first_stop'] = dhl_analysis.index.map(
+                    lambda x: circuit_first_times.get(x, None)
+                )
+        
+        # Add year-by-year analysis
+        if 'year' in dhl_data.columns:
+            yearly_stats = []
+            for driver_id in dhl_analysis.index:
+                driver_data = dhl_data[dhl_data['driverId'] == driver_id]
+                for year in driver_data['year'].unique():
+                    year_data = driver_data[driver_data['year'] == year]
+                    if not year_data.empty:
+                        yearly_stats.append({
+                            'driverId': driver_id,
+                            'year': year,
+                            'avg_time': year_data['time'].mean(),
+                            'median_time': year_data['time'].median(),
+                            'best_time': year_data['time'].min(),
+                            'total_stops': len(year_data),
+                            'best_time_lap': year_data.loc[year_data['time'].idxmin(), 'lap'] if len(year_data) > 0 else None
+                        })
+            
+            if yearly_stats:
+                dhl_analysis.yearly_data = pd.DataFrame(yearly_stats)
+        
+        # Filter to current season drivers
+        dhl_analysis = self.filter_current_season_drivers(dhl_analysis)
+        
+        return dhl_analysis
+    
+    def analyze_dhl_pit_stops_by_track_year(self):
+        """Analyze DHL pit stop data for a specific track across years"""
+        dhl_data = self.dhl_data.copy()
+        
+        if dhl_data.empty:
+            return {}
+            
+        # Get next race info
+        next_race = self.get_next_race()
+        if next_race is None:
+            return {}
+            
+        races = self.data.get('races', pd.DataFrame())
+        circuits = self.data.get('circuits', pd.DataFrame())
+        drivers = self.data.get('drivers', pd.DataFrame())
+        
+        # Get circuit name
+        circuit_name = 'Unknown Circuit'
+        if 'circuitId' in next_race and not circuits.empty:
+            circuit = circuits[circuits['id'] == next_race['circuitId']]
+            if not circuit.empty:
+                circuit_name = circuit.iloc[0]['name']
+        
+        # Map race names to circuit IDs (similar to main method)
+        if not races.empty and 'race' in dhl_data.columns:
+            race_circuit_map = {}
+            for _, race in races.iterrows():
+                race_name = race.get('name', '')
+                circuit_id = race.get('circuitId')
+                if circuit_id:
+                    race_circuit_map[race_name.lower()] = circuit_id
+                    for word in race_name.split():
+                        if len(word) > 4:
+                            race_circuit_map[word.lower()] = circuit_id
+            
+            dhl_data['circuitId'] = dhl_data['race'].str.lower().map(
+                lambda x: next((cid for race_name, cid in race_circuit_map.items() 
+                              if race_name in x or x in race_name), None)
+            )
+        
+        # Filter for the specific circuit
+        if 'circuitId' not in next_race or 'circuitId' not in dhl_data.columns:
+            return {'circuit_name': circuit_name, 'year_by_year': pd.DataFrame(), 'overall_stats': pd.DataFrame()}
+            
+        circuit_id = next_race['circuitId']
+        circuit_data = dhl_data[dhl_data['circuitId'] == circuit_id].copy()
+        
+        if circuit_data.empty:
+            return {'circuit_name': circuit_name, 'year_by_year': pd.DataFrame(), 'overall_stats': pd.DataFrame()}
+        
+        # Get first stops only for this circuit
+        circuit_first_stops = circuit_data.sort_values(['driverId', 'year', 'lap']).groupby(['driverId', 'year', 'race']).first().reset_index()
+        
+        # Year-by-year analysis
+        year_stats = []
+        if 'year' in circuit_first_stops.columns and 'driverId' in circuit_first_stops.columns:
+            for (driver_id, year), group in circuit_first_stops.groupby(['driverId', 'year']):
+                year_stats.append({
+                    'driverId': driver_id,
+                    'year': year,
+                    'avg_time': group['time'].mean(),
+                    'median_time': group['time'].median(),
+                    'best_time': group['time'].min(),
+                    'stops': len(group),
+                    'avg_lap': group['lap'].mean()
+                })
+        
+        year_by_year_df = pd.DataFrame(year_stats) if year_stats else pd.DataFrame()
+        
+        # Overall career stats at this track (first stops only)
+        overall_stats = circuit_first_stops.groupby('driverId').agg({
+            'time': ['mean', 'min', 'count'],
+            'lap': 'mean'
+        }).round(3)
+        overall_stats.columns = ['avg_first_stop', 'best_first_stop', 'total_races', 'avg_lap']
+        
+        # Add driver names
+        if not drivers.empty and not year_by_year_df.empty:
+            driver_names = drivers.set_index('id')['surname'].to_dict()
+            year_by_year_df['driver_name'] = year_by_year_df['driverId'].map(driver_names)
+            
+        if not drivers.empty and not overall_stats.empty:
+            driver_names = drivers.set_index('id')['surname'].to_dict()
+            overall_stats['driver_name'] = overall_stats.index.map(driver_names)
+        
+        # Filter to current season drivers
+        current_drivers = self.get_active_drivers()
+        if not current_drivers.empty:
+            active_ids = set(current_drivers['id'].unique())
+            if not year_by_year_df.empty:
+                year_by_year_df = year_by_year_df[year_by_year_df['driverId'].isin(active_ids)]
+            if not overall_stats.empty:
+                overall_stats = overall_stats[overall_stats.index.isin(active_ids)]
+        
+        return {
+            'circuit_name': circuit_name,
+            'year_by_year': year_by_year_df,
+            'overall_stats': overall_stats
+        }
     
     def analyze_starting_positions(self):
         """Analyze starting positions by driver"""
@@ -1631,6 +1886,189 @@ class F1PerformanceAnalyzer:
         else:
             print("No pit stop data available")
         
+        # 3b. DHL Official Pit Stop Analysis
+        print("\n" + "-"*80)
+        print("3b. DHL OFFICIAL PIT STOP TIMES BY DRIVER (seconds)")
+        print("-"*80)
+        dhl_stops = self.analyze_dhl_pit_stops()
+        if not dhl_stops.empty:
+            # Add driver names
+            drivers = self.data.get('drivers', pd.DataFrame())
+            if not drivers.empty:
+                driver_names = drivers.set_index('id')['surname'].to_dict()
+                dhl_stops['driver_name'] = dhl_stops.index.map(driver_names)
+            
+            # Show main analysis with first stop info
+            display_cols = ['driver_name', 'avg_time', 'median_time', 'best_time', 'best_time_lap', 'total_stops']
+            if 'avg_first_stop' in dhl_stops.columns:
+                display_cols.extend(['avg_first_stop', 'best_first_stop'])
+            if 'next_circuit_avg' in dhl_stops.columns:
+                display_cols.append('next_circuit_avg')
+            if 'next_circuit_first_stop' in dhl_stops.columns:
+                display_cols.append('next_circuit_first_stop')
+            display_cols = [col for col in display_cols if col in dhl_stops.columns]
+            
+            # Sort by average time (fastest first)
+            dhl_stops_sorted = dhl_stops.sort_values('avg_time', ascending=True)
+            print(dhl_stops_sorted[display_cols].head(20).to_string())
+            
+            # Show yearly analysis if available
+            if hasattr(dhl_stops, 'yearly_data') and not dhl_stops.yearly_data.empty:
+                print("\nYearly DHL Pit Stop Performance:")
+                print("-" * 80)
+                yearly_data = dhl_stops.yearly_data
+                
+                # Add driver names to yearly data
+                if not drivers.empty:
+                    yearly_data['driver_name'] = yearly_data['driverId'].map(driver_names)
+                
+                # Create pivot table for easy viewing
+                years = sorted(yearly_data['year'].unique())
+                
+                if len(years) > 1:
+                    print(f"{'Driver':<20}", end="")
+                    for year in years:
+                        print(f"{int(year):>25}", end="")
+                    print()
+                    
+                    print(f"{'':<20}", end="")
+                    for year in years:
+                        print(f"{'Avg  Med  Best  Stops':>25}", end="")
+                    print()
+                    print("-" * (20 + len(years) * 25))
+                    
+                    # Sort drivers by most recent year average
+                    driver_sort = []
+                    for driver_id in yearly_data['driverId'].unique():
+                        driver_years = yearly_data[yearly_data['driverId'] == driver_id]
+                        most_recent = driver_years[driver_years['year'] == max(driver_years['year'])]
+                        if not most_recent.empty:
+                            avg_time = most_recent.iloc[0]['avg_time']
+                            driver_sort.append((driver_id, avg_time))
+                    
+                    driver_sort.sort(key=lambda x: x[1])  # Sort by avg time
+                    
+                    for driver_id, _ in driver_sort[:15]:  # Top 15 drivers
+                        driver_years = yearly_data[yearly_data['driverId'] == driver_id]
+                        driver_name = driver_years.iloc[0].get('driver_name', str(driver_id))
+                        
+                        if len(driver_name) > 19:
+                            driver_name = driver_name[:16] + "..."
+                        
+                        print(f"{driver_name:<20}", end="")
+                        
+                        for year in years:
+                            year_data = driver_years[driver_years['year'] == year]
+                            if not year_data.empty:
+                                row = year_data.iloc[0]
+                                avg = f"{row['avg_time']:.2f}"
+                                med = f"{row['median_time']:.2f}"
+                                best = f"{row['best_time']:.2f}"
+                                stops = f"{int(row['total_stops'])}"
+                                print(f"{avg:>5} {med:>5} {best:>5} {stops:>5}", end="")
+                            else:
+                                print(f"{'---':>5} {'---':>5} {'---':>5} {'---':>5}", end="")
+                        print()
+                else:
+                    # Single year view
+                    year = years[0]
+                    print(f"Data available for {int(year)} only:")
+                    year_summary = yearly_data.groupby('driverId').agg({
+                        'avg_time': 'first',
+                        'total_stops': 'sum'
+                    }).sort_values('avg_time')
+                    
+                    if not drivers.empty:
+                        year_summary['driver_name'] = year_summary.index.map(driver_names)
+                    
+                    print(year_summary[['driver_name', 'avg_time', 'total_stops']].head(15).to_string())
+        else:
+            print("No DHL pit stop data available")
+        
+        # 3c. Track-specific DHL First Stop Analysis
+        print("\n" + "-"*80)
+        print("3c. TRACK-SPECIFIC DHL FIRST STOP ANALYSIS")
+        print("-"*80)
+        track_dhl = self.analyze_dhl_pit_stops_by_track_year()
+        if isinstance(track_dhl, dict) and 'year_by_year' in track_dhl:
+            circuit_name = track_dhl.get('circuit_name', 'Unknown Circuit')
+            print(f"\nFirst Pit Stop Analysis for: {circuit_name}")
+            
+            # Show year-by-year first stop data
+            year_data = track_dhl['year_by_year']
+            if not year_data.empty:
+                print("\nYear-by-Year First Stop Times:")
+                print("=" * 100)
+                
+                # Get unique years
+                years = sorted(year_data['year'].unique())
+                recent_years = years[-5:] if len(years) > 5 else years
+                
+                # Header
+                print(f"{'Driver':<20}", end="")
+                for year in recent_years:
+                    print(f"{int(year):>18}", end="")
+                print()
+                
+                # Sub-header
+                print(f"{'':<20}", end="")
+                for year in recent_years:
+                    print(f"{'Avg  Best  Lap':>18}", end="")
+                print()
+                print("-" * (20 + len(recent_years) * 18))
+                
+                # Sort drivers by most recent year average
+                driver_sort = []
+                for driver_id in year_data['driverId'].unique():
+                    driver_years = year_data[year_data['driverId'] == driver_id]
+                    most_recent = driver_years[driver_years['year'] == max(driver_years['year'])]
+                    if not most_recent.empty:
+                        avg_time = most_recent.iloc[0]['avg_time']
+                        driver_sort.append((driver_id, avg_time))
+                
+                driver_sort.sort(key=lambda x: x[1])  # Sort by avg time
+                
+                for driver_id, _ in driver_sort[:15]:  # Top 15 drivers
+                    driver_years = year_data[year_data['driverId'] == driver_id]
+                    driver_name = driver_years.iloc[0].get('driver_name', str(driver_id))
+                    
+                    if len(driver_name) > 19:
+                        driver_name = driver_name[:16] + "..."
+                    
+                    print(f"{driver_name:<20}", end="")
+                    
+                    for year in recent_years:
+                        year_row = driver_years[driver_years['year'] == year]
+                        if not year_row.empty:
+                            row = year_row.iloc[0]
+                            avg = f"{row['avg_time']:.2f}"
+                            best = f"{row['best_time']:.2f}"
+                            lap = f"{int(row['avg_lap'])}"
+                            print(f"{avg:>5} {best:>5} {lap:>5}", end="")
+                        else:
+                            print(f"{'---':>5} {'---':>5} {'---':>5}", end="")
+                    print()
+                
+                if len(years) > len(recent_years):
+                    print(f"\n* Showing last {len(recent_years)} years. Full history from {min(years)} to {max(years)}")
+            
+            # Career stats at this track
+            overall_stats = track_dhl['overall_stats']
+            if not overall_stats.empty:
+                print("\n\nCareer First Stop Statistics at this Track (Active Drivers):")
+                print("-" * 80)
+                print(f"{'Driver':<25} {'Avg First Stop':<15} {'Best First Stop':<15} {'Races':<10} {'Avg Lap':<10}")
+                print("-" * 80)
+                
+                overall_sorted = overall_stats.sort_values('avg_first_stop', ascending=True)
+                
+                for driver_id, row in overall_sorted.head(15).iterrows():
+                    driver_name = row.get('driver_name', driver_id)
+                    print(f"{driver_name:<25} {row['avg_first_stop']:<15.3f} {row['best_first_stop']:<15.3f} "
+                          f"{int(row['total_races']):<10} {row['avg_lap']:<10.1f}")
+        else:
+            print("No track-specific DHL data available for the next race")
+        
         # 4. Starting Position Analysis
         print("\n" + "="*80)
         print("4. STARTING POSITIONS BY DRIVER")
@@ -2093,11 +2531,13 @@ class F1PerformanceAnalyzer:
         print("- Median values provide insight into typical performance (less affected by outliers)")
         print("- Data includes races from the last 3 years for relevance")
         print("- Teammate overtake scoring: +1.5 for overtaking teammate, -1.5 for being overtaken")
+        print("- DHL pit stop data: Official DHL fastest pit stop competition results")
         
         return {
             'overtakes': overtakes,
             'points': points,
             'pit_stops': pit_stops,
+            'dhl_pit_stops': dhl_stops,
             'starting_positions': grid,
             'sprint_points': sprint,
             'teammate_overtakes': teammate,
