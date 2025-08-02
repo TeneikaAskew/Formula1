@@ -1,0 +1,60 @@
+{
+  "bets": [
+    {
+      "type": "2-pick",
+      "selections": [
+        {
+          "driver": "George Russell",
+          "prop": "overtakes",
+          "direction": "UNDER",
+          "line": 3.0,
+          "probability": 0.95
+        },
+        {
+          "driver": "Lando Norris",
+          "prop": "overtakes",
+          "direction": "UNDER",
+          "line": 3.0,
+          "probability": 0.95
+        }
+      ],
+      "probability": 0.9025,
+      "stake": 25.0,
+      "payout": 3.0,
+      "expected_value": 42.6875
+    },
+    {
+      "type": "3-pick",
+      "selections": [
+        {
+          "driver": "George Russell",
+          "prop": "overtakes",
+          "direction": "UNDER",
+          "line": 3.0,
+          "probability": 0.95
+        },
+        {
+          "driver": "Lando Norris",
+          "prop": "overtakes",
+          "direction": "UNDER",
+          "line": 3.0,
+          "probability": 0.95
+        },
+        {
+          "driver": "Liam Lawson",
+          "prop": "overtakes",
+          "direction": "UNDER",
+          "line": 3.0,
+          "probability": 0.95
+        }
+      ],
+      "probability": 0.8573749999999999,
+      "stake": 12.5,
+      "payout": 6.0,
+      "expected_value": 51.803124999999994
+    }
+  ],
+  "total_stake": 37.5,
+  "expected_value": 131.990625,
+  "expected_roi": 251.97499999999997
+}

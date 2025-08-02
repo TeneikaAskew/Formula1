@@ -1,0 +1,60 @@
+{
+  "bets": [
+    {
+      "type": "2-pick",
+      "selections": [
+        {
+          "driver": "George Russell",
+          "prop": "overtakes",
+          "direction": "UNDER",
+          "line": 3.0,
+          "probability": 0.95
+        },
+        {
+          "driver": "Daniel Ricciardo",
+          "prop": "points",
+          "direction": "UNDER",
+          "line": 6.0,
+          "probability": 0.95
+        }
+      ],
+      "probability": 0.9025,
+      "stake": 50,
+      "payout": 3.0,
+      "expected_value": 85.375
+    },
+    {
+      "type": "3-pick",
+      "selections": [
+        {
+          "driver": "George Russell",
+          "prop": "overtakes",
+          "direction": "UNDER",
+          "line": 3.0,
+          "probability": 0.95
+        },
+        {
+          "driver": "Lando Norris",
+          "prop": "overtakes",
+          "direction": "UNDER",
+          "line": 3.0,
+          "probability": 0.95
+        },
+        {
+          "driver": "Daniel Ricciardo",
+          "prop": "points",
+          "direction": "UNDER",
+          "line": 6.0,
+          "probability": 0.95
+        }
+      ],
+      "probability": 0.8573749999999999,
+      "stake": 25,
+      "payout": 6.0,
+      "expected_value": 103.60624999999999
+    }
+  ],
+  "total_stake": 75,
+  "expected_value": 263.98125,
+  "expected_roi": 251.97499999999997
+}

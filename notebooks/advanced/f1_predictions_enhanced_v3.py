@@ -9,6 +9,7 @@ import pandas as pd
 from pathlib import Path
 from scipy import stats
 from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Tuple
 
 # Add the current directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

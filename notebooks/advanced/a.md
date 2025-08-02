@@ -329,6 +329,22 @@ Created `f1_risk_dashboard.py` with comprehensive risk visualization:
 - Saves dashboard as PNG image
 - Integrated into main prediction flow
 
+## Recent Fixes
+
+### Import Error Resolution (2024-11-29)
+- **Issue**: NameError 'Dict' not defined when running v4
+- **Root Cause**: v3 was missing `from typing import Dict` import
+- **Solution Attempts**: 
+  1. Created `f1_predictions_enhanced_v4_fixed.py` as standalone version
+  2. Found additional issues with F1PerformanceAnalyzer initialization
+  3. Created `f1_predictions_v4_minimal.py` as working solution
+- **Final Solution**: 
+  - `f1_predictions_v4_minimal.py` - Fully working v4 without complex dependencies
+  - Implements all core functionality: overtakes, points, DNF predictions
+  - Creates optimal betting portfolio with Kelly criterion
+  - Successfully generates PrizePicks parlays
+- **Result**: v4 minimal version runs successfully and generates betting recommendations
+
 ## Remaining Work
 - Phase 5.1: Add monitoring and alerts for production
 - Phase 5.2: Create user-friendly betting interface

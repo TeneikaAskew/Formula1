@@ -43,39 +43,45 @@ class F1BayesianPriors:
         recent_results = results[results['year'] >= results['year'].max() - 1]
         
         # Points priors by team
-        team_points = recent_results.groupby('constructorId').agg({
-            'points': ['mean', 'count', lambda x: (x > 6).mean()]
-        }).reset_index()
+        team_points_mean = recent_results.groupby('constructorId')['points'].mean()
+        team_points_count = recent_results.groupby('constructorId')['points'].count()
+        team_points_over6 = recent_results.groupby('constructorId')['points'].apply(lambda x: (x > 6).mean())
         
-        for _, row in team_points.iterrows():
-            constructor_id = row['constructorId']
-            if isinstance(constructor_id, pd.Series):
-                constructor_id = constructor_id.iloc[0]
-            constructor_id = int(constructor_id)
-            if constructor_id not in self.team_priors:
-                self.team_priors[constructor_id] = {}
+        for constructor_id in team_points_mean.index:
+            # Handle both numeric and string constructor IDs
+            try:
+                constructor_id_key = int(constructor_id)
+            except (ValueError, TypeError):
+                # Keep as string if not convertible to int
+                constructor_id_key = str(constructor_id)
             
-            self.team_priors[constructor_id]['points'] = {
-                'mean': float(row['points']['mean']),
-                'over_6_rate': float(row['points']['<lambda>']),
-                'sample_size': int(row['points']['count'])
+            if constructor_id_key not in self.team_priors:
+                self.team_priors[constructor_id_key] = {}
+            
+            self.team_priors[constructor_id_key]['points'] = {
+                'mean': float(team_points_mean[constructor_id]),
+                'over_6_rate': float(team_points_over6[constructor_id]),
+                'sample_size': int(team_points_count[constructor_id])
             }
         
         # DNF priors by team
-        team_dnf = recent_results.groupby('constructorId').agg({
-            'positionText': lambda x: x.isin(['DNF', 'DNS', 'DSQ']).mean()
-        }).reset_index()
+        team_dnf_rate = recent_results.groupby('constructorId')['positionText'].apply(
+            lambda x: x.isin(['DNF', 'DNS', 'DSQ']).mean()
+        )
         
-        for _, row in team_dnf.iterrows():
-            constructor_id = row['constructorId']
-            if isinstance(constructor_id, pd.Series):
-                constructor_id = constructor_id.iloc[0]
-            constructor_id = int(constructor_id)
-            if constructor_id not in self.team_priors:
-                self.team_priors[constructor_id] = {}
+        for constructor_id in team_dnf_rate.index:
+            # Handle both numeric and string constructor IDs
+            try:
+                constructor_id_key = int(constructor_id)
+            except (ValueError, TypeError):
+                # Keep as string if not convertible to int
+                constructor_id_key = str(constructor_id)
             
-            self.team_priors[constructor_id]['dnf'] = {
-                'rate': float(row['positionText'])
+            if constructor_id_key not in self.team_priors:
+                self.team_priors[constructor_id_key] = {}
+            
+            self.team_priors[constructor_id_key]['dnf'] = {
+                'rate': float(team_dnf_rate[constructor_id])
             }
     
     def _calculate_track_priors(self):
@@ -108,37 +114,40 @@ class F1BayesianPriors:
                 overtake_data['gridPosition'] - overtake_data['positionNumber']
             ).apply(lambda x: max(0, x) if pd.notna(x) else 0)
             
-            circuit_overtakes = overtake_data.groupby('circuitId').agg({
-                'overtakes': ['mean', 'std']
-            }).reset_index()
+            circuit_overtakes_mean = overtake_data.groupby('circuitId')['overtakes'].mean()
+            circuit_overtakes_std = overtake_data.groupby('circuitId')['overtakes'].std()
             
-            for _, row in circuit_overtakes.iterrows():
-                circuit_id = row['circuitId']
-                if isinstance(circuit_id, pd.Series):
-                    circuit_id = circuit_id.iloc[0]
-                circuit_id = int(circuit_id)
-                self.track_priors[circuit_id] = {
+            for circuit_id in circuit_overtakes_mean.index:
+                # Handle both numeric and string circuit IDs
+                try:
+                    circuit_id_key = int(circuit_id)
+                except (ValueError, TypeError):
+                    circuit_id_key = str(circuit_id)
+                
+                self.track_priors[circuit_id_key] = {
                     'overtakes': {
-                        'mean': float(row['overtakes']['mean']),
-                        'std': float(row['overtakes']['std'])
+                        'mean': float(circuit_overtakes_mean[circuit_id]),
+                        'std': float(circuit_overtakes_std[circuit_id]) if pd.notna(circuit_overtakes_std[circuit_id]) else 0.0
                     }
                 }
         
         # Track-specific DNF rates
-        circuit_dnf = results_with_circuit.groupby('circuitId').agg({
-            'positionText': lambda x: x.isin(['DNF', 'DNS', 'DSQ']).mean()
-        }).reset_index()
+        circuit_dnf_rate = results_with_circuit.groupby('circuitId')['positionText'].apply(
+            lambda x: x.isin(['DNF', 'DNS', 'DSQ']).mean()
+        )
         
-        for _, row in circuit_dnf.iterrows():
-            circuit_id = row['circuitId']
-            if isinstance(circuit_id, pd.Series):
-                circuit_id = circuit_id.iloc[0]
-            circuit_id = int(circuit_id)
-            if circuit_id not in self.track_priors:
-                self.track_priors[circuit_id] = {}
+        for circuit_id in circuit_dnf_rate.index:
+            # Handle both numeric and string circuit IDs
+            try:
+                circuit_id_key = int(circuit_id)
+            except (ValueError, TypeError):
+                circuit_id_key = str(circuit_id)
             
-            self.track_priors[circuit_id]['dnf'] = {
-                'rate': float(row['positionText'])
+            if circuit_id_key not in self.track_priors:
+                self.track_priors[circuit_id_key] = {}
+            
+            self.track_priors[circuit_id_key]['dnf'] = {
+                'rate': float(circuit_dnf_rate[circuit_id])
             }
     
     def _calculate_driver_priors(self):
@@ -150,25 +159,25 @@ class F1BayesianPriors:
             return
             
         # Calculate driver experience
-        driver_races = results.groupby('driverId').agg({
-            'raceId': 'count',
-            'points': ['mean', lambda x: (x > 0).mean()],
-            'positionText': lambda x: x.isin(['DNF', 'DNS', 'DSQ']).mean()
-        }).reset_index()
+        driver_race_count = results.groupby('driverId')['raceId'].count()
+        driver_avg_points = results.groupby('driverId')['points'].mean()
+        driver_points_rate = results.groupby('driverId')['points'].apply(lambda x: (x > 0).mean())
+        driver_dnf_rate = results.groupby('driverId')['positionText'].apply(
+            lambda x: x.isin(['DNF', 'DNS', 'DSQ']).mean()
+        )
         
-        driver_races.columns = ['driverId', 'race_count', 'avg_points', 
-                               'points_rate', 'dnf_rate']
-        
-        for _, row in driver_races.iterrows():
-            driver_id = row['driverId']
-            if isinstance(driver_id, pd.Series):
-                driver_id = driver_id.iloc[0]
-            driver_id = int(driver_id)
-            self.driver_priors[driver_id] = {
-                'experience': int(row['race_count']),
-                'avg_points': float(row['avg_points']),
-                'points_rate': float(row['points_rate']),
-                'dnf_rate': float(row['dnf_rate'])
+        for driver_id in driver_race_count.index:
+            # Handle both numeric and string driver IDs
+            try:
+                driver_id_key = int(driver_id)
+            except (ValueError, TypeError):
+                driver_id_key = str(driver_id)
+            
+            self.driver_priors[driver_id_key] = {
+                'experience': int(driver_race_count[driver_id]),
+                'avg_points': float(driver_avg_points[driver_id]),
+                'points_rate': float(driver_points_rate[driver_id]),
+                'dnf_rate': float(driver_dnf_rate[driver_id])
             }
     
     def _calculate_global_priors(self):
@@ -194,8 +203,8 @@ class F1BayesianPriors:
             }
         }
     
-    def get_hierarchical_prior(self, driver_id: int, constructor_id: int, 
-                              circuit_id: int, prop_type: str) -> Dict:
+    def get_hierarchical_prior(self, driver_id, constructor_id, 
+                              circuit_id, prop_type: str) -> Dict:
         """Get hierarchical Bayesian prior combining all levels
         
         Args:
