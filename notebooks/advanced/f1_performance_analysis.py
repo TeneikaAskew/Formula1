@@ -1710,13 +1710,18 @@ class F1PerformanceAnalyzer:
                         year_row = driver_data[driver_data['year'] == year]
                         if not year_row.empty:
                             row = year_row.iloc[0]
-                            avg_start = f"{row['avg_start']:.1f}"
-                            # Check if we have points data
-                            if 'avg_points' in row:
-                                pts_per_race = f"{row['avg_points']:.1f}"
-                                row_str += f"{avg_start:>7}  {pts_per_race:>11}    "
+                            # Check for NaN values
+                            if pd.notna(row['avg_start']):
+                                avg_start = f"{row['avg_start']:.1f}"
+                                # Check if we have points data and it's not NaN
+                                if 'avg_points' in row and pd.notna(row['avg_points']):
+                                    pts_per_race = f"{row['avg_points']:.1f}"
+                                    row_str += f"{avg_start:>7}  {pts_per_race:>11}    "
+                                else:
+                                    row_str += f"{avg_start:>7}  {'—':>11}    "
                             else:
-                                row_str += f"{avg_start:>7}  {'—':>11}    "
+                                # If avg_start is NaN, show em dash
+                                row_str += f"{'—':^22}"
                         else:
                             row_str += f"{'—':^22}"
                     
@@ -1933,14 +1938,18 @@ class F1PerformanceAnalyzer:
                             net_ot = int(row['teammate_overtake'])
                             pp_pts = row['prizepicks_points']
                             
-                            # Format: W-L (OT) [PP]
-                            # Example: 1-0 (+1) [+1.5]
-                            battle_str = f"{wins}-{losses}"
-                            ot_str = f"({net_ot:+d})"
-                            pp_str = f"[{pp_pts:+.1f}]"
-                            
-                            combined = f"{battle_str} {ot_str} {pp_str}"
-                            row_str += f"{combined:>20}"
+                            # Check for NaN values
+                            if pd.notna(wins) and pd.notna(losses) and pd.notna(net_ot) and pd.notna(pp_pts):
+                                # Format: W-L (OT) [PP]
+                                # Example: 1-0 (+1) [+1.5]
+                                battle_str = f"{wins}-{losses}"
+                                ot_str = f"({net_ot:+d})"
+                                pp_str = f"[{pp_pts:+.1f}]"
+                                
+                                combined = f"{battle_str} {ot_str} {pp_str}"
+                                row_str += f"{combined:>20}"
+                            else:
+                                row_str += f"{'—':^20}"
                         else:
                             row_str += f"{'—':^20}"
                     

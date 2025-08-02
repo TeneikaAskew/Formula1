@@ -27,6 +27,56 @@ class F1PrizePicksPredictor:
         # Store data for reuse
         self.data = data_dict
         
+        # Define default prop lines
+        self.default_lines = {
+            'overtakes': 2.5,
+            'points': 0.5,
+            'pit_stops': 2.5,
+            'starting_position': 10.5,
+            'teammate_overtakes': 0.5,
+            'dnf': 0.5
+        }
+        
+        # Get prop lines (prompt user or use defaults)
+        self.prop_lines = self.get_prop_lines()
+    
+    def get_prop_lines(self):
+        """Prompt user for custom prop lines or use defaults"""
+        print("\n" + "="*60)
+        print("PRIZEPICKS PROP LINE CONFIGURATION")
+        print("="*60)
+        print("\nWould you like to use default prop lines or enter custom values?")
+        print("1. Use defaults")
+        print("2. Enter custom values")
+        
+        choice = input("\nEnter choice (1 or 2) [default: 1]: ").strip()
+        
+        if choice == "2":
+            print("\nEnter custom prop lines (press Enter to use default):")
+            custom_lines = {}
+            
+            for prop, default_value in self.default_lines.items():
+                prop_display = prop.replace('_', ' ').title()
+                user_input = input(f"{prop_display} [default: {default_value}]: ").strip()
+                
+                if user_input:
+                    try:
+                        custom_lines[prop] = float(user_input)
+                        print(f"  ✓ {prop_display} set to {custom_lines[prop]}")
+                    except ValueError:
+                        print(f"  ⚠ Invalid input, using default {default_value}")
+                        custom_lines[prop] = default_value
+                else:
+                    custom_lines[prop] = default_value
+            
+            print("\nCustom prop lines configured!")
+            return custom_lines
+        else:
+            print("\nUsing default prop lines:")
+            for prop, value in self.default_lines.items():
+                print(f"  • {prop.replace('_', ' ').title()}: {value}")
+            return self.default_lines.copy()
+        
     def calculate_confidence_interval(self, historical_data, confidence=0.95):
         """Calculate confidence interval for predictions"""
         if len(historical_data) == 0:
