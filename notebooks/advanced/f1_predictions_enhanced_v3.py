@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Enhanced F1 predictions with historical context and realistic prop lines"""
+"""Enhanced F1 predictions v3 with probability calibration (Phase 2.1) for PrizePicks"""
 
 import sys
 import os
@@ -15,6 +15,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from f1db_data_loader import F1DBDataLoader
 from f1_performance_analysis import F1PerformanceAnalyzer
+from f1_probability_calibration import F1ProbabilityCalibrator
+from f1_bayesian_priors import F1BayesianPriors
+from f1_contextual_features import F1ContextualFeatures
 
 class F1PrizePicksPredictor:
     """Generate predictions with confidence intervals for all PrizePicks prop types"""
@@ -27,10 +30,20 @@ class F1PrizePicksPredictor:
         # Store data for reuse
         self.data = data_dict
         
+        # Initialize probability calibrator
+        self.calibrator = F1ProbabilityCalibrator()
+        self.calibration_enabled = True
+        
+        # Initialize Bayesian priors
+        self.bayesian_priors = F1BayesianPriors(data_dict)
+        
+        # Initialize contextual features
+        self.contextual_features = F1ContextualFeatures(data_dict)
+        
         # Define default prop lines
         self.default_lines = {
             'overtakes': 2.5,
-            'points': 0.5,
+            'points': 6.0,  # Changed from 0.5 - minimum F1 points is 1, typical line is 6
             'pit_stops': 2.5,
             'starting_position': 10.5,
             'teammate_overtakes': 0.5,
@@ -39,6 +52,9 @@ class F1PrizePicksPredictor:
         
         # Get prop lines (prompt user or use defaults)
         self.prop_lines = self.get_prop_lines()
+        
+        # Load calibration data
+        self.load_calibration_data()
     
     def get_prop_lines(self):
         """Prompt user for custom prop lines or use defaults"""
@@ -186,6 +202,121 @@ class F1PrizePicksPredictor:
         under_prob = self.bound_probability(under_prob)
         
         return over_prob, under_prob, confidence
+    
+    def load_calibration_data(self):
+        """Load historical calibration data for probability adjustment"""
+        # For Phase 2.1, we'll use simulated calibration based on known biases
+        # In production, this would load from historical prediction/outcome data
+        
+        # Simulated prior rates based on F1 statistics
+        self.calibrator.prior_rates = {
+            'points': 0.35,  # ~35% of drivers score 6+ points (top 8 finishers)
+            'overtakes': 0.65,  # Probability of making 3+ overtakes
+            'dnf': 0.12,  # ~12% DNF rate historically
+            'starting_position': 0.5,  # Calibrated for median grid position
+            'pit_stops': 0.7,  # Probability of 2+ pit stops
+            'teammate_overtakes': 0.5  # Evenly matched on average
+        }
+        
+        print("\nCalibration priors loaded for improved probability estimates")
+    
+    def calibrate_probability(self, raw_prob, prop_type, sample_size=20, 
+                            driver_id=None, constructor_id=None, circuit_id=None):
+        """Apply calibration to raw probability with hierarchical Bayesian priors
+        
+        Args:
+            raw_prob: Raw predicted probability
+            prop_type: Type of prop (e.g., 'points', 'overtakes')
+            sample_size: Number of historical samples used
+            driver_id: Driver ID for hierarchical prior
+            constructor_id: Constructor ID for hierarchical prior
+            circuit_id: Circuit ID for hierarchical prior
+            
+        Returns:
+            Calibrated probability
+        """
+        # First bound the probability
+        bounded_prob = self.bound_probability(raw_prob)
+        
+        if not self.calibration_enabled:
+            return bounded_prob
+            
+        # Try hierarchical Bayesian prior first
+        if driver_id and constructor_id and circuit_id:
+            prior_params = self.bayesian_priors.get_hierarchical_prior(
+                driver_id, constructor_id, circuit_id, prop_type
+            )
+            calibrated_prob = self.bayesian_priors.apply_hierarchical_prior(
+                bounded_prob, prior_params, sample_size, prior_strength=10.0
+            )
+            
+            # Apply experience adjustment
+            exp_adjustment = self.bayesian_priors.get_experience_adjustment(driver_id)
+            if prop_type == 'dnf':
+                # Inverse adjustment for DNF (experienced drivers have lower DNF)
+                calibrated_prob = calibrated_prob / exp_adjustment
+            else:
+                calibrated_prob = calibrated_prob * exp_adjustment
+                
+        # Fallback to simple Bayesian prior
+        elif prop_type in self.calibrator.prior_rates:
+            calibrated_prob = self.calibrator.apply_bayesian_prior(
+                bounded_prob, prop_type, sample_size, prior_strength=10.0
+            )
+        else:
+            calibrated_prob = bounded_prob
+            
+        return self.bound_probability(calibrated_prob)
+    
+    def apply_contextual_adjustments(self, base_prediction: float, prop_type: str, 
+                                   contextual_features: Dict) -> float:
+        """Apply contextual adjustments to base prediction
+        
+        Args:
+            base_prediction: Base predicted value
+            prop_type: Type of prop
+            contextual_features: Dictionary of contextual features
+            
+        Returns:
+            Adjusted prediction
+        """
+        adjusted = base_prediction
+        
+        if prop_type == 'overtakes':
+            # Adjust for track overtaking difficulty and weather
+            adjusted *= contextual_features.get('overtaking_potential', 1.0)
+            # Recent form adjustment
+            form_factor = 1.0 - (contextual_features.get('form_avg_position', 15) - 10) / 20
+            adjusted *= max(0.7, min(1.3, form_factor))
+            
+        elif prop_type == 'points':
+            # Momentum and form heavily influence points
+            momentum = contextual_features.get('momentum_score', 0.5)
+            adjusted *= (0.7 + 0.6 * momentum)
+            # Team momentum matters for points
+            team_momentum = contextual_features.get('team_team_momentum', 0)
+            if team_momentum > 0:
+                adjusted *= 1.1
+                
+        elif prop_type == 'dnf':
+            # Risk factors increase DNF probability
+            risk_score = contextual_features.get('risk_score', 1.0)
+            adjusted *= risk_score
+            # Track-specific DNF risk
+            adjusted *= contextual_features.get('track_dnf_risk_multiplier', 1.0)
+            
+        elif prop_type == 'starting_position':
+            # Circuit affinity affects qualifying
+            circuit_affinity = contextual_features.get('circuit_circuit_affinity', 0.5)
+            adjusted *= (1.5 - circuit_affinity)  # Better affinity = lower grid position
+            
+        elif prop_type == 'pit_stops':
+            # Weather chaos increases pit stop variability
+            chaos_factor = contextual_features.get('weather_chaos_factor', 1.0)
+            if chaos_factor > 1.2:
+                adjusted *= 1.2  # More stops likely in chaotic conditions
+                
+        return adjusted
     
     def get_driver_overtake_stats(self, driver_id):
         """Get overtake statistics for a specific driver"""
@@ -360,14 +491,31 @@ class F1PrizePicksPredictor:
         overtake_analysis = self.analyzer.analyze_overtakes()
         
         for driver_id in drivers['id'].unique():  # Process all drivers
-            driver_name = drivers[drivers['id'] == driver_id].iloc[0]['name']
+            driver_info = drivers[drivers['id'] == driver_id].iloc[0]
+            driver_name = driver_info['name']
+            
+            # Get constructor ID for this driver
+            results = self.data.get('results', pd.DataFrame())
+            if not results.empty:
+                recent_result = results[results['driverId'] == driver_id].tail(1)
+                constructor_id = recent_result['constructorId'].iloc[0] if not recent_result.empty else None
+            else:
+                constructor_id = None
+            
             print(f"\n{'='*60}")
             print(f"DRIVER: {driver_name} (ID: {driver_id})")
             print(f"{'='*60}")
             
+            # Get contextual features for this driver
+            context_features = self.contextual_features.get_all_contextual_features(
+                driver_id, constructor_id, circuit_id, race_id
+            )
+            
             driver_predictions = {
                 'driver_id': driver_id,
                 'driver_name': driver_name,
+                'constructor_id': constructor_id,
+                'contextual_features': context_features,
                 'predictions': {}
             }
             
@@ -397,13 +545,25 @@ class F1PrizePicksPredictor:
                     
                     if len(overtakes_per_race) > 0:
                         mean, lower, upper, conf = self.calculate_confidence_interval(overtakes_per_race)
+                        
+                        # Apply contextual adjustments to prediction
+                        adjusted_mean = self.apply_contextual_adjustments(mean, 'overtakes', context_features)
+                        
                         line = self.prop_lines['overtakes']
                         over_prob, under_prob, _ = self.calculate_probability_distribution(
                             overtakes_per_race, line, show_debug=(line > 4.0)
                         )
                         
+                        # Apply calibration with hierarchical priors
+                        over_prob = self.calibrate_probability(
+                            over_prob, 'overtakes', len(overtakes_per_race),
+                            driver_id=driver_id, constructor_id=constructor_id, circuit_id=circuit_id
+                        )
+                        under_prob = 1 - over_prob
+                        
                         driver_predictions['predictions']['overtakes'] = {
-                            'predicted': round(mean, 2),
+                            'predicted': round(adjusted_mean, 2),
+                            'base_predicted': round(mean, 2),
                             'confidence_interval': [round(lower, 2), round(upper, 2)],
                             'confidence': round(conf, 3),
                             'line': line,
@@ -430,9 +590,22 @@ class F1PrizePicksPredictor:
                     if isinstance(recent_points, (list, np.ndarray)) and len(recent_points) > 0:
                         mean, lower, upper, conf = self.calculate_confidence_interval(recent_points)
                         line = self.prop_lines['points']
-                        # Use the points_finish_rate which correctly counts scoring vs total races
-                        over_prob = self.bound_probability(points_stats.get('points_finish_rate', 0.5))
-                        under_prob = self.bound_probability(1 - over_prob)
+                        
+                        # For points line > 0.5, calculate probability based on distribution
+                        if line > 1.0:
+                            # Calculate probability of scoring more than the line
+                            over_prob, under_prob, _ = self.calculate_probability_distribution(recent_points, line)
+                        else:
+                            # For line <= 1.0, use points finish rate
+                            over_prob = self.bound_probability(points_stats.get('points_finish_rate', 0.5))
+                            under_prob = 1 - over_prob
+                        
+                        # Apply calibration with hierarchical priors
+                        over_prob = self.calibrate_probability(
+                            over_prob, 'points', len(recent_points),
+                            driver_id=driver_id, constructor_id=constructor_id, circuit_id=circuit_id
+                        )
+                        under_prob = 1 - over_prob
                         
                         driver_predictions['predictions']['points'] = {
                             'predicted': round(mean, 2),
@@ -464,6 +637,13 @@ class F1PrizePicksPredictor:
                 line = self.prop_lines['starting_position']
                 over_prob, under_prob, _ = self.calculate_probability_distribution(quali_positions, line)
                 
+                # Apply calibration with hierarchical priors
+                over_prob = self.calibrate_probability(
+                    over_prob, 'starting_position', len(quali_positions),
+                    driver_id=driver_id, constructor_id=constructor_id, circuit_id=circuit_id
+                )
+                under_prob = 1 - over_prob
+                
                 driver_predictions['predictions']['starting_position'] = {
                     'predicted': round(mean, 1),
                     'confidence_interval': [round(lower, 1), round(upper, 1)],
@@ -492,6 +672,13 @@ class F1PrizePicksPredictor:
                     line = self.prop_lines['pit_stops']
                     over_prob, under_prob, _ = self.calculate_probability_distribution(recent_stops, line)
                     
+                    # Apply calibration with hierarchical priors
+                    over_prob = self.calibrate_probability(
+                        over_prob, 'pit_stops', len(recent_stops),
+                        driver_id=driver_id, constructor_id=constructor_id, circuit_id=circuit_id
+                    )
+                    under_prob = 1 - over_prob
+                    
                     driver_predictions['predictions']['pit_stops'] = {
                         'predicted': round(mean, 2),
                         'confidence_interval': [round(lower, 2), round(upper, 2)],
@@ -515,10 +702,22 @@ class F1PrizePicksPredictor:
             
             # 5. DNF PROBABILITY
             dnf_prob, dnf_conf = self.get_dnf_probability(driver_id)
+            
+            # Apply contextual adjustments
+            adjusted_dnf_prob = self.apply_contextual_adjustments(dnf_prob, 'dnf', context_features)
+            
+            # Apply calibration with hierarchical priors
+            adjusted_dnf_prob = self.calibrate_probability(
+                adjusted_dnf_prob, 'dnf', 20,  # Using default sample size
+                driver_id=driver_id, constructor_id=constructor_id, circuit_id=circuit_id
+            )
+            
             driver_predictions['predictions']['dnf'] = {
-                'probability': round(dnf_prob, 3),
+                'probability': round(adjusted_dnf_prob, 3),
+                'base_probability': round(dnf_prob, 3),
                 'confidence': round(dnf_conf, 3),
-                'recommendation': 'YES' if dnf_prob > 0.25 else 'NO'
+                'recommendation': 'YES' if adjusted_dnf_prob > 0.25 else 'NO',
+                'risk_score': round(context_features.get('risk_score', 1.0), 2)
             }
             
             print(f"\nDNF PROBABILITY:")
@@ -535,7 +734,13 @@ class F1PrizePicksPredictor:
                     line = self.prop_lines['teammate_overtakes']
                     raw_over = sum(1 for s in scores if s > line) / len(scores)
                     over_prob = self.bound_probability(raw_over)
-                    under_prob = self.bound_probability(1 - raw_over)
+                    
+                    # Apply calibration with hierarchical priors
+                    over_prob = self.calibrate_probability(
+                        over_prob, 'teammate_overtakes', len(scores),
+                        driver_id=driver_id, constructor_id=constructor_id, circuit_id=circuit_id
+                    )
+                    under_prob = 1 - over_prob
                     
                     driver_predictions['predictions']['teammate_overtakes'] = {
                         'predicted': round(mean, 2),

@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from f1db_data_loader import F1DBDataLoader
 from f1_performance_analysis import F1PerformanceAnalyzer
+from f1_probability_calibration import F1ProbabilityCalibrator
 
 class F1PrizePicksPredictor:
     """Generate predictions with confidence intervals for all PrizePicks prop types"""
@@ -26,6 +27,10 @@ class F1PrizePicksPredictor:
         self.analyzer = F1PerformanceAnalyzer(data_dict)
         # Store data for reuse
         self.data = data_dict
+        
+        # Initialize probability calibrator
+        self.calibrator = F1ProbabilityCalibrator()
+        self.calibration_enabled = True
         
         # Define default prop lines
         self.default_lines = {
@@ -39,6 +44,9 @@ class F1PrizePicksPredictor:
         
         # Get prop lines (prompt user or use defaults)
         self.prop_lines = self.get_prop_lines()
+        
+        # Load calibration data if available
+        self.load_calibration_data()
     
     def get_prop_lines(self):
         """Prompt user for custom prop lines or use defaults"""
@@ -116,6 +124,54 @@ class F1PrizePicksPredictor:
             confidence = min(0.95, 0.5 + (len(historical_data) / 100) * 0.45)
             
         return over_prob, under_prob, confidence
+    
+    def load_calibration_data(self):
+        """Load historical calibration data for probability adjustment"""
+        # For Phase 2.1, we'll use simulated calibration based on known biases
+        # In production, this would load from historical prediction/outcome data
+        
+        # Simulated prior rates based on F1 statistics
+        self.calibrator.prior_rates = {
+            'points': 0.45,  # ~45% of drivers score points on average
+            'overtakes': 0.65,  # Probability of making 3+ overtakes
+            'dnf': 0.12,  # ~12% DNF rate historically
+            'starting_position': 0.5,  # Calibrated for median grid position
+            'pit_stops': 0.7,  # Probability of 2+ pit stops
+            'teammate_overtakes': 0.5  # Evenly matched on average
+        }
+        
+        print("\nCalibration priors loaded for improved probability estimates")
+    
+    def bound_probability(self, prob, min_prob=0.01, max_prob=0.99):
+        """Bound probability between min and max to avoid 0% or 100%"""
+        return max(min_prob, min(max_prob, prob))
+    
+    def calibrate_probability(self, raw_prob, prop_type, sample_size=20):
+        """Apply calibration to raw probability
+        
+        Args:
+            raw_prob: Raw predicted probability
+            prop_type: Type of prop (e.g., 'points', 'overtakes')
+            sample_size: Number of historical samples used
+            
+        Returns:
+            Calibrated probability
+        """
+        # First bound the probability
+        bounded_prob = self.bound_probability(raw_prob)
+        
+        if not self.calibration_enabled:
+            return bounded_prob
+            
+        # Apply Bayesian prior adjustment
+        if prop_type in self.calibrator.prior_rates:
+            calibrated_prob = self.calibrator.apply_bayesian_prior(
+                bounded_prob, prop_type, sample_size, prior_strength=10.0
+            )
+        else:
+            calibrated_prob = bounded_prob
+            
+        return self.bound_probability(calibrated_prob)
     
     def get_driver_overtake_stats(self, driver_id):
         """Get overtake statistics for a specific driver"""
@@ -242,8 +298,10 @@ class F1PrizePicksPredictor:
         if driver_results.empty:
             return 0.15, 0.5
             
-        # Count DNFs (positionText 'R' usually means retired/DNF)
-        dnf_count = len(driver_results[driver_results['positionText'] == 'R'])
+        # Count DNFs (positionText 'DNF' means Did Not Finish)
+        # Also include DNS (Did Not Start), DSQ (Disqualified), etc.
+        dnf_indicators = ['DNF', 'DNS', 'DSQ', 'EX', 'NC']
+        dnf_count = len(driver_results[driver_results['positionText'].isin(dnf_indicators)])
         dnf_rate = dnf_count / len(driver_results)
         
         # Confidence based on sample size
@@ -353,7 +411,8 @@ class F1PrizePicksPredictor:
                     if isinstance(recent_points, (list, np.ndarray)) and len(recent_points) > 0:
                         mean, lower, upper, conf = self.calculate_confidence_interval(recent_points)
                         line = self.prop_lines['points']
-                        over_prob = sum(1 for p in recent_points if p > line) / len(recent_points)
+                        # Use the points_finish_rate which correctly counts scoring vs total races
+                        over_prob = points_stats.get('points_finish_rate', 0.5)
                         under_prob = 1 - over_prob
                         
                         driver_predictions['predictions']['points'] = {
@@ -662,23 +721,13 @@ class F1PrizePicksPredictor:
         # Sort by DNF probability descending
         dnf_data.sort(key=lambda x: x['probability'], reverse=True)
         
-        # If all DNF probabilities are similar, show summary
-        unique_probs = set(d['probability'] for d in dnf_data)
-        if len(unique_probs) == 1:
-            avg_conf = sum(d['confidence'] for d in dnf_data) / len(dnf_data)
-            rec = dnf_data[0]['recommendation']
-            print(f"{'All Drivers':<25} {dnf_data[0]['probability']*100:<20.1f}% "
-                  f"{min(d['confidence'] for d in dnf_data)*100:.1f}% - {max(d['confidence'] for d in dnf_data)*100:.1f}%{'':<5} "
-                  f">>> {rec} <<<")
-            print("\n* Note: All drivers have 0.0% predicted DNF probability with varying confidence levels.")
-            print("* The model strongly recommends betting against DNF for all drivers.")
-        else:
-            for row in dnf_data[:10]:  # Show top 10 highest DNF risks
-                rec = row['recommendation']
-                if rec in ['HIGH_RISK', 'NO']:
-                    rec = f">>> {rec} <<<"
-                print(f"{row['driver']:<25} {row['probability']*100:<20.1f}% "
-                      f"{row['confidence']*100:<15.1f}% {rec:<15}")
+        # Show all drivers individually
+        for row in dnf_data:
+            rec = row['recommendation']
+            if rec in ['YES', 'NO']:
+                rec = f">>> {rec} <<<"
+            print(f"{row['driver']:<25} {row['probability']*100:<20.1f}% "
+                  f"{row['confidence']*100:<15.1f}% {rec:<15}")
         
         # Print top betting edges
         print("\n" + "="*110)
