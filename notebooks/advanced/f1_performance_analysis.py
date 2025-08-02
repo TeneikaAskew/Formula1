@@ -104,42 +104,104 @@ class F1PerformanceAnalyzer:
     
     def get_active_drivers(self, year=None):
         """Get list of active drivers for a given year or past 12 months"""
-        results = self.data.get('results', pd.DataFrame())
-        if results.empty:
-            return pd.DataFrame()  # Return empty DataFrame
+        # Start with empty set of driver IDs
+        all_driver_ids = set()
+        
+        # Check driver_standings table first as it has the most complete list
+        driver_standings = self.data.get('driver_standings', pd.DataFrame())
+        if not driver_standings.empty:
+            # Get standings with year info
+            if 'year' not in driver_standings.columns:
+                races = self.data.get('races', pd.DataFrame())
+                if not races.empty and 'id' in races.columns and 'raceId' in driver_standings.columns:
+                    driver_standings = driver_standings.merge(races[['id', 'year']], left_on='raceId', right_on='id', how='left')
             
-        # Get results with year info
-        if 'year' not in results.columns:
-            races = self.data.get('races', pd.DataFrame())
-            if not races.empty and 'id' in races.columns and 'raceId' in results.columns:
-                results = results.merge(races[['id', 'year']], left_on='raceId', right_on='id', how='left')
+            # Filter by year
+            if 'year' in driver_standings.columns:
+                if year is not None:
+                    year_standings = driver_standings[driver_standings['year'] == year]
+                else:
+                    # Get drivers for current year
+                    current_year = self.current_year
+                    year_standings = driver_standings[driver_standings['year'] == current_year]
+                
+                if not year_standings.empty and 'driverId' in year_standings.columns:
+                    all_driver_ids.update(year_standings['driverId'].unique())
+        
+        # First check seasons_drivers table for the most accurate list
+        seasons_drivers = self.data.get('seasons_drivers', pd.DataFrame())
+        if not seasons_drivers.empty and 'year' in seasons_drivers.columns:
+            if year is not None:
+                # Get drivers for specific year
+                year_drivers = seasons_drivers[seasons_drivers['year'] == year]
+                if not year_drivers.empty:
+                    all_driver_ids.update(year_drivers['driverId'].unique())
             else:
-                return pd.DataFrame()  # Return empty DataFrame
+                # Get drivers for current and previous year
+                current_year = self.current_year
+                recent_drivers = seasons_drivers[
+                    (seasons_drivers['year'] == current_year) | 
+                    (seasons_drivers['year'] == current_year - 1)
+                ]
+                if not recent_drivers.empty:
+                    all_driver_ids.update(recent_drivers['driverId'].unique())
         
-        # If year specified, get drivers from that year
-        if year is not None:
-            year_results = results[results['year'] == year]
-        else:
-            # Get drivers who raced in the past year (current year and previous year)
-            current_year = self.current_year
-            past_year_results = results[
-                (results['year'] == current_year) | 
-                (results['year'] == current_year - 1)
-            ]
-            year_results = past_year_results
-        
-        if year_results.empty:
-            return pd.DataFrame()  # Return empty DataFrame
+        # Also check results/qualifying for additional drivers (don't require empty all_driver_ids)
+        # This ensures we get all drivers from all sources
+        if True:  # Always check additional sources
+            # Get drivers from race results
+            results = self.data.get('results', pd.DataFrame())
+            if not results.empty:
+                # Get results with year info
+                if 'year' not in results.columns:
+                    races = self.data.get('races', pd.DataFrame())
+                    if not races.empty and 'id' in races.columns and 'raceId' in results.columns:
+                        results = results.merge(races[['id', 'year']], left_on='raceId', right_on='id', how='left')
+                
+                # Filter by year
+                if 'year' in results.columns:
+                    if year is not None:
+                        year_results = results[results['year'] == year]
+                    else:
+                        # Get drivers who raced in the past year (current year and previous year)
+                        current_year = self.current_year
+                        year_results = results[
+                            (results['year'] == current_year) | 
+                            (results['year'] == current_year - 1)
+                        ]
+                    
+                    if not year_results.empty:
+                        all_driver_ids.update(year_results['driverId'].unique())
             
-        # Get unique driver IDs
-        driver_ids = year_results['driverId'].unique()
+            # Also check qualifying data for additional drivers
+            qualifying = self.data.get('qualifying', pd.DataFrame())
+            if not qualifying.empty:
+                # Get qualifying with year info
+                if 'year' not in qualifying.columns:
+                    races = self.data.get('races', pd.DataFrame())
+                    if not races.empty and 'id' in races.columns and 'raceId' in qualifying.columns:
+                        qualifying = qualifying.merge(races[['id', 'year']], left_on='raceId', right_on='id', how='left')
+                
+                # Filter by year
+                if 'year' in qualifying.columns:
+                    if year is not None:
+                        year_qualifying = qualifying[qualifying['year'] == year]
+                    else:
+                        current_year = self.current_year
+                        year_qualifying = qualifying[
+                            (qualifying['year'] == current_year) | 
+                            (qualifying['year'] == current_year - 1)
+                        ]
+                    
+                    if not year_qualifying.empty and 'driverId' in year_qualifying.columns:
+                        all_driver_ids.update(year_qualifying['driverId'].unique())
         
         # Get driver details
         drivers = self.data.get('drivers', pd.DataFrame())
-        if drivers.empty:
+        if drivers.empty or len(all_driver_ids) == 0:
             return pd.DataFrame()  # Return empty DataFrame
             
-        active_drivers = drivers[drivers['id'].isin(driver_ids)]
+        active_drivers = drivers[drivers['id'].isin(all_driver_ids)]
         return active_drivers
     
     def filter_current_season_drivers(self, df):
@@ -693,6 +755,24 @@ class F1PerformanceAnalyzer:
         
         # Filter to current season drivers
         dhl_analysis = self.filter_current_season_drivers(dhl_analysis)
+        
+        # Ensure all current season drivers are included, even with no data
+        current_drivers = self.get_active_drivers()
+        if not current_drivers.empty:
+            # Get all driver IDs that should be included
+            all_driver_ids = set(current_drivers['id'].values)
+            # Get driver IDs that are already in the analysis
+            existing_ids = set(dhl_analysis.index)
+            # Find missing driver IDs
+            missing_ids = all_driver_ids - existing_ids
+            
+            # Add missing drivers with NaN values
+            if missing_ids:
+                missing_data = pd.DataFrame(
+                    index=list(missing_ids),
+                    columns=dhl_analysis.columns
+                )
+                dhl_analysis = pd.concat([dhl_analysis, missing_data])
         
         return dhl_analysis
     
@@ -1591,9 +1671,7 @@ class F1PerformanceAnalyzer:
         current_drivers = self.get_active_drivers()
         if not current_drivers.empty:
             print(f"\nActive drivers in {self.current_year}: {len(current_drivers)}")
-            driver_list = ', '.join(current_drivers['id'].head(20).tolist())
-            if len(current_drivers) > 20:
-                driver_list += f" and {len(current_drivers) - 20} more..."
+            driver_list = ', '.join(current_drivers['id'].tolist())
             print(f"Driver IDs: {driver_list}")
         print(f"Current Analysis Year: {self.current_year}")
         print(f"Years Analyzed: {self.current_year-3} to {self.current_year}")
@@ -1621,7 +1699,7 @@ class F1PerformanceAnalyzer:
                 display_cols.append('next_circuit_avg')
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in overtakes.columns]
-            print(overtakes[display_cols].head(20).to_string())
+            print(overtakes[display_cols].to_string())
             
             # Show drivers with notable statistics
             print("\nNotable insights:")
@@ -1758,7 +1836,7 @@ class F1PerformanceAnalyzer:
                 display_cols.append('next_circuit_avg')
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in points.columns]
-            print(points[display_cols].head(20).to_string())
+            print(points[display_cols].to_string())
             
             # Explain any zeros
             if not points.empty:
@@ -1877,7 +1955,7 @@ class F1PerformanceAnalyzer:
                 display_cols.append('next_circuit_avg')
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in pit_stops.columns]
-            print(pit_stops[display_cols].head(20).to_string())
+            print(pit_stops[display_cols].to_string())
             
             # Add pit stop explanations
             if not pit_stops.empty:
@@ -1910,7 +1988,7 @@ class F1PerformanceAnalyzer:
             
             # Sort by average time (fastest first)
             dhl_stops_sorted = dhl_stops.sort_values('avg_time', ascending=True)
-            print(dhl_stops_sorted[display_cols].head(20).to_string())
+            print(dhl_stops_sorted[display_cols].to_string())
             
             # Show yearly analysis if available
             if hasattr(dhl_stops, 'yearly_data') and not dhl_stops.yearly_data.empty:
@@ -1981,7 +2059,7 @@ class F1PerformanceAnalyzer:
                     if not drivers.empty:
                         year_summary['driver_name'] = year_summary.index.map(driver_names)
                     
-                    print(year_summary[['driver_name', 'avg_time', 'total_stops']].head(15).to_string())
+                    print(year_summary[['driver_name', 'avg_time', 'total_stops']].to_string())
         else:
             print("No DHL pit stop data available")
         
@@ -2062,7 +2140,7 @@ class F1PerformanceAnalyzer:
                 
                 overall_sorted = overall_stats.sort_values('avg_first_stop', ascending=True)
                 
-                for driver_id, row in overall_sorted.head(15).iterrows():
+                for driver_id, row in overall_sorted.iterrows():
                     driver_name = row.get('driver_name', driver_id)
                     print(f"{driver_name:<25} {row['avg_first_stop']:<15.3f} {row['best_first_stop']:<15.3f} "
                           f"{int(row['total_races']):<10} {row['avg_lap']:<10.1f}")
@@ -2082,7 +2160,7 @@ class F1PerformanceAnalyzer:
                 display_cols.append('next_circuit_avg')
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in grid.columns]
-            print(grid[display_cols].head(20).to_string())
+            print(grid[display_cols].to_string())
         else:
             print("No starting position data available")
         
@@ -2207,7 +2285,7 @@ class F1PerformanceAnalyzer:
                 display_cols.append('next_circuit_avg')
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in sprint.columns]
-            print(sprint[display_cols].head(20).to_string())
+            print(sprint[display_cols].to_string())
         else:
             print("No sprint race data available")
         
@@ -2318,7 +2396,7 @@ class F1PerformanceAnalyzer:
                           'net_OT', 'prizepicks_pts']
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in teammate.columns]
-            print(teammate[display_cols].head(20).to_string())
+            print(teammate[display_cols].to_string())
             print("\nNote: PrizePicks awards +1.5 points for overtaking teammate, -1.5 for being overtaken")
         else:
             print("No teammate battle data available")
@@ -2436,7 +2514,7 @@ class F1PerformanceAnalyzer:
                           'avg_lap_number', 'seasons_with_fl', 'fastest_lap_points']
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in fastest.columns]
-            print(fastest[display_cols].head(20).to_string())
+            print(fastest[display_cols].to_string())
             print("\nNote: Fastest lap awards 1 F1 point (if finishing in top 10)")
         else:
             print("No fastest lap data available")
@@ -2515,7 +2593,7 @@ class F1PerformanceAnalyzer:
                 
                 overall_sorted = overall_stats.sort_values('total_fastest_laps', ascending=False)
                 
-                for driver_id, row in overall_sorted.head(15).iterrows():
+                for driver_id, row in overall_sorted.iterrows():
                     driver_name = row.get('driver_name', driver_id)
                     print(f"{driver_name:<25} {row['total_fastest_laps']:<10.0f} "
                           f"{row['avg_lap_number']:<10.1f}")
@@ -3189,7 +3267,7 @@ if __name__ == "__main__":
 #             display_cols = ['total_overtakes', 'avg_overtakes', 'median_overtakes', 'avg_points', 'races']
 #             if 'next_circuit_avg' in overtakes.columns:
 #                 display_cols.append('next_circuit_avg')
-#             print(overtakes[display_cols].head(20).to_string())
+#             print(overtakes[display_cols].to_string())
             
 #             # Show drivers with notable statistics
 #             print("\nNotable insights:")
@@ -3269,7 +3347,7 @@ if __name__ == "__main__":
 #                 display_cols.append('hist_avg_points')
 #             if 'next_circuit_avg' in points.columns:
 #                 display_cols.append('next_circuit_avg')
-#             print(points[display_cols].head(20).to_string())
+#             print(points[display_cols].to_string())
             
 #             # Explain any zeros
 #             if not points.empty:
@@ -3289,7 +3367,7 @@ if __name__ == "__main__":
 #             display_cols = ['avg_stop_time', 'median_stop_time', 'best_stop_time', 'total_stops']
 #             if 'next_circuit_avg' in pit_stops.columns:
 #                 display_cols.append('next_circuit_avg')
-#             print(pit_stops[display_cols].head(20).to_string())
+#             print(pit_stops[display_cols].to_string())
             
 #             # Add pit stop explanations
 #             if not pit_stops.empty:
@@ -3309,7 +3387,7 @@ if __name__ == "__main__":
 #                 display_cols.append('avg_points_per_race')
 #             if 'next_circuit_avg' in grid.columns:
 #                 display_cols.append('next_circuit_avg')
-#             print(grid[display_cols].head(20).to_string())
+#             print(grid[display_cols].to_string())
 #         else:
 #             print("No starting position data available")
         
@@ -3322,7 +3400,7 @@ if __name__ == "__main__":
 #             display_cols = ['total_sprint_points', 'avg_sprint_points', 'median_sprint_points', 'sprint_races']
 #             if 'next_circuit_avg' in sprint.columns:
 #                 display_cols.append('next_circuit_avg')
-#             print(sprint[display_cols].head(20).to_string())
+#             print(sprint[display_cols].to_string())
 #         else:
 #             print("No sprint race data available")
         
