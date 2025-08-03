@@ -237,6 +237,57 @@ class F1PerformanceAnalyzer:
         active_drivers = drivers[drivers['id'].isin(all_driver_ids)]
         return active_drivers
     
+    def calculate_overtake_points(self, race_data):
+        """
+        Calculate overtake points for a race with teammate considerations.
+        Overtake Points = Grid Position - Finish Position
+        +0.5 bonus for overtaking teammate
+        -0.5 penalty for being overtaken by teammate
+        """
+        # Create a copy to avoid modifying original
+        data = race_data.copy()
+        
+        # Basic overtake points (grid - finish)
+        data['overtake_points'] = data['gridPosition'] - data['positionNumber']
+        
+        # Add constructor information for teammate detection
+        if 'constructorId' in data.columns:
+            # Group by race and constructor to find teammates
+            for race_id in data['raceId'].unique():
+                race_mask = data['raceId'] == race_id
+                
+                # Process each constructor's drivers
+                for constructor_id in data[race_mask]['constructorId'].unique():
+                    if pd.notna(constructor_id):
+                        # Get drivers for this constructor in this race
+                        constructor_mask = race_mask & (data['constructorId'] == constructor_id)
+                        constructor_drivers = data[constructor_mask]
+                        
+                        if len(constructor_drivers) == 2:
+                            # We have teammates
+                            drivers = constructor_drivers.sort_values('positionNumber')
+                            if len(drivers) == 2:
+                                driver1_id = drivers.iloc[0]['driverId']
+                                driver2_id = drivers.iloc[1]['driverId']
+                                
+                                driver1_grid = drivers.iloc[0]['gridPosition']
+                                driver2_grid = drivers.iloc[1]['gridPosition']
+                                
+                                driver1_finish = drivers.iloc[0]['positionNumber']
+                                driver2_finish = drivers.iloc[1]['positionNumber']
+                                
+                                # Check if positions changed between teammates
+                                if driver1_grid > driver2_grid and driver1_finish < driver2_finish:
+                                    # Driver 1 overtook teammate
+                                    data.loc[(data['raceId'] == race_id) & (data['driverId'] == driver1_id), 'overtake_points'] += 0.5
+                                    data.loc[(data['raceId'] == race_id) & (data['driverId'] == driver2_id), 'overtake_points'] -= 0.5
+                                elif driver2_grid > driver1_grid and driver2_finish < driver1_finish:
+                                    # Driver 2 overtook teammate
+                                    data.loc[(data['raceId'] == race_id) & (data['driverId'] == driver2_id), 'overtake_points'] += 0.5
+                                    data.loc[(data['raceId'] == race_id) & (data['driverId'] == driver1_id), 'overtake_points'] -= 0.5
+        
+        return data
+    
     def filter_current_season_drivers(self, df):
         """Filter dataframe to only include drivers from current season"""
         if df.empty:
@@ -270,8 +321,8 @@ class F1PerformanceAnalyzer:
             return df
     
     def analyze_overtakes(self):
-        """Analyze overtakes by driver"""
-        # Note: F1 data doesn't directly track overtakes, so we'll calculate position changes
+        """Analyze positions gained by driver"""
+        # Note: This calculates net positions gained (grid - finish), not actual on-track overtakes
         # Try both possible keys for results
         results = self.data.get('results', self.data.get('races_race_results', pd.DataFrame())).copy()
         grid = self.data.get('races_starting_grid_positions', pd.DataFrame()).copy()
@@ -323,16 +374,16 @@ class F1PerformanceAnalyzer:
             'points': ['sum', 'mean']
         }).round(2)
         
-        driver_overtakes.columns = ['total_pos_gained', 'avg_pos_gained', 
-                                   'median_pos_gained', 'races', 'total_points', 'avg_points']
+        driver_overtakes.columns = ['total_pos_gained_all', 'avg_pos_gained_all', 
+                                   'median_pos_gained_all', 'races', 'total_points', 'avg_points']
         
-        # Calculate overtakes (only positive position gains)
-        recent_data['overtakes'] = recent_data['positions_gained'].apply(lambda x: max(0, x))
-        overtakes_by_driver = recent_data.groupby('driverId')['overtakes'].agg(['sum', 'mean', 'median']).round(2)
-        overtakes_by_driver.columns = ['total_OT', 'avg_OT', 'median_OT']
+        # Calculate positions gained (only positive position gains)
+        recent_data['positions_gained_positive'] = recent_data['positions_gained'].apply(lambda x: max(0, x))
+        positions_by_driver = recent_data.groupby('driverId')['positions_gained_positive'].agg(['sum', 'mean', 'median']).round(2)
+        positions_by_driver.columns = ['total_pos_gained', 'avg_pos_gained', 'median_pos_gained']
         
-        # Combine data
-        final_data = driver_overtakes.join(overtakes_by_driver)
+        # Combine data - we'll use the positive gains only
+        final_data = driver_overtakes[['races', 'total_points', 'avg_points']].join(positions_by_driver)
         
         # Keep driverId as index for proper identification
         
@@ -354,11 +405,10 @@ class F1PerformanceAnalyzer:
                     columns=final_data.columns
                 )
                 # Set default values
-                for col in ['total_pos_gained', 'total_OT', 'total_points', 'races']:
+                for col in ['total_pos_gained', 'total_points', 'races']:
                     if col in missing_data.columns:
                         missing_data[col] = 0
-                for col in ['avg_pos_gained', 'avg_OT', 'median_pos_gained', 
-                           'median_OT', 'avg_points']:
+                for col in ['avg_pos_gained', 'median_pos_gained', 'avg_points']:
                     if col in missing_data.columns:
                         missing_data[col] = 0.0
                 
@@ -378,6 +428,9 @@ class F1PerformanceAnalyzer:
         final_data['p_circuit_avg'] = 0
         final_data['c_circuit_avg'] = 0
         final_data['n_circuit_avg'] = 0
+        final_data['n_circuit_pts'] = 0
+        final_data['p_circuit_pts'] = 0
+        final_data['last_race_pts'] = 0
         
         if 'year' in recent_data.columns and 'date' in races.columns and 'circuitId' in recent_data.columns:
             # Ensure races have proper datetime
@@ -399,9 +452,9 @@ class F1PerformanceAnalyzer:
                     # Calculate circuit averages for current circuit
                     current_circuit_data = recent_data[recent_data['circuitId'] == current_circuit_id]
                     if not current_circuit_data.empty:
-                        current_circuit_overtakes = current_circuit_data.groupby('driverId')['overtakes'].mean().round(2)
+                        current_circuit_positions = current_circuit_data.groupby('driverId')['positions_gained_positive'].mean().round(2)
                         final_data['c_circuit_avg'] = final_data.index.map(
-                            lambda x: current_circuit_overtakes.get(x, 0)
+                            lambda x: current_circuit_positions.get(x, 0)
                         )
                     
                     # Previous race (race before current - should be 1137 British GP)
@@ -412,9 +465,24 @@ class F1PerformanceAnalyzer:
                         # Calculate circuit averages for previous circuit
                         prev_circuit_data = recent_data[recent_data['circuitId'] == prev_circuit_id]
                         if not prev_circuit_data.empty:
-                            prev_circuit_overtakes = prev_circuit_data.groupby('driverId')['overtakes'].mean().round(2)
+                            prev_circuit_positions = prev_circuit_data.groupby('driverId')['positions_gained_positive'].mean().round(2)
                             final_data['p_circuit_avg'] = final_data.index.map(
-                                lambda x: prev_circuit_overtakes.get(x, 0)
+                                lambda x: prev_circuit_positions.get(x, 0)
+                            )
+                            
+                            # Calculate overtake points for previous circuit
+                            if 'constructorId' not in prev_circuit_data.columns:
+                                if 'constructorId' in results.columns:
+                                    prev_circuit_data = prev_circuit_data.merge(
+                                        results[['raceId', 'driverId', 'constructorId']].drop_duplicates(),
+                                        on=['raceId', 'driverId'],
+                                        how='left'
+                                    )
+                            
+                            prev_circuit_with_ot_pts = self.calculate_overtake_points(prev_circuit_data)
+                            prev_circuit_ot_points = prev_circuit_with_ot_pts.groupby('driverId')['overtake_points'].mean().round(2)
+                            final_data['p_circuit_pts'] = final_data.index.map(
+                                lambda x: prev_circuit_ot_points.get(x, 0)
                             )
         
         # Add circuit-specific prediction for next race
@@ -425,10 +493,30 @@ class F1PerformanceAnalyzer:
             circuit_data = recent_data[recent_data['circuitId'] == next_circuit_id]
             
             if not circuit_data.empty:
-                # Calculate average overtakes at this specific circuit
-                circuit_overtakes = circuit_data.groupby('driverId')['overtakes'].mean().round(2)
+                # Calculate average positions gained at this specific circuit
+                circuit_positions = circuit_data.groupby('driverId')['positions_gained_positive'].mean().round(2)
                 final_data['n_circuit_avg'] = final_data.index.map(
-                    lambda x: circuit_overtakes.get(x, 0)
+                    lambda x: circuit_positions.get(x, 0)
+                )
+                
+                # Calculate overtake points for this circuit
+                # First ensure we have constructor data
+                if 'constructorId' not in circuit_data.columns:
+                    # Try to merge constructor data if available
+                    if 'constructorId' in results.columns:
+                        circuit_data = circuit_data.merge(
+                            results[['raceId', 'driverId', 'constructorId']].drop_duplicates(),
+                            on=['raceId', 'driverId'],
+                            how='left'
+                        )
+                
+                # Calculate overtake points with teammate considerations
+                circuit_data_with_ot_pts = self.calculate_overtake_points(circuit_data)
+                
+                # Average overtake points per driver at this circuit
+                circuit_ot_points = circuit_data_with_ot_pts.groupby('driverId')['overtake_points'].mean().round(2)
+                final_data['n_circuit_pts'] = final_data.index.map(
+                    lambda x: circuit_ot_points.get(x, 0)
                 )
         
         # Add last race overtakes
@@ -443,25 +531,38 @@ class F1PerformanceAnalyzer:
                 
                 # Get overtakes from last race using recent_data which has the overtakes column
                 last_race_data = recent_data[recent_data['raceId'] == last_race_id]
-                if not last_race_data.empty and 'overtakes' in last_race_data.columns:
-                    last_race_overtakes = last_race_data.set_index('driverId')['overtakes']
+                if not last_race_data.empty and 'positions_gained_positive' in last_race_data.columns:
+                    last_race_positions = last_race_data.set_index('driverId')['positions_gained_positive']
                     final_data['last_race'] = final_data.index.map(
-                        lambda x: int(last_race_overtakes.get(x, 0))
+                        lambda x: int(last_race_positions.get(x, 0))
+                    )
+                    
+                    # Get championship points from last race
+                    last_race_points = last_race_data.set_index('driverId')['points']
+                    final_data['last_race_pts'] = final_data.index.map(
+                        lambda x: int(last_race_points.get(x, 0)) if pd.notna(last_race_points.get(x)) else 0
                     )
         
         # Reorder columns for better presentation
-        column_order = ['driver_name', 'avg_OT', 'avg_points', 
-                       'median_OT', 'last_race', 'p_circuit_avg', 'c_circuit_avg', 
-                       'n_circuit_avg', 'races']
+        column_order = ['driver_name', 'avg_pos_gained', 'avg_points', 
+                       'median_pos_gained', 'last_race', 'last_race_pts', 'p_circuit_avg', 'p_circuit_pts',
+                       'c_circuit_avg', 'n_circuit_avg', 'n_circuit_pts', 'races']
         
         # Add any remaining columns not in the order list (except excluded columns)
-        exclude_cols = ['total_OT', 'total_pos_gained', 'total_points', 'avg_pos_gained', 'median_pos_gained']
+        exclude_cols = ['total_pos_gained', 'total_points', 'total_pos_gained_positive']
         remaining_cols = [col for col in final_data.columns if col not in column_order and col not in exclude_cols]
         column_order.extend(remaining_cols)
         
         # Reorder columns, keeping only those that exist
         final_columns = [col for col in column_order if col in final_data.columns]
         final_data = final_data[final_columns]
+        
+        # Replace NaN values with 0 in numeric columns
+        numeric_cols = ['p_circuit_avg', 'c_circuit_avg', 'n_circuit_avg', 'n_circuit_pts', 
+                       'p_circuit_pts', 'last_race_pts']
+        for col in numeric_cols:
+            if col in final_data.columns:
+                final_data[col] = final_data[col].fillna(0)
         
         # Drop driver_id index since we already have driver_name
         final_data = final_data.reset_index(drop=True)
@@ -699,7 +800,7 @@ class F1PerformanceAnalyzer:
                 if not last_race_data.empty:
                     last_race_points = last_race_data.set_index('driverId')['points']
                     points_analysis['last_race'] = points_analysis.index.map(
-                        lambda x: int(last_race_points.get(x, 0))
+                        lambda x: int(last_race_points.get(x, 0)) if pd.notna(last_race_points.get(x)) else 0
                     )
                 
                 # Calculate circuit average for current circuit (historical average at this track)
@@ -745,6 +846,12 @@ class F1PerformanceAnalyzer:
         # Keep only columns that exist
         final_columns = [col for col in column_order if col in points_analysis.columns]
         points_analysis = points_analysis[final_columns]
+        
+        # Replace NaN values with 0 in circuit average columns
+        circuit_cols = ['p_circuit_avg', 'c_circuit_avg', 'n_circuit_avg']
+        for col in circuit_cols:
+            if col in points_analysis.columns:
+                points_analysis[col] = points_analysis[col].fillna(0)
         
         # Drop driver_id index since we already have driver_name
         points_analysis = points_analysis.reset_index(drop=True)
@@ -2136,24 +2243,33 @@ class F1PerformanceAnalyzer:
                 print(f"\nPrevious Race: {prev_race.get('officialName', 'Unknown')}")
                 print(f"Date: {prev_race['date'].strftime('%Y-%m-%d') if pd.notna(prev_race.get('date')) else 'Unknown'}")
         
-        # 1. Overtakes Analysis
+        # 1. Positions Gained Analysis
         print("\n" + "="*80)
-        print("1. OVERTAKES BY DRIVER (Position Changes)")
+        print("1. POSITIONS GAINED BY DRIVER")
         print("="*80)
         overtakes = self.analyze_overtakes()
         if not overtakes.empty:
             # Note: Column order is already set in analyze_overtakes method
             print(overtakes.to_string(index=False))
             
+            print("\nColumn Explanations:")
+            print("- avg_pos_gained: Average positions gained per race (grid - finish, positive = gained positions)")
+            print("- median_pos_gained: Median positions gained per race")
+            print("- last_race: Positions gained in the most recent race")
+            print("- p_circuit_avg: Average positions gained at previous race circuit")
+            print("- n_circuit_avg: Average positions gained at next race circuit")
+            print("- n_circuit_pts: Position-based points at next circuit (grid - finish + teammate adjustments)")
+            print("\nNote: This shows NET positions gained, not actual on-track overtakes")
+            
             # Show drivers with notable statistics
             print("\nNotable insights:")
-            if 'total_OT' in overtakes.columns:
-                top_overtakers = overtakes.nlargest(5, 'total_OT')
+            if 'avg_pos_gained' in overtakes.columns:
+                top_gainers = overtakes.nlargest(5, 'avg_pos_gained')
                 if 'driver_name' in overtakes.columns:
-                    top_names = [overtakes.loc[idx, 'driver_name'] for idx in top_overtakers.index if idx in overtakes.index]
-                    print(f"Top 5 overtakers: {', '.join(top_names)}")
+                    top_names = [overtakes.loc[idx, 'driver_name'] for idx in top_gainers.index if idx in overtakes.index]
+                    print(f"Top 5 position gainers: {', '.join(top_names)}")
                 else:
-                    print(f"Top 5 overtakers: {', '.join(top_overtakers.index.tolist())}")
+                    print(f"Top 5 position gainers: {', '.join(top_gainers.index.tolist())}")
                 
                 # Drivers with negative average (lost positions)
                 lost_positions = overtakes[overtakes['avg_pos_gained'] < 0]
@@ -2166,9 +2282,9 @@ class F1PerformanceAnalyzer:
         else:
             print("No overtake data available")
         
-        # 1b. Track-specific overtakes by year
+        # 1b. Track-specific positions gained by year
         print("\n" + "-"*80)
-        print("1b. TRACK-SPECIFIC OVERTAKES BY YEAR")
+        print("1b. TRACK-SPECIFIC POSITIONS GAINED BY YEAR")
         print("-"*80)
         track_year_overtakes = self.analyze_overtakes_by_track_year()
         if isinstance(track_year_overtakes, dict) and 'year_by_year' in track_year_overtakes:
@@ -2822,128 +2938,10 @@ class F1PerformanceAnalyzer:
         else:
             print("No sprint races have been held at the next race circuit")
         
-        # 6. Teammate Overtake Analysis
-        print("\n" + "="*80)
-        print("6. TEAMMATE OVERTAKE ANALYSIS (PrizePicks Scoring)")
-        print("="*80)
-        teammate = self.analyze_teammate_overtakes()
-        if not teammate.empty:
-            display_cols = ['driver_name', 'total_battles', 'wins', 'losses', 
-                          'win_rate', 'OT_made', 'OT_received',
-                          'net_OT', 'prizepicks_pts']
-            # Remove driver_name if it doesn't exist
-            display_cols = [col for col in display_cols if col in teammate.columns]
-            print(teammate[display_cols].to_string(index=False))
-            print("\nNote: PrizePicks awards +1.5 points for overtaking teammate, -1.5 for being overtaken")
-        else:
-            print("No teammate battle data available")
         
-        # 6b. Track-specific teammate overtakes
-        print("\n" + "-"*80)
-        print("6b. TRACK-SPECIFIC TEAMMATE OVERTAKES BY YEAR")
-        print("-"*80)
-        track_teammate = self.analyze_teammate_overtakes_by_track_year()
-        if isinstance(track_teammate, dict) and 'year_by_year' in track_teammate:
-            circuit_name = track_teammate.get('circuit_name', 'Unknown Circuit')
-            print(f"\nAnalysis for: {circuit_name}")
-            
-            year_data = track_teammate['year_by_year']
-            if not year_data.empty:
-                print("\nYear-by-Year Teammate Battles:")
-                print("=" * 120)
-                
-                # Get unique years and sort
-                all_years = sorted(year_data['year'].unique())
-                recent_years = all_years[-5:] if len(all_years) > 5 else all_years
-                
-                # Header with years
-                header = f"{'Driver':<25}"
-                for year in recent_years:
-                    header += f"{int(year):>20}"
-                print(header)
-                
-                # Sub-header
-                sub_header = f"{'':<25}"
-                for year in recent_years:
-                    sub_header += f"{'W-L (OT) [PP]':>20}"
-                print(sub_header)
-                print("-" * (25 + len(recent_years) * 20))
-                
-                # Sort drivers by total wins
-                driver_wins = year_data.groupby('driverId')['teammate_win'].sum().sort_values(ascending=False)
-                
-                for driver_id in driver_wins.index[:20]:  # Top 20 drivers
-                    driver_data = year_data[year_data['driverId'] == driver_id]
-                    driver_name = driver_data.iloc[0].get('driver_name', driver_id)
-                    
-                    # Truncate long names
-                    if len(driver_name) > 24:
-                        driver_name = driver_name[:21] + "..."
-                    
-                    row_str = f"{driver_name:<25}"
-                    
-                    for year in recent_years:
-                        year_row = driver_data[driver_data['year'] == year]
-                        if not year_row.empty:
-                            row = year_row.iloc[0]
-                            wins = int(row['teammate_win'])
-                            losses = int(row['teammate_battles']) - wins if 'teammate_battles' in row else 1 - wins
-                            net_ot = int(row['teammate_overtake'])
-                            pp_pts = row['prizepicks_points']
-                            
-                            # Check for NaN values
-                            if pd.notna(wins) and pd.notna(losses) and pd.notna(net_ot) and pd.notna(pp_pts):
-                                # Format: W-L (OT) [PP]
-                                # Example: 1-0 (+1) [+1.5]
-                                battle_str = f"{wins}-{losses}"
-                                ot_str = f"({net_ot:+d})"
-                                pp_str = f"[{pp_pts:+.1f}]"
-                                
-                                combined = f"{battle_str} {ot_str} {pp_str}"
-                                row_str += f"{combined:>20}"
-                            else:
-                                row_str += f"{'—':^20}"
-                        else:
-                            row_str += f"{'—':^20}"
-                    
-                    print(row_str)
-                
-                if len(all_years) > len(recent_years):
-                    print(f"\n* Showing last {len(recent_years)} years. Full history from {min(all_years)} to {max(all_years)}")
-                print("\n* Format: Wins-Losses (Net Overtakes) [PrizePicks Points]")
-            
-            # Career stats
-            overall_stats = track_teammate['overall_stats']
-            if not overall_stats.empty:
-                # Get active drivers from past and current season
-                active_drivers = self.get_active_drivers()
-                active_driver_ids = set(active_drivers['id'].unique())
-                
-                # Filter overall stats to only include active drivers
-                overall_stats_filtered = overall_stats[overall_stats.index.isin(active_driver_ids)]
-                
-                if not overall_stats_filtered.empty:
-                    print("\n\nCareer Teammate Statistics at this Track (Active Drivers Only):")
-                    print("-" * 100)
-                    print(f"{'Driver':<25} {'Battles':<10} {'Wins':<8} {'Win Rate':<10} "
-                          f"{'Net OT':<10} {'PP Points':<10}")
-                    print("-" * 100)
-                    
-                    overall_sorted = overall_stats_filtered.sort_values('win_rate', ascending=False)
-                    
-                    for driver_id, row in overall_sorted.iterrows():
-                        driver_name = row.get('driver_name', driver_id)
-                        print(f"{driver_name:<25} {row['total_battles']:<10.0f} {row['total_wins']:<8.0f} "
-                              f"{row['win_rate']:<10.1%} {row['net_overtakes']:+10.0f} "
-                              f"{row['career_prizepicks_points']:+10.1f}")
-                else:
-                    print("\n\nNo career teammate statistics at this track for active drivers")
-        else:
-            print("No teammate battle data available for this circuit")
-        
-        # 7. Fastest Lap Analysis
+        # 6. Fastest Lap Analysis
         print("\n" + "="*80)
-        print("7. FASTEST LAP ANALYSIS")
+        print("6. FASTEST LAP ANALYSIS")
         print("="*80)
         fastest = self.analyze_fastest_laps()
         if not fastest.empty:
@@ -2956,9 +2954,9 @@ class F1PerformanceAnalyzer:
         else:
             print("No fastest lap data available")
         
-        # 7b. Track-specific fastest laps
+        # 6b. Track-specific fastest laps
         print("\n" + "-"*80)
-        print("7b. TRACK-SPECIFIC FASTEST LAPS BY YEAR")
+        print("6b. TRACK-SPECIFIC FASTEST LAPS BY YEAR")
         print("-"*80)
         track_fastest = self.analyze_fastest_laps_by_track_year()
         if isinstance(track_fastest, dict) and 'year_by_year' in track_fastest:

@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 class F1DBDataLoader:
     """Load F1 data from the official F1DB repository"""
     
-    def __init__(self, data_dir: str = "data", format: str = "csv"):
+    def __init__(self, data_dir: str = "data/f1db", format: str = "csv"):
         """
         Initialize the F1DB data loader
         

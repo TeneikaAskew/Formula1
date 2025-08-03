@@ -1,0 +1,253 @@
+name: Fetch F1 Fantasy Data
+
+on:
+  schedule:
+    # Run every Tuesday at 7:00 AM UTC (after race weekends)
+    - cron: '0 7 * * 2'
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: 'Force update even if data exists'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  fetch-fantasy-data:
+    name: Fetch F1 Fantasy Data
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-fantasy-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-fantasy-
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas requests
+    
+    - name: Create data directory
+      run: |
+        mkdir -p data/f1_fantasy
+    
+    - name: Check existing data
+      id: check_data
+      run: |
+        if [ -f "data/f1_fantasy/driver_overview.csv" ] && [ -f "data/f1_fantasy/driver_details.csv" ]; then
+          echo "Data files exist"
+          
+          # Check age of data
+          if [ -f "data/f1_fantasy/.f1_fantasy_metadata.json" ]; then
+            # Get last update time from metadata
+            LAST_UPDATE=$(python -c "
+import json
+from datetime import datetime, timedelta
+with open('data/f1_fantasy/.f1_fantasy_metadata.json', 'r') as f:
+    metadata = json.load(f)
+last_update = datetime.fromisoformat(metadata['last_updated'].replace('Z', '+00:00'))
+days_old = (datetime.now() - last_update.replace(tzinfo=None)).days
+print(days_old)
+")
+            echo "Data is $LAST_UPDATE days old"
+            
+            # Update if older than 6 days or force update
+            if [ "$LAST_UPDATE" -gt 6 ] || [ "${{ github.event.inputs.force_update }}" = "true" ]; then
+              echo "needs_update=true" >> $GITHUB_OUTPUT
+            else
+              echo "needs_update=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "Data files don't exist"
+          echo "needs_update=true" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Fetch F1 Fantasy data
+      if: steps.check_data.outputs.needs_update == 'true'
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        cd notebooks/advanced
+        echo "🏎️ Fetching F1 Fantasy data..."
+        
+        # Run the fetcher
+        python f1_fantasy_fetcher.py --output-dir ../../data/f1_fantasy
+        
+        # Check if files were created
+        if [ -f "../../data/f1_fantasy/driver_overview.csv" ] && [ -f "../../data/f1_fantasy/driver_details.csv" ]; then
+          echo "✅ Fantasy data fetched successfully"
+          
+          # Display summary
+          echo ""
+          echo "📊 Data Summary:"
+          echo "Driver Overview: $(wc -l < ../../data/f1_fantasy/driver_overview.csv) lines"
+          echo "Driver Details: $(wc -l < ../../data/f1_fantasy/driver_details.csv) lines"
+        else
+          echo "❌ Failed to fetch fantasy data"
+          exit 1
+        fi
+    
+    - name: Validate data quality
+      if: steps.check_data.outputs.needs_update == 'true'
+      run: |
+        cd data/f1_fantasy
+        
+        # Check for required columns in driver_overview.csv
+        python -c "
+import pandas as pd
+import sys
+
+# Check driver overview
+df_overview = pd.read_csv('driver_overview.csv')
+required_cols = ['player_id', 'player_name', 'team_name', 'fantasy_points', 'current_price']
+missing = [col for col in required_cols if col not in df_overview.columns]
+if missing:
+    print(f'❌ Missing columns in driver_overview.csv: {missing}')
+    sys.exit(1)
+
+# Check driver details
+df_details = pd.read_csv('driver_details.csv')
+required_cols = ['player_id', 'player_name', 'gameday_id', 'total_points']
+missing = [col for col in required_cols if col not in df_details.columns]
+if missing:
+    print(f'❌ Missing columns in driver_details.csv: {missing}')
+    sys.exit(1)
+
+print('✅ Data validation passed')
+print(f'Drivers: {len(df_overview)}')
+print(f'Race records: {len(df_details)}')
+print(f'Unique races: {df_details[\"gameday_id\"].nunique()}')
+"
+    
+    - name: Generate data report
+      if: steps.check_data.outputs.needs_update == 'true'
+      run: |
+        cd data/f1_fantasy
+        
+        python -c "
+import pandas as pd
+import json
+
+# Load data
+df_overview = pd.read_csv('driver_overview.csv')
+df_details = pd.read_csv('driver_details.csv')
+
+# Generate report
+print('# F1 Fantasy Data Report')
+print(f'Generated: {pd.Timestamp.now()}')
+print('')
+
+# Top scorers
+print('## Top 10 Fantasy Scorers')
+top_scorers = df_overview.nsmallest(10, 'fantasy_points_rank')[['player_name', 'team_name', 'fantasy_points', 'current_price']]
+for idx, row in top_scorers.iterrows():
+    print(f'{int(idx)+1}. {row[\"player_name\"]} ({row[\"team_name\"]}) - {row[\"fantasy_points\"]} pts (${row[\"current_price\"]}M)')
+
+print('')
+
+# Best value
+print('## Best Value Drivers (Points per Million)')
+if 'points_per_million' in df_overview.columns:
+    value_drivers = df_overview.nlargest(5, 'points_per_million')[['player_name', 'points_per_million', 'current_price']]
+    for idx, row in value_drivers.iterrows():
+        print(f'- {row[\"player_name\"]}: {row[\"points_per_million\"]:.1f} pts/M (${row[\"current_price\"]}M)')
+
+# Save report
+with open('fantasy_data_report.txt', 'w') as f:
+    f.write('Report generated successfully')
+"
+    
+    - name: Upload artifacts
+      if: steps.check_data.outputs.needs_update == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: f1-fantasy-data-${{ github.run_id }}
+        path: |
+          data/f1_fantasy/
+        retention-days: 30
+    
+    - name: Commit updated data
+      if: steps.check_data.outputs.needs_update == 'true' && success()
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        # Check if there are changes
+        if [ -n "$(git status --porcelain data/f1_fantasy/)" ]; then
+          git add data/f1_fantasy/
+          
+          # Create commit message
+          DRIVER_COUNT=$(wc -l < data/f1_fantasy/driver_overview.csv)
+          RACE_COUNT=$(python -c "import pandas as pd; df = pd.read_csv('data/f1_fantasy/driver_details.csv'); print(df['gameday_id'].nunique())")
+          
+          git commit -m "chore: Update F1 Fantasy data - $(date +'%Y-%m-%d')" \
+            -m "Fetched data for $DRIVER_COUNT drivers across $RACE_COUNT races" \
+            -m "Source: F1 Fantasy API"
+          
+          # Push changes
+          git push
+          echo "✅ F1 Fantasy data committed and pushed"
+        else
+          echo "ℹ️ No changes to F1 Fantasy data"
+        fi
+    
+    - name: Skip notification
+      if: steps.check_data.outputs.needs_update == 'false'
+      run: |
+        echo "ℹ️ F1 Fantasy data is up to date (less than 7 days old)"
+        echo "Force update by manually triggering with force_update=true"
+    
+    - name: Create issue on failure
+      if: failure() && steps.check_data.outputs.needs_update == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const title = `F1 Fantasy Data Fetch Failed - ${new Date().toISOString().split('T')[0]}`;
+          const body = `
+          The weekly F1 Fantasy data fetch failed.
+          
+          **Workflow Details:**
+          - Run ID: ${context.runId}
+          - Triggered by: ${context.eventName}
+          
+          **Common Issues:**
+          - API may be temporarily unavailable
+          - Data format may have changed
+          - Network connectivity issues
+          
+          **Next Steps:**
+          1. Check the [workflow logs](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+          2. Verify the API endpoints are still valid
+          3. Test the fetcher script locally
+          4. Re-run the workflow manually
+          `;
+          
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: title,
+            body: body,
+            labels: ['f1-fantasy', 'data-fetch-failure', 'automated']
+          });
