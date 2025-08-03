@@ -18,6 +18,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import logging
+import unicodedata
+import re
 
 # Configure logging
 logging.basicConfig(
@@ -30,10 +32,21 @@ logger = logging.getLogger('F1FantasyFetcher')
 class F1FantasyFetcher:
     """Fetches and processes F1 Fantasy data into CSV format"""
     
-    def __init__(self, output_dir: str = "data/f1_fantasy"):
+    def __init__(self, output_dir: str = None):
         self.base_url = "https://fantasy.formula1.com/feeds"
-        self.output_dir = Path(output_dir)
+        
+        # Always use absolute path to /data/f1_fantasy
+        if output_dir is None:
+            # Get project root (2 levels up from notebooks/advanced)
+            current_file = Path(__file__).resolve()
+            project_root = current_file.parent.parent.parent
+            self.output_dir = project_root / 'data' / 'f1_fantasy'
+        else:
+            # If output_dir is provided, make it absolute
+            self.output_dir = Path(output_dir).resolve()
+        
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Output directory: {self.output_dir}")
         
         # Configure session with appropriate headers
         self.session = requests.Session()
@@ -313,8 +326,8 @@ class F1FantasyFetcher:
 def main():
     """Main execution function"""
     parser = argparse.ArgumentParser(description='Fetch F1 Fantasy data')
-    parser.add_argument('--output-dir', default='data/f1_fantasy',
-                      help='Output directory for CSV files')
+    parser.add_argument('--output-dir', default=None,
+                      help='Output directory for CSV files (default: /data/f1_fantasy)')
     parser.add_argument('--api-delay', type=float, default=0.5,
                       help='Delay between API requests in seconds')
     

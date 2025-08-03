@@ -17,8 +17,16 @@ logger = logging.getLogger('F1FantasyIntegration')
 class F1FantasyIntegration:
     """Integrates F1 Fantasy data with the main pipeline"""
     
-    def __init__(self, fantasy_data_dir: str = "data/f1_fantasy"):
-        self.fantasy_dir = Path(fantasy_data_dir)
+    def __init__(self, fantasy_data_dir: str = None):
+        # Always use absolute path to /data/f1_fantasy
+        if fantasy_data_dir is None:
+            # Get project root
+            current_file = Path(__file__).resolve()
+            project_root = current_file.parent.parent.parent
+            self.fantasy_dir = project_root / 'data' / 'f1_fantasy'
+        else:
+            self.fantasy_dir = Path(fantasy_data_dir).resolve()
+            
         self.driver_overview = None
         self.driver_details = None
         self._load_data()

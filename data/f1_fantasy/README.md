@@ -55,25 +55,29 @@ Metadata about the data extraction:
 
 To run the F1 Fantasy data fetcher manually:
 
-### Option 1: From project root
+### Option 1: From project root (recommended)
 ```bash
-cd notebooks/advanced
-python f1_fantasy_fetcher.py --output-dir ../../data/f1_fantasy
-```
-
-### Option 2: With custom settings
-```bash
-cd notebooks/advanced
-# Fetch with longer API delay (be extra respectful during testing)
-python f1_fantasy_fetcher.py --output-dir ../../data/f1_fantasy --api-delay 1.0
-```
-
-### Option 3: Quick test (from any location)
-```bash
-# From project root
 python notebooks/advanced/f1_fantasy_fetcher.py
+# Data will automatically save to /data/f1_fantasy/
+```
 
-# This will save to the default location: data/f1_fantasy/
+### Option 2: From notebooks/advanced directory
+```bash
+cd notebooks/advanced
+python f1_fantasy_fetcher.py
+# Data will automatically save to /data/f1_fantasy/
+```
+
+### Option 3: With custom settings
+```bash
+# From project root with longer API delay (be extra respectful during testing)
+python notebooks/advanced/f1_fantasy_fetcher.py --api-delay 1.0
+```
+
+### Option 4: Force specific output directory (not recommended)
+```bash
+# Only use if you need a different location for testing
+python notebooks/advanced/f1_fantasy_fetcher.py --output-dir /absolute/path/to/output
 ```
 
 ### Verify the data was fetched correctly
