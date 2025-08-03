@@ -198,6 +198,252 @@ class F1DBDataLoader:
         
         return results
     
+    def check_if_update_needed(self, current_version: str, latest_version: str) -> tuple[bool, str]:
+        """
+        Check if data update is needed based on version AND race dates
+        
+        Args:
+            current_version: Current installed version
+            latest_version: Latest available version
+            
+        Returns:
+            Tuple of (needs_update, reason)
+        """
+        # First check version
+        if current_version != latest_version:
+            return True, f"Version mismatch: current={current_version}, latest={latest_version}"
+        
+        # Check metadata for quick validation
+        metadata_file = self.data_dir / ".f1db_metadata.json"
+        if metadata_file.exists():
+            try:
+                with open(metadata_file, 'r') as f:
+                    metadata = json.load(f)
+                    
+                # Quick check using metadata
+                if 'last_race_with_results' in metadata:
+                    last_race_info = metadata['last_race_with_results']
+                    if last_race_info:
+                        # Check if there are newer races that should have results
+                        races_file = self.data_dir / "races.csv"
+                        if races_file.exists():
+                            races_df = pd.read_csv(races_file)
+                            races_df['date'] = pd.to_datetime(races_df['date'])
+                            current_date = pd.Timestamp.now()
+                            
+                            # Find races after the last one with results that have already happened
+                            newer_past_races = races_df[
+                                (races_df['id'] > last_race_info['race_id']) & 
+                                (races_df['date'] <= current_date)
+                            ].sort_values('date')
+                            
+                            if not newer_past_races.empty:
+                                most_recent = newer_past_races.iloc[0]
+                                days_since = (current_date - most_recent['date']).days
+                                return True, f"Missing results for newer race: {most_recent['officialName']} ({most_recent['date'].strftime('%Y-%m-%d')}, {days_since} days ago)"
+                            
+                            # If no newer races need results, data is up to date
+                            return False, f"Data is up to date - last race with results: {last_race_info.get('name', 'Unknown')} (ID: {last_race_info['race_id']})"
+            except Exception as e:
+                # Fall back to full check if metadata read fails
+                pass
+        
+        # Fall back to full check if metadata doesn't exist or is incomplete
+        try:
+            # Load races and results data
+            races_file = self.data_dir / "races.csv"
+            results_file = self.data_dir / "races-race-results.csv"
+            
+            if not races_file.exists():
+                return True, "Races data file missing"
+            if not results_file.exists():
+                return True, "Race results file missing"
+            
+            # Load data
+            races_df = pd.read_csv(races_file)
+            results_df = pd.read_csv(results_file, dtype={'raceId': int})
+            races_df['date'] = pd.to_datetime(races_df['date'])
+            
+            # Get current date
+            current_date = pd.Timestamp.now()
+            
+            # Find races that have already happened
+            past_races = races_df[races_df['date'] <= current_date]
+            
+            # Get unique race IDs that have results
+            races_with_results = set(results_df['raceId'].unique())
+            
+            # Find past races without results
+            past_race_ids = set(past_races['id'].values)
+            races_without_results = past_race_ids - races_with_results
+            
+            if races_without_results:
+                # Get details of the most recent race without results
+                missing_races = past_races[past_races['id'].isin(races_without_results)].sort_values('date', ascending=False)
+                most_recent_missing = missing_races.iloc[0]
+                
+                # Calculate how long ago this race was
+                days_since_race = (current_date - most_recent_missing['date']).days
+                
+                # F1DB typically updates within 1-3 days after a race
+                # If it's race day or later, results should be available soon
+                return True, f"Missing results for {len(races_without_results)} race(s). Most recent: {most_recent_missing['officialName']} ({most_recent_missing['date'].strftime('%Y-%m-%d')}, {days_since_race} days ago)"
+            
+            # Also check if it's been more than 7 days since last update
+            version_file = self.data_dir / ".f1db_version"
+            if version_file.exists():
+                version_file_age = (current_date - pd.Timestamp.fromtimestamp(version_file.stat().st_mtime)).days
+                if version_file_age > 7:
+                    # Double-check if there are any recent races
+                    recent_past_races = past_races[past_races['date'] > (current_date - pd.Timedelta(days=14))]
+                    if not recent_past_races.empty:
+                        return True, f"Last update was {version_file_age} days ago, checking for new race results"
+            
+            return False, "Data is up to date - all past races have results"
+            
+        except Exception as e:
+            # If we can't check properly, suggest an update
+            return True, f"Error checking race results: {e}"
+    
+    def get_last_race_with_results(self) -> Optional[Dict[str, Any]]:
+        """Get information about the last race that has results"""
+        try:
+            results_file = self.data_dir / "races-race-results.csv"
+            races_file = self.data_dir / "races.csv"
+            
+            if not results_file.exists() or not races_file.exists():
+                return None
+            
+            # Load data
+            results_df = pd.read_csv(results_file, dtype={'raceId': int})
+            races_df = pd.read_csv(races_file)
+            
+            # Get the highest race ID with results
+            if results_df.empty:
+                return None
+            
+            last_race_id = results_df['raceId'].max()
+            
+            # Get race details
+            race = races_df[races_df['id'] == last_race_id]
+            if race.empty:
+                return {'race_id': int(last_race_id)}
+            
+            race_info = race.iloc[0]
+            return {
+                'race_id': int(last_race_id),
+                'name': race_info.get('officialName', race_info.get('name', 'Unknown')),
+                'date': race_info.get('date', 'Unknown'),
+                'year': int(race_info.get('year', 0)) if pd.notna(race_info.get('year')) else None
+            }
+            
+        except Exception as e:
+            print(f"Error getting last race with results: {e}")
+            return None
+    
+    def get_current_version(self) -> Optional[str]:
+        """Get the currently installed F1DB version"""
+        marker_file = self.data_dir / ".f1db_version"
+        if marker_file.exists():
+            with open(marker_file, 'r') as f:
+                return f.read().strip()
+        return None
+    
+    def get_latest_version(self) -> str:
+        """Get the latest available F1DB version from GitHub"""
+        try:
+            release_info = self.get_latest_release_info()
+            return release_info['tag_name']
+        except Exception as e:
+            return f"Error: {e}"
+    
+    def check_update_status(self) -> Dict[str, Any]:
+        """Check detailed update status including race date analysis"""
+        current_version = self.get_current_version()
+        latest_version = self.get_latest_version()
+        
+        status = {
+            'current_version': current_version,
+            'latest_version': latest_version,
+            'needs_update': False,
+            'reason': '',
+            'race_info': {}
+        }
+        
+        if current_version is None:
+            status['needs_update'] = True
+            status['reason'] = 'No version file found'
+            return status
+        
+        if latest_version.startswith('Error'):
+            status['error'] = latest_version
+            return status
+        
+        # Check if update is needed
+        needs_update, reason = self.check_if_update_needed(current_version, latest_version)
+        status['needs_update'] = needs_update
+        status['reason'] = reason
+        
+        # Add race information
+        try:
+            races_file = self.data_dir / "races.csv"
+            if races_file.exists():
+                races_df = pd.read_csv(races_file)
+                races_df['date'] = pd.to_datetime(races_df['date'])
+                
+                # Most recent race in data
+                most_recent = races_df.loc[races_df['date'].idxmax()]
+                status['race_info']['most_recent_race'] = {
+                    'name': most_recent.get('officialName', most_recent.get('name', 'Unknown')),
+                    'date': most_recent['date'].strftime('%Y-%m-%d')
+                }
+                
+                # Next scheduled race
+                current_date = pd.Timestamp.now()
+                future_races = races_df[races_df['date'] > current_date].sort_values('date')
+                if not future_races.empty:
+                    next_race = future_races.iloc[0]
+                    status['race_info']['next_race'] = {
+                        'name': next_race.get('officialName', next_race.get('name', 'Unknown')),
+                        'date': next_race['date'].strftime('%Y-%m-%d')
+                    }
+                
+                # Check for missing race results
+                results_file = self.data_dir / "races-race-results.csv"
+                if results_file.exists():
+                    results_df = pd.read_csv(results_file)
+                    
+                    # Find races that have already happened
+                    past_races = races_df[races_df['date'] <= current_date]
+                    
+                    # Get unique race IDs that have results
+                    races_with_results = set(results_df['raceId'].unique())
+                    
+                    # Find past races without results
+                    past_race_ids = set(past_races['id'].values)
+                    races_without_results = past_race_ids - races_with_results
+                    
+                    if races_without_results:
+                        missing_races = past_races[past_races['id'].isin(races_without_results)].sort_values('date', ascending=False)
+                        status['race_info']['missing_results'] = []
+                        for _, race in missing_races.head(5).iterrows():  # Show up to 5 missing races
+                            status['race_info']['missing_results'].append({
+                                'name': race.get('officialName', 'Unknown'),
+                                'date': race['date'].strftime('%Y-%m-%d'),
+                                'days_ago': (current_date - race['date']).days
+                            })
+                
+                # Check metadata file if it exists
+                metadata_file = self.data_dir / ".f1db_metadata.json"
+                if metadata_file.exists():
+                    with open(metadata_file, 'r') as f:
+                        metadata = json.load(f)
+                        status['last_updated'] = metadata.get('updated_at', 'Unknown')
+        except Exception as e:
+            status['race_info']['error'] = str(e)
+        
+        return status
+    
     def download_latest_data(self, force: bool = False, update_schema: bool = True) -> bool:
         """
         Download the latest F1DB data if not already present
@@ -219,14 +465,58 @@ class F1DBDataLoader:
             if marker_file.exists() and not force:
                 with open(marker_file, 'r') as f:
                     current_version = f.read().strip()
-                if current_version == latest_version:
-                    # Also check if CSV files actually exist
-                    csv_files = list(self.data_dir.glob("*.csv"))
-                    if csv_files:
+                
+                # Check if CSV files exist
+                csv_files = list(self.data_dir.glob("*.csv"))
+                if not csv_files:
+                    print(f"Version file exists but CSV files are missing. Re-downloading...")
+                else:
+                    # Check if update is needed based on version AND race dates
+                    needs_update, reason = self.check_if_update_needed(current_version, latest_version)
+                    
+                    if not needs_update:
                         print(f"Already have latest F1DB data (version {latest_version})")
+                        print(f"Status: {reason}")
+                        
+                        # Check if metadata needs updating
+                        metadata_file = self.data_dir / ".f1db_metadata.json"
+                        if metadata_file.exists():
+                            with open(metadata_file, 'r') as f:
+                                metadata = json.load(f)
+                            
+                            # Get current last race with results
+                            current_last_race = self.get_last_race_with_results()
+                            stored_last_race = metadata.get('last_race_with_results', {})
+                            
+                            # Update metadata if race info has changed
+                            if current_last_race and (
+                                not stored_last_race or 
+                                stored_last_race.get('race_id') != current_last_race.get('race_id')
+                            ):
+                                metadata['last_race_with_results'] = current_last_race
+                                metadata['updated_at'] = pd.Timestamp.now().isoformat()
+                                with open(metadata_file, 'w') as f:
+                                    json.dump(metadata, f, indent=2)
+                                print(f"Metadata updated: Last race with results is {current_last_race['name']} ({current_last_race['race_id']})")
+                            else:
+                                print("Metadata already up to date")
+                        else:
+                            # Create metadata if it doesn't exist
+                            last_race = self.get_last_race_with_results()
+                            metadata = {
+                                'version': latest_version,
+                                'updated_at': pd.Timestamp.now().isoformat(),
+                                'update_source': 'github',
+                                'format': self.format,
+                                'last_race_with_results': last_race
+                            }
+                            with open(metadata_file, 'w') as f:
+                                json.dump(metadata, f, indent=2)
+                            print(f"Metadata created: Last race with results is {last_race['name'] if last_race else 'None'}")
+                        
                         return False
                     else:
-                        print(f"Version file exists but CSV files are missing. Re-downloading...")
+                        print(f"Update needed: {reason}")
             
             # Find the appropriate asset
             asset_name = f"f1db-{self.format}.zip"
@@ -266,22 +556,39 @@ class F1DBDataLoader:
             zip_path.unlink()
             
             # Rename files to remove f1db- prefix
-            print("Renaming files to remove f1db- prefix...")
+            print("Updating files (removing f1db- prefix)...")
             for file_path in self.data_dir.glob("f1db-*.csv"):
                 new_name = file_path.name[5:]  # Remove 'f1db-' prefix
                 new_path = file_path.parent / new_name
-                # Only rename if target doesn't exist
-                if not new_path.exists():
-                    file_path.rename(new_path)
-                    print(f"  Renamed {file_path.name} to {new_name}")
+                
+                # If target exists, remove it first (we want to replace with new data)
+                if new_path.exists():
+                    new_path.unlink()
+                    print(f"  Replacing {new_name} with updated version")
                 else:
-                    # If target exists, remove the f1db- prefixed file
-                    file_path.unlink()
-                    print(f"  Removed {file_path.name} (target {new_name} already exists)")
+                    print(f"  Creating {new_name}")
+                
+                # Rename the new file
+                file_path.rename(new_path)
             
-            # Save version marker
+            # Save version marker with timestamp
             with open(marker_file, 'w') as f:
                 f.write(latest_version)
+            
+            # Get the last race with results
+            last_race_with_results = self.get_last_race_with_results()
+            
+            # Also save update metadata
+            metadata_file = self.data_dir / ".f1db_metadata.json"
+            metadata = {
+                'version': latest_version,
+                'updated_at': pd.Timestamp.now().isoformat(),
+                'update_source': 'github',
+                'format': self.format,
+                'last_race_with_results': last_race_with_results
+            }
+            with open(metadata_file, 'w') as f:
+                json.dump(metadata, f, indent=2)
             
             # Update schema when data is updated
             if update_schema:
@@ -295,11 +602,12 @@ class F1DBDataLoader:
             print(f"Error downloading F1DB data: {e}")
             raise
     
-    def load_csv_data(self, validate: bool = True) -> Dict[str, pd.DataFrame]:
+    def load_csv_data(self, validate: bool = True, check_updates: bool = True) -> Dict[str, pd.DataFrame]:
         """Load all CSV files into pandas DataFrames
         
         Args:
             validate: Whether to validate data against schema
+            check_updates: Whether to check for updates before loading
             
         Returns:
             Dictionary of DataFrames
@@ -307,7 +615,12 @@ class F1DBDataLoader:
         dataframes = {}
         
         # Ensure data is downloaded
-        self.download_latest_data()
+        if check_updates:
+            data_was_updated = self.download_latest_data()
+            # If data wasn't updated and we already have data, skip validation messages
+            if not data_was_updated and self.data_dir.exists() and list(self.data_dir.glob("*.csv")):
+                # Just load the data without printing analysis
+                validate = False
         
         # Ensure schema is loaded
         if validate:
@@ -319,7 +632,8 @@ class F1DBDataLoader:
         if not csv_files:
             raise FileNotFoundError("No CSV files found. Data may not be downloaded correctly.")
         
-        print(f"Loading {len(csv_files)} CSV files...")
+        if validate:
+            print(f"Loading {len(csv_files)} CSV files...")
         validation_summary = {'valid': 0, 'warnings': 0, 'errors': 0}
         
         for csv_file in csv_files:
@@ -348,10 +662,9 @@ class F1DBDataLoader:
                             print(f"    Error: {error}")
                     else:
                         print(f"  ✓ Loaded {table_name}: {len(df)} rows")
-                else:
-                    print(f"  ✓ Loaded {table_name}: {len(df)} rows")
             except Exception as e:
-                print(f"  ✗ Error loading {table_name}: {e}")
+                if validate:
+                    print(f"  ✗ Error loading {table_name}: {e}")
         
         if validate and validation_summary['warnings'] + validation_summary['errors'] > 0:
             print(f"\nValidation summary: {validation_summary['valid']} valid, "
@@ -359,9 +672,9 @@ class F1DBDataLoader:
         
         return dataframes
     
-    def get_core_datasets(self, fix_columns: bool = True) -> Dict[str, pd.DataFrame]:
+    def get_core_datasets(self, fix_columns: bool = True, check_updates: bool = True) -> Dict[str, pd.DataFrame]:
         """Get the core datasets commonly used for analysis"""
-        all_data = self.load_csv_data()
+        all_data = self.load_csv_data(check_updates=check_updates)
         
         # Define core datasets with fallback names for compatibility
         table_mappings = {
@@ -569,8 +882,8 @@ class F1DBDataLoader:
         """
         logger.info("Checking F1DB data structure...")
         
-        # Load data
-        data = self.load_csv_data(validate=False)
+        # Load data quietly when called internally
+        data = self.load_csv_data(validate=False, check_updates=False)
         
         # Key datasets to check
         key_datasets = ['races', 'results', 'drivers', 'constructors', 'circuits']
@@ -623,8 +936,8 @@ class F1DBDataLoader:
         """
         logger.info("Analyzing column mappings...")
         
-        # Load data
-        data = self.get_core_datasets()
+        # Load data quietly when called internally for summary
+        data = self.get_core_datasets(check_updates=False)
         
         # Expected columns in notebooks (common usage)
         expected_columns = {
@@ -699,7 +1012,8 @@ class F1DBDataLoader:
         """
         logger.info("Validating data integrity...")
         
-        data = self.get_core_datasets()
+        # Load data quietly when called internally for summary
+        data = self.get_core_datasets(check_updates=False)
         validation_results = {
             'tables_checked': 0,
             'issues': [],
@@ -1017,63 +1331,116 @@ class F1DBDataLoader:
         
         return stats
     
-    def print_data_summary(self) -> None:
+    def print_data_summary(self, force: bool = False, save_to_file: bool = True) -> None:
         """
         Print a comprehensive summary of the F1DB data
+        
+        Args:
+            force: Force regeneration even if summary exists
+            save_to_file: Save summary to data_summary.txt
         """
-        print("\n" + "=" * 80)
-        print("F1DB DATA SUMMARY")
-        print("=" * 80)
+        summary_file = self.data_dir / "data_summary.txt"
+        metadata_file = self.data_dir / ".f1db_metadata.json"
+        
+        # Check if we can use cached summary
+        if not force and summary_file.exists() and metadata_file.exists():
+            # Check if summary is newer than the last data update
+            try:
+                with open(metadata_file, 'r') as f:
+                    metadata = json.load(f)
+                
+                last_update = pd.Timestamp(metadata.get('updated_at', '2000-01-01'))
+                summary_mtime = pd.Timestamp.fromtimestamp(summary_file.stat().st_mtime)
+                
+                if summary_mtime > last_update:
+                    # Summary is newer than data, just show brief message
+                    print("\n" + "=" * 80)
+                    print("F1DB DATA SUMMARY")
+                    print("=" * 80)
+                    print("\n✓ Data has been loaded previously")
+                    print(f"✓ Full data profiling available in: {summary_file}")
+                    print(f"\nSummary generated: {summary_mtime.strftime('%Y-%m-%d %H:%M:%S')}")
+                    print(f"Last data update: {last_update.strftime('%Y-%m-%d %H:%M:%S')}")
+                    print("\nUse --force to regenerate the summary")
+                    return
+            except Exception:
+                # If anything fails, regenerate
+                pass
+        
+        # Capture output for file saving
+        output_lines = []
+        
+        # Build output content
+        def add_line(line=""):
+            print(line)
+            output_lines.append(line)
+        
+        # Generate new summary
+        print()  # Just print newline to console
+        add_line("=" * 80)
+        add_line("F1DB DATA SUMMARY")
+        add_line("=" * 80)
+        add_line(f"Generated: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        add_line("")
         
         # Check data structure
         structure = self.check_data_structure()
         
-        print("\nFound Datasets:")
+        add_line("\nFound Datasets:")
         for name, info in structure['found_datasets'].items():
-            print(f"  - {name}: {info['shape'][0]} rows, {info['shape'][1]} columns")
-            print(f"    (loaded as '{info['actual_name']}')")
+            add_line(f"  - {name}: {info['shape'][0]} rows, {info['shape'][1]} columns")
+            add_line(f"    (loaded as '{info['actual_name']}')")
         
         if structure['missing_datasets']:
-            print(f"\nMissing Datasets: {', '.join(structure['missing_datasets'])}")
+            add_line(f"\nMissing Datasets: {', '.join(structure['missing_datasets'])}")
         
         # Analyze column mappings
-        print("\n" + "-" * 40)
-        print("COLUMN MAPPING ANALYSIS")
-        print("-" * 40)
+        add_line("\n" + "-" * 40)
+        add_line("COLUMN MAPPING ANALYSIS")
+        add_line("-" * 40)
         
         mappings = self.analyze_column_mapping()
         for table_name, table_mappings in mappings.items():
-            print(f"\n{table_name.upper()}:")
+            add_line(f"\n{table_name.upper()}:")
             for expected, actual_matches in table_mappings.items():
                 if actual_matches and actual_matches[0] == expected:
-                    print(f"  ✓ {expected}")
+                    add_line(f"  ✓ {expected}")
                 elif actual_matches:
-                    print(f"  → {expected} maps to: {actual_matches[0]}")
+                    add_line(f"  → {expected} maps to: {actual_matches[0]}")
                 else:
-                    print(f"  ✗ {expected} NOT FOUND")
+                    add_line(f"  ✗ {expected} NOT FOUND")
         
         # Validate data integrity
-        print("\n" + "-" * 40)
-        print("DATA INTEGRITY")
-        print("-" * 40)
+        add_line("\n" + "-" * 40)
+        add_line("DATA INTEGRITY")
+        add_line("-" * 40)
         
         validation = self.validate_data_integrity()
-        print(f"\nTables checked: {validation['tables_checked']}")
+        add_line(f"\nTables checked: {validation['tables_checked']}")
         
         if validation['warnings']:
-            print("\nWarnings:")
+            add_line("\nWarnings:")
             for warning in validation['warnings']:
-                print(f"  ⚠ {warning}")
+                add_line(f"  ⚠ {warning}")
         
         if validation['issues']:
-            print("\nIssues:")
+            add_line("\nIssues:")
             for issue in validation['issues']:
-                print(f"  ✗ {issue}")
+                add_line(f"  ✗ {issue}")
         
-        print("\nTable Statistics:")
+        add_line("\nTable Statistics:")
         for table, stats in validation['statistics'].items():
-            print(f"  - {table}: {stats['row_count']:,} rows, "
-                  f"{stats['null_percentage']:.1f}% null values")
+            add_line(f"  - {table}: {stats['row_count']:,} rows, "
+                     f"{stats['null_percentage']:.1f}% null values")
+        
+        # Save to file if requested
+        if save_to_file:
+            try:
+                with open(summary_file, 'w', encoding='utf-8') as f:
+                    f.write('\n'.join(output_lines))
+                print(f"\nSummary saved to: {summary_file}")
+            except Exception as e:
+                print(f"\nWarning: Could not save summary to file: {e}")
     
     def test_data_loading(self) -> None:
         """
@@ -1083,7 +1450,7 @@ class F1DBDataLoader:
         print("=" * 60)
         
         # Load data
-        data = self.get_core_datasets()
+        data = self.get_core_datasets(check_updates=False)
         
         if data:
             print(f"\nLoaded {len(data)} datasets:")
@@ -1148,7 +1515,7 @@ class F1DBDataLoader:
 
 
 # Convenience function for notebook usage
-def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_download: bool = False, validate: bool = True, fix_issues: bool = False, fix_columns: bool = True) -> Dict[str, pd.DataFrame]:
+def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_download: bool = False, validate: bool = True, fix_issues: bool = False, fix_columns: bool = True, check_updates: bool = True) -> Dict[str, pd.DataFrame]:
     """
     Load F1DB data with a simple function call
     
@@ -1159,6 +1526,7 @@ def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_do
         validate: Validate data against schema
         fix_issues: Attempt to fix any data download/extraction issues
         fix_columns: Apply column mappings for ML pipeline compatibility
+        check_updates: Whether to check for updates (set False to skip update check)
         
     Returns:
         Dictionary of DataFrames with F1 data
@@ -1174,8 +1542,17 @@ def load_f1db_data(data_dir: Optional[str] = None, format: str = "csv", force_do
     
     if fix_issues:
         loader.fix_data_download()
-    else:
+    elif check_updates:
+        # Only download if needed
         loader.download_latest_data(force=force_download)
+    
+    # If we're not checking updates, just load the data quietly
+    if not check_updates:
+        # Directly load CSV data without validation messages
+        data = loader.load_csv_data(validate=False, check_updates=False)
+        if fix_columns:
+            return loader.fix_column_mappings(data)
+        return data
     
     return loader.get_core_datasets(fix_columns=fix_columns)
 
@@ -1255,8 +1632,9 @@ def main():
         print("Validating data integrity...")
         loader.validate_data_integrity()
     elif command == "summary":
-        print("Data summary:")
-        loader.print_data_summary()
+        # Check if force flag is provided
+        force = "--force" in sys.argv or "-f" in sys.argv
+        loader.print_data_summary(force=force)
     elif command == "fix":
         print("Fixing data issues...")
         data = load_f1db_data(fix_issues=True)
@@ -1268,16 +1646,59 @@ def main():
         for name, df in data.items():
             print(f"  - {name}: {len(df)} rows")
     elif command == "download":
+        # Check if force flag is provided
+        force = "--force" in sys.argv or "-f" in sys.argv
+        
+        if not force:
+            # Show update status first
+            print("Checking if update is needed...\n")
+            status = loader.check_update_status()
+            
+            if not status['needs_update']:
+                print(f"✅ {status['reason']}")
+                print(f"Current version: {status['current_version']}")
+                print(f"Latest version: {status['latest_version']}")
+                
+                if 'race_info' in status and 'most_recent_race' in status['race_info']:
+                    race = status['race_info']['most_recent_race']
+                    print(f"\nMost recent race in data: {race['name']} ({race['date']})")
+                
+                print("\nNo update needed. Use --force to re-download anyway.")
+                return
+            else:
+                print(f"⚠️  {status['reason']}")
+                print("Proceeding with download...\n")
+        
         print("Downloading latest F1DB data...")
         loader.download_latest_data(force=True)
         print("Download complete!")
     elif command == "version":
-        current = loader.get_current_version()
-        latest = loader.get_latest_version()
-        print(f"Current version: {current}")
-        print(f"Latest version: {latest}")
-        if current != latest:
-            print("Update available! Run 'python f1db_data_loader.py download' to update")
+        print("Checking F1DB version and update status...\n")
+        status = loader.check_update_status()
+        
+        print(f"Current version: {status['current_version'] or 'Not installed'}")
+        print(f"Latest version: {status['latest_version']}")
+        
+        if 'last_updated' in status:
+            print(f"Last updated: {status['last_updated']}")
+        
+        if status['race_info']:
+            if 'most_recent_race' in status['race_info']:
+                race = status['race_info']['most_recent_race']
+                print(f"\nMost recent race in data: {race['name']} ({race['date']})")
+            if 'next_race' in status['race_info']:
+                race = status['race_info']['next_race']
+                print(f"Next scheduled race: {race['name']} ({race['date']})")
+            if 'missing_results' in status['race_info'] and status['race_info']['missing_results']:
+                print(f"\n⚠️  Missing results for {len(status['race_info']['missing_results'])} race(s):")
+                for race in status['race_info']['missing_results']:
+                    print(f"   - {race['name']} ({race['date']}, {race['days_ago']} days ago)")
+        
+        if status['needs_update']:
+            print(f"\n⚠️  Update recommended: {status['reason']}")
+            print("Run 'python f1db_data_loader.py download' to update")
+        else:
+            print(f"\n✅ {status['reason']}")
     else:
         print("Usage: python f1db_data_loader.py [check|validate|summary|fix|load|download|version]")
         print()
@@ -1287,8 +1708,8 @@ def main():
         print("  summary   - Print comprehensive data summary")
         print("  fix       - Load data and fix any issues")
         print("  load      - Load all datasets and show counts")
-        print("  download  - Download latest F1DB data")
-        print("  version   - Check current vs latest version")
+        print("  download  - Download latest F1DB data (use --force to skip checks)")
+        print("  version   - Check current vs latest version and race date status")
 
 
 # Test functionality if run directly

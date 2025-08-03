@@ -31,7 +31,8 @@
       "Bash(cp:*)",
       "Bash(cat:*)",
       "Bash(sqlite3:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(timeout:*)"
     ],
     "deny": []
   }
