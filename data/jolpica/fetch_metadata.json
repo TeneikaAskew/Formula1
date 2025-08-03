@@ -1,0 +1,439 @@
+{
+  "last_fetch": "2025-08-03T21:35:27.901253",
+  "fetched_races": {
+    "2020_1": {
+      "fetched_at": "2025-08-03T21:09:03.916193",
+      "filepath": "data/jolpica/laps/2020/2020_round_01_laps.json",
+      "race_name": "Austrian Grand Prix",
+      "total_laps": 71
+    },
+    "2020_2": {
+      "fetched_at": "2025-08-03T21:09:18.345377",
+      "filepath": "data/jolpica/laps/2020/2020_round_02_laps.json",
+      "race_name": "Styrian Grand Prix",
+      "total_laps": 71
+    },
+    "2020_3": {
+      "fetched_at": "2025-08-03T21:09:32.949054",
+      "filepath": "data/jolpica/laps/2020/2020_round_03_laps.json",
+      "race_name": "Hungarian Grand Prix",
+      "total_laps": 70
+    },
+    "2020_4": {
+      "fetched_at": "2025-08-03T21:09:42.255024",
+      "filepath": "data/jolpica/laps/2020/2020_round_04_laps.json",
+      "race_name": "British Grand Prix",
+      "total_laps": 52
+    },
+    "2020_5": {
+      "fetched_at": "2025-08-03T21:09:52.841365",
+      "filepath": "data/jolpica/laps/2020/2020_round_05_laps.json",
+      "race_name": "70th Anniversary Grand Prix",
+      "total_laps": 52
+    },
+    "2020_6": {
+      "fetched_at": "2025-08-03T21:10:06.659167",
+      "filepath": "data/jolpica/laps/2020/2020_round_06_laps.json",
+      "race_name": "Spanish Grand Prix",
+      "total_laps": 66
+    },
+    "2020_7": {
+      "fetched_at": "2025-08-03T21:10:14.789896",
+      "filepath": "data/jolpica/laps/2020/2020_round_07_laps.json",
+      "race_name": "Belgian Grand Prix",
+      "total_laps": 44
+    },
+    "2020_8": {
+      "fetched_at": "2025-08-03T21:10:24.946088",
+      "filepath": "data/jolpica/laps/2020/2020_round_08_laps.json",
+      "race_name": "Italian Grand Prix",
+      "total_laps": 53
+    },
+    "2020_9": {
+      "fetched_at": "2025-08-03T21:33:23.310778",
+      "filepath": "data/jolpica/laps/2020/2020_round_09_laps.json",
+      "race_name": "Tuscan Grand Prix",
+      "total_laps": 59
+    },
+    "2020_10": {
+      "fetched_at": "2025-08-03T21:33:34.590552",
+      "filepath": "data/jolpica/laps/2020/2020_round_10_laps.json",
+      "race_name": "Russian Grand Prix",
+      "total_laps": 53
+    },
+    "2020_11": {
+      "fetched_at": "2025-08-03T21:33:46.295006",
+      "filepath": "data/jolpica/laps/2020/2020_round_11_laps.json",
+      "race_name": "Eifel Grand Prix",
+      "total_laps": 60
+    },
+    "2020_12": {
+      "fetched_at": "2025-08-03T21:34:00.550601",
+      "filepath": "data/jolpica/laps/2020/2020_round_12_laps.json",
+      "race_name": "Portuguese Grand Prix",
+      "total_laps": 66
+    },
+    "2020_13": {
+      "fetched_at": "2025-08-03T21:34:15.477421",
+      "filepath": "data/jolpica/laps/2020/2020_round_13_laps.json",
+      "race_name": "Emilia Romagna Grand Prix",
+      "total_laps": 63
+    },
+    "2020_14": {
+      "fetched_at": "2025-08-03T21:34:27.797139",
+      "filepath": "data/jolpica/laps/2020/2020_round_14_laps.json",
+      "race_name": "Turkish Grand Prix",
+      "total_laps": 58
+    },
+    "2020_15": {
+      "fetched_at": "2025-08-03T21:34:40.045912",
+      "filepath": "data/jolpica/laps/2020/2020_round_15_laps.json",
+      "race_name": "Bahrain Grand Prix",
+      "total_laps": 57
+    },
+    "2020_16": {
+      "fetched_at": "2025-08-03T21:34:57.891925",
+      "filepath": "data/jolpica/laps/2020/2020_round_16_laps.json",
+      "race_name": "Sakhir Grand Prix",
+      "total_laps": 87
+    },
+    "2020_17": {
+      "fetched_at": "2025-08-03T21:35:27.900210",
+      "filepath": "data/jolpica/laps/2020/2020_round_17_laps.json",
+      "race_name": "Abu Dhabi Grand Prix",
+      "total_laps": 55
+    }
+  },
+  "errors": [
+    {
+      "timestamp": "2025-08-03T21:10:26.977133",
+      "year": 2020,
+      "round": 9,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2020/9/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:28.997127",
+      "year": 2020,
+      "round": 10,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2020/10/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:30.098366",
+      "year": 2020,
+      "round": 11,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2020/11/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:32.215145",
+      "year": 2020,
+      "round": 12,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2020/12/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:33.607411",
+      "year": 2020,
+      "round": 13,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2020/13/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:35.849615",
+      "year": 2020,
+      "round": 14,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2020/14/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:37.853014",
+      "year": 2020,
+      "round": 15,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2020/15/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:38.940688",
+      "year": 2020,
+      "round": 16,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2020/16/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:41.049597",
+      "year": 2020,
+      "round": 17,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2020/17/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:44.070585",
+      "year": 2023,
+      "round": 1,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/1/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:45.173112",
+      "year": 2023,
+      "round": 2,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/2/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:47.249609",
+      "year": 2023,
+      "round": 3,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/3/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:48.354513",
+      "year": 2023,
+      "round": 4,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/4/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:50.505802",
+      "year": 2023,
+      "round": 5,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/5/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:51.610172",
+      "year": 2023,
+      "round": 6,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/6/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:53.627458",
+      "year": 2023,
+      "round": 7,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/7/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:54.722180",
+      "year": 2023,
+      "round": 8,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/8/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:56.774132",
+      "year": 2023,
+      "round": 9,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/9/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:58.774436",
+      "year": 2023,
+      "round": 10,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/10/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:10:59.866664",
+      "year": 2023,
+      "round": 11,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/11/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:01.864250",
+      "year": 2023,
+      "round": 12,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/12/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:02.982881",
+      "year": 2023,
+      "round": 13,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/13/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:05.172249",
+      "year": 2023,
+      "round": 14,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/14/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:06.576085",
+      "year": 2023,
+      "round": 15,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/15/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:08.669463",
+      "year": 2023,
+      "round": 16,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/16/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:09.762050",
+      "year": 2023,
+      "round": 17,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/17/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:11.788653",
+      "year": 2023,
+      "round": 18,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/18/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:13.876198",
+      "year": 2023,
+      "round": 19,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/19/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:14.969735",
+      "year": 2023,
+      "round": 20,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/20/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:17.014442",
+      "year": 2023,
+      "round": 21,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/21/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:18.105047",
+      "year": 2023,
+      "round": 22,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2023/22/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:19.803876",
+      "year": 2024,
+      "round": 1,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/1/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:20.886449",
+      "year": 2024,
+      "round": 2,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/2/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:22.902590",
+      "year": 2024,
+      "round": 3,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/3/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:24.033933",
+      "year": 2024,
+      "round": 4,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/4/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:26.041184",
+      "year": 2024,
+      "round": 5,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/5/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:27.138765",
+      "year": 2024,
+      "round": 6,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/6/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:29.398104",
+      "year": 2024,
+      "round": 7,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/7/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:30.489760",
+      "year": 2024,
+      "round": 8,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/8/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:32.698531",
+      "year": 2024,
+      "round": 9,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/9/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:33.815492",
+      "year": 2024,
+      "round": 10,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/10/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:36.104929",
+      "year": 2024,
+      "round": 11,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/11/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:38.307583",
+      "year": 2024,
+      "round": 12,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/12/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:39.402398",
+      "year": 2024,
+      "round": 13,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/13/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:41.704684",
+      "year": 2024,
+      "round": 14,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/14/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:42.812282",
+      "year": 2024,
+      "round": 15,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/15/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:45.236230",
+      "year": 2024,
+      "round": 16,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/16/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:47.478318",
+      "year": 2024,
+      "round": 17,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/17/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:48.613923",
+      "year": 2024,
+      "round": 18,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/18/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:51.139386",
+      "year": 2024,
+      "round": 19,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/19/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:53.188582",
+      "year": 2024,
+      "round": 20,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/20/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:54.384975",
+      "year": 2024,
+      "round": 21,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/21/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:56.473300",
+      "year": 2024,
+      "round": 22,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/22/laps.json?limit=2000&offset=100"
+    },
+    {
+      "timestamp": "2025-08-03T21:11:57.572265",
+      "year": 2024,
+      "round": 23,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/23/laps.json?limit=2000&offset=0"
+    },
+    {
+      "timestamp": "2025-08-03T21:12:00.285510",
+      "year": 2024,
+      "round": 24,
+      "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/24/laps.json?limit=2000&offset=100"
+    }
+  ]
+}
