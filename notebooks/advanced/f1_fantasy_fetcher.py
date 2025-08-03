@@ -41,12 +41,15 @@ class F1FantasyFetcher:
             current_file = Path(__file__).resolve()
             project_root = current_file.parent.parent.parent
             self.output_dir = project_root / 'data' / 'f1_fantasy'
+            self.f1db_dir = project_root / 'data' / 'f1db'
         else:
             # If output_dir is provided, make it absolute
             self.output_dir = Path(output_dir).resolve()
+            self.f1db_dir = self.output_dir.parent.parent / 'data' / 'f1db'
         
         self.output_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"Output directory: {self.output_dir}")
+        logger.info(f"F1DB directory: {self.f1db_dir}")
         
         # Configure session with appropriate headers
         self.session = requests.Session()
@@ -61,6 +64,125 @@ class F1FantasyFetcher:
         # API delay to be respectful
         self.api_delay = 0.5  # seconds between requests
         
+        # Load F1DB data for mapping
+        self.drivers_df = None
+        self.races_df = None
+        self._load_f1db_data()
+        
+    def _load_f1db_data(self):
+        """Load F1DB drivers and races data for mapping"""
+        try:
+            # Load drivers data
+            drivers_path = self.f1db_dir / 'drivers.csv'
+            if drivers_path.exists():
+                self.drivers_df = pd.read_csv(drivers_path)
+                # Filter to only recent drivers (those who have raced since 2020)
+                # This helps with name matching accuracy
+                logger.info(f"Loaded {len(self.drivers_df)} drivers from F1DB")
+            else:
+                logger.warning(f"F1DB drivers.csv not found at {drivers_path}")
+            
+            # Load races data
+            races_path = self.f1db_dir / 'races.csv'
+            if races_path.exists():
+                self.races_df = pd.read_csv(races_path)
+                # Filter to current season
+                current_year = datetime.now().year
+                self.races_df = self.races_df[self.races_df['year'] == current_year]
+                logger.info(f"Loaded {len(self.races_df)} races for {current_year} from F1DB")
+            else:
+                logger.warning(f"F1DB races.csv not found at {races_path}")
+                
+        except Exception as e:
+            logger.error(f"Error loading F1DB data: {e}")
+    
+    def _normalize_name(self, name: str) -> str:
+        """Normalize name for matching by removing accents and special characters"""
+        # Remove accents
+        normalized = unicodedata.normalize('NFD', name)
+        normalized = ''.join(char for char in normalized if unicodedata.category(char) != 'Mn')
+        # Convert to lowercase and remove extra spaces
+        normalized = re.sub(r'\s+', ' ', normalized.lower().strip())
+        return normalized
+    
+    def _find_driver_id(self, fantasy_name: str) -> Optional[str]:
+        """Find F1DB driver ID by matching fantasy name"""
+        if self.drivers_df is None:
+            return None
+        
+        # Normalize the fantasy name
+        normalized_fantasy = self._normalize_name(fantasy_name)
+        
+        # First check special mappings for known current drivers
+        special_mappings = {
+            'max verstappen': 'max-verstappen',
+            'lewis hamilton': 'lewis-hamilton',
+            'george russell': 'george-russell',
+            'lando norris': 'lando-norris',
+            'oscar piastri': 'oscar-piastri',
+            'charles leclerc': 'charles-leclerc',
+            'carlos sainz': 'carlos-sainz',
+            'sergio perez': 'sergio-perez',
+            'fernando alonso': 'fernando-alonso',
+            'lance stroll': 'lance-stroll',
+            'pierre gasly': 'pierre-gasly',
+            'esteban ocon': 'esteban-ocon',
+            'valtteri bottas': 'valtteri-bottas',
+            'guanyu zhou': 'zhou-guanyu',
+            'yuki tsunoda': 'yuki-tsunoda',
+            'daniel ricciardo': 'daniel-ricciardo',
+            'alex albon': 'alex-albon',
+            'alexander albon': 'alex-albon',
+            'logan sargeant': 'logan-sargeant',
+            'nico hulkenberg': 'nico-hulkenberg',
+            'kevin magnussen': 'kevin-magnussen',
+            'oliver bearman': 'oliver-bearman',
+            'liam lawson': 'liam-lawson',
+            'franco colapinto': 'franco-colapinto',
+            'jack doohan': 'jack-doohan',
+            'kimi antonelli': 'andrea-kimi-antonelli',
+            'isack hadjar': 'isack-hadjar',
+            'gabriel bortoleto': 'gabriel-bortoleto',
+            'nyck de vries': 'nyck-de-vries'
+        }
+        
+        if normalized_fantasy in special_mappings:
+            return special_mappings[normalized_fantasy]
+        
+        # Try exact matching strategies only after special mappings
+        for _, driver in self.drivers_df.iterrows():
+            # Only exact full name match
+            if self._normalize_name(driver['fullName']) == normalized_fantasy:
+                return driver['id']
+            
+            # First name + last name exact match
+            driver_full = self._normalize_name(f"{driver['firstName']} {driver['lastName']}")
+            if driver_full == normalized_fantasy:
+                return driver['id']
+        
+        logger.warning(f"Could not find F1DB driver ID for: {fantasy_name}")
+        return None
+    
+    def _find_race_info(self, gameday_id: int) -> Dict:
+        """Find race information by gameday ID (round number)"""
+        if self.races_df is None:
+            return {}
+        
+        # gameday_id corresponds to round number
+        race = self.races_df[self.races_df['round'] == gameday_id]
+        
+        if not race.empty:
+            race_row = race.iloc[0]
+            return {
+                'race_id': race_row['id'],
+                'race_name': race_row['officialName'],
+                'race_date': race_row['date'],
+                'circuit_id': race_row['circuitId'],
+                'grand_prix_id': race_row['grandPrixId']
+            }
+        
+        return {}
+    
     def get_buster_timestamp(self) -> str:
         """Generate cache buster timestamp"""
         return datetime.now().strftime("%Y%m%d%H%M%S")
@@ -150,12 +272,25 @@ class F1FantasyFetcher:
         # Convert to DataFrame
         df = pd.DataFrame(list(base_data.values()))
         
+        # Add F1DB driver IDs
+        df['f1db_driver_id'] = df['player_name'].apply(self._find_driver_id)
+        
         # Add metadata columns
         df['last_updated'] = datetime.now().isoformat()
         df['season'] = stats_data['Data']['season']
         
         # Sort by fantasy points rank
         df = df.sort_values('fantasy_points_rank')
+        
+        # Reorder columns to put important ones first
+        column_order = ['player_id', 'player_name', 'f1db_driver_id', 'team_name', 
+                       'current_price', 'fantasy_points', 'fantasy_points_rank']
+        other_columns = [col for col in df.columns if col not in column_order]
+        df = df[column_order + other_columns]
+        
+        # Log mapping success rate
+        mapped_count = df['f1db_driver_id'].notna().sum()
+        logger.info(f"Successfully mapped {mapped_count}/{len(df)} drivers to F1DB IDs")
         
         return df
     
@@ -172,20 +307,36 @@ class F1FantasyFetcher:
             player_name = driver_names.get(player_id, f"Unknown_{player_id}")
             
             for gameday in data['Value']['GamedayWiseStats']:
+                # Get race info for this gameday
+                race_info = self._find_race_info(gameday['GamedayId'])
+                
                 detail_row = {
                     'player_id': player_id,
                     'player_name': player_name,
+                    'f1db_driver_id': self._find_driver_id(player_name),
                     'gameday_id': gameday['GamedayId'],
                     'player_value_at_race': gameday['PlayerValue'],
                     'player_value_before': gameday['OldPlayerValue'],
                     'is_played': gameday['IsPlayed'],
                     'is_active': gameday['IsActive'],
-                    'total_points': 0  # Will be updated from StatsWise
+                    'total_points': 0,  # Will be updated from StatsWise
+                    # Add race information
+                    'race_id': int(race_info.get('race_id')) if race_info.get('race_id') is not None else None,
+                    'race_name': race_info.get('race_name'),
+                    'race_date': race_info.get('race_date'),
+                    'circuit_id': race_info.get('circuit_id'),
+                    'grand_prix_id': race_info.get('grand_prix_id')
                 }
                 
-                # Process individual stats
+                # Process ALL stats dynamically
                 for stat in gameday['StatsWise']:
                     event = stat['Event']
+                    
+                    # Create column names from event names
+                    # Replace spaces with underscores and convert to lowercase
+                    event_key = event.lower().replace(' ', '_')
+                    
+                    # Special handling for known important events
                     if event == 'Total':
                         detail_row['total_points'] = stat['Value']
                     elif event == 'Race Position':
@@ -194,23 +345,34 @@ class F1FantasyFetcher:
                     elif event == 'Qualifying Position':
                         detail_row['quali_position'] = stat.get('Frequency', 'DNS')
                         detail_row['quali_position_points'] = stat['Value']
-                    elif event == 'Finished Ahead of Teammate':
-                        detail_row['beat_teammate'] = stat.get('Frequency', 'No')
-                        detail_row['beat_teammate_points'] = stat['Value']
-                    elif event == 'Overtaking':
-                        detail_row['overtaking_count'] = stat.get('Frequency', '0')
-                        detail_row['overtaking_points'] = stat['Value']
-                    elif event == 'Fastest Lap':
-                        detail_row['fastest_lap'] = stat.get('Frequency', 'No')
-                        detail_row['fastest_lap_points'] = stat['Value']
-                    elif event == 'Driver of the Day':
-                        detail_row['driver_of_day'] = stat.get('Frequency', 'No')
-                        detail_row['driver_of_day_points'] = stat['Value']
+                    elif event == 'Sprint Position':
+                        detail_row['sprint_position'] = stat.get('Frequency', 'DNS')
+                        detail_row['sprint_position_points'] = stat['Value']
+                    else:
+                        # For all other events, store both frequency and value
+                        if 'Frequency' in stat:
+                            detail_row[f"{event_key}_freq"] = stat['Frequency']
+                        detail_row[f"{event_key}_points"] = stat['Value']
+                    
+                    # Always store the raw value for completeness
+                    detail_row[f"stat_{event_key}_value"] = stat['Value']
+                    if 'Frequency' in stat:
+                        detail_row[f"stat_{event_key}_frequency"] = stat['Frequency']
                 
                 all_details.append(detail_row)
         
         # Create DataFrame
         df = pd.DataFrame(all_details)
+        
+        # Log unique stat types found
+        stat_columns = [col for col in df.columns if 'stat_' in col or col.endswith('_points')]
+        unique_stats = set()
+        for col in stat_columns:
+            if col.endswith('_points') and not col.startswith('stat_'):
+                stat_name = col.replace('_points', '').replace('_', ' ').title()
+                unique_stats.add(stat_name)
+        
+        logger.info(f"Found {len(unique_stats)} unique stat types: {sorted(unique_stats)}")
         
         # Add metadata
         df['last_updated'] = datetime.now().isoformat()
@@ -218,17 +380,54 @@ class F1FantasyFetcher:
         # Sort by player and gameday
         df = df.sort_values(['player_id', 'gameday_id'])
         
+        # Reorder columns to put important ones first
+        # Core identification columns
+        core_columns = ['player_id', 'player_name', 'f1db_driver_id', 'gameday_id', 
+                       'race_id', 'race_name', 'race_date', 'circuit_id']
+        
+        # Main result columns
+        result_columns = ['total_points', 'race_position', 'quali_position', 'sprint_position',
+                         'race_position_points', 'quali_position_points', 'sprint_position_points']
+        
+        # Find all other point columns
+        point_columns = [col for col in df.columns if col.endswith('_points') and col not in result_columns]
+        freq_columns = [col for col in df.columns if col.endswith('_freq')]
+        stat_columns = [col for col in df.columns if col.startswith('stat_')]
+        
+        # Other metadata columns
+        meta_columns = ['player_value_at_race', 'player_value_before', 'is_played', 
+                       'is_active', 'last_updated']
+        
+        # Build final column order
+        column_order = core_columns + result_columns + point_columns + freq_columns + stat_columns + meta_columns
+        
+        # Add any remaining columns
+        other_columns = [col for col in df.columns if col not in column_order]
+        
+        # Only include columns that exist in the dataframe
+        final_columns = [col for col in column_order + other_columns if col in df.columns]
+        df = df[final_columns]
+        
+        # Log race mapping success
+        races_mapped = df['race_id'].notna().sum()
+        total_records = len(df)
+        logger.info(f"Successfully mapped {races_mapped}/{total_records} race records")
+        
         return df
     
-    def save_metadata(self, num_drivers: int, num_races: int):
+    def save_metadata(self, num_drivers: int, num_races: int, 
+                     drivers_mapped: int = 0, races_mapped: int = 0):
         """Save metadata about the data extraction"""
         metadata = {
             'last_updated': datetime.now().isoformat(),
             'num_drivers': num_drivers,
             'num_races': num_races,
+            'drivers_mapped_to_f1db': drivers_mapped,
+            'races_mapped_to_f1db': races_mapped,
             'api_version': 'drivers_3',
             'data_source': 'F1 Fantasy API',
-            'update_frequency': 'weekly'
+            'update_frequency': 'weekly',
+            'f1db_integration': True
         }
         
         metadata_path = self.output_dir / '.f1_fantasy_metadata.json'
@@ -280,9 +479,11 @@ class F1FantasyFetcher:
         driver_details_df = self.create_driver_details(player_details, driver_names)
         logger.info(f"Created driver details with {len(driver_details_df)} records")
         
-        # Step 6: Save metadata
-        num_races = driver_details_df['gameday_id'].nunique() if not driver_details_df.empty else 0
-        self.save_metadata(len(driver_overview_df), num_races)
+        # Step 6: Save metadata with mapping counts
+        num_races = int(driver_details_df['gameday_id'].nunique()) if not driver_details_df.empty else 0
+        drivers_mapped = int(driver_overview_df['f1db_driver_id'].notna().sum()) if not driver_overview_df.empty else 0
+        races_mapped = int(driver_details_df['race_id'].notna().sum()) if not driver_details_df.empty else 0
+        self.save_metadata(len(driver_overview_df), num_races, drivers_mapped, races_mapped)
         
         return driver_overview_df, driver_details_df
     
