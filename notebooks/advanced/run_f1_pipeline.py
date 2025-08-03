@@ -36,8 +36,7 @@ from f1_ml.evaluation import IntegratedF1Predictor
 from f1_ml.optimization import PrizePicksOptimizer
 from f1_ml.explainability import PredictionExplainer, PrizePicksExplainer
 from f1_ml.backtesting import F1BacktestEngine, prepare_backtest_data, compare_strategies
-from f1db_data_loader import fix_column_mappings
-from f1db_data_loader import load_f1db_data
+from f1db_data_loader import fix_column_mappings, F1DBDataLoader
 from f1_performance_analysis import F1PerformanceAnalyzer
 
 class PipelineConfig:
@@ -224,8 +223,9 @@ class F1PredictionsGenerator:
 class F1PrizePipeline:
     """Main pipeline orchestrating all components"""
     
-    def __init__(self, config: PipelineConfig):
+    def __init__(self, config: PipelineConfig, skip_update_check: bool = False):
         self.config = config
+        self.skip_update_check = skip_update_check
         self.data = None
         self.feature_store = F1FeatureStore()
         self.optimizer = PrizePicksOptimizer(
@@ -239,8 +239,15 @@ class F1PrizePipeline:
         """Load and prepare F1 data"""
         logger.info("Loading F1 data...")
         
-        # Load data
-        self.data = load_f1db_data(data_dir=str(self.config.data_dir))
+        # Use F1DBDataLoader for better caching
+        loader = F1DBDataLoader(data_dir=str(self.config.data_dir))
+        
+        # Load data without checking for updates every time (uses cache)
+        # Check updates only if explicitly needed or once per day
+        if self.skip_update_check:
+            self.data = loader.load_csv_data_no_update()
+        else:
+            self.data = loader.load_csv_data(validate=False, check_updates=True)
         
         # Apply column mappings
         self.data = fix_column_mappings(self.data)
