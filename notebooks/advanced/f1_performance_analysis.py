@@ -599,9 +599,16 @@ class F1PerformanceAnalyzer:
         if results.empty:
             return {}
         
-        # Add year information
-        if not races.empty and 'year' not in results.columns:
-            results = results.merge(races[['id', 'year', 'circuitId']], left_on='raceId', right_on='id', how='left')
+        # Add year and circuit information
+        if not races.empty:
+            merge_cols = ['id']
+            if 'year' not in results.columns:
+                merge_cols.append('year')
+            if 'circuitId' not in results.columns:
+                merge_cols.append('circuitId')
+            
+            if len(merge_cols) > 1:
+                results = results.merge(races[merge_cols], left_on='raceId', right_on='id', how='left')
         
         # Current season data
         current_season = results[results['year'] == self.current_year]
@@ -664,79 +671,76 @@ class F1PerformanceAnalyzer:
             points_analysis['driver_name'] = points_analysis.index.map(driver_map)
         
         # Add circuit-specific averages for previous, current, and next races
-        # Need to get all results data with circuitId for filtering
-        all_results = results[(results['year'] >= self.current_year - 3)]  # Last 3 years for circuit averages
+        # Initialize with defaults
+        points_analysis['p_circuit_avg'] = 0
+        points_analysis['c_circuit_avg'] = 0  
+        points_analysis['n_circuit_avg'] = 0
+        points_analysis['last_race'] = 0
         
-        if 'circuitId' in all_results.columns:
-            # Get the most recent races with results
-            races_with_results = all_results['raceId'].unique()
-            recent_races = races[races['id'].isin(races_with_results)]
+        # Get all results data with circuitId for filtering (last 3 years)
+        all_results = results[(results['year'] >= self.current_year - 3)]
+        
+        if 'circuitId' in all_results.columns and not races.empty:
+            # Ensure races have proper datetime
+            races['date'] = pd.to_datetime(races['date'])
             
-            if not recent_races.empty:
-                # Ensure date is datetime
-                recent_races = recent_races.copy()
-                recent_races['date'] = pd.to_datetime(recent_races['date'])
-                recent_races_sorted = recent_races.sort_values('date', ascending=False)
+            # Get the most recent races with results
+            races_with_results = results['raceId'].unique()
+            recent_races_sorted = races[races['id'].isin(races_with_results)].sort_values('date', ascending=False)
+            
+            if not recent_races_sorted.empty:
+                # Current race (most recent with results - should be Belgian GP)
+                current_race = recent_races_sorted.iloc[0]
+                current_circuit_id = current_race['circuitId']
+                last_race_id = current_race['id']
                 
-                # Current race (most recent with results)
-                if len(recent_races_sorted) > 0:
-                    current_circuit_id = recent_races_sorted.iloc[0]['circuitId']
-                    current_circuit_data = all_results[all_results['circuitId'] == current_circuit_id]
-                    if not current_circuit_data.empty:
-                        current_circuit_points = current_circuit_data.groupby('driverId')['points'].mean().round(2)
-                        points_analysis['current_circuit_avg'] = points_analysis.index.map(
-                            lambda x: current_circuit_points.get(x, points_analysis.loc[x, 'avg_points'] if x in points_analysis.index else 0)
-                        )
-                    else:
-                        points_analysis['current_circuit_avg'] = points_analysis['avg_points']
+                # Calculate last race points
+                last_race_data = results[results['raceId'] == last_race_id]
+                if not last_race_data.empty:
+                    last_race_points = last_race_data.set_index('driverId')['points']
+                    points_analysis['last_race'] = points_analysis.index.map(
+                        lambda x: int(last_race_points.get(x, 0))
+                    )
                 
-                # Previous race (second most recent)
+                # Calculate circuit average for current circuit (historical average at this track)
+                current_circuit_data = all_results[all_results['circuitId'] == current_circuit_id]
+                if not current_circuit_data.empty:
+                    current_circuit_points = current_circuit_data.groupby('driverId')['points'].mean().round(2)
+                    points_analysis['c_circuit_avg'] = points_analysis.index.map(
+                        lambda x: current_circuit_points.get(x, 0)
+                    )
+                
+                # Previous race (race before current - should be British GP)
                 if len(recent_races_sorted) > 1:
-                    prev_circuit_id = recent_races_sorted.iloc[1]['circuitId']
+                    prev_race = recent_races_sorted.iloc[1]
+                    prev_circuit_id = prev_race['circuitId']
+                    
+                    # Calculate circuit average for previous circuit
                     prev_circuit_data = all_results[all_results['circuitId'] == prev_circuit_id]
                     if not prev_circuit_data.empty:
                         prev_circuit_points = prev_circuit_data.groupby('driverId')['points'].mean().round(2)
-                        points_analysis['prev_circuit_avg'] = points_analysis.index.map(
-                            lambda x: prev_circuit_points.get(x, points_analysis.loc[x, 'avg_points'] if x in points_analysis.index else 0)
+                        points_analysis['p_circuit_avg'] = points_analysis.index.map(
+                            lambda x: prev_circuit_points.get(x, 0)
                         )
-                    else:
-                        points_analysis['prev_circuit_avg'] = points_analysis['avg_points']
-                else:
-                    points_analysis['prev_circuit_avg'] = 0
-            else:
-                points_analysis['prev_circuit_avg'] = 0
-                points_analysis['current_circuit_avg'] = points_analysis['avg_points']
-        else:
-            points_analysis['prev_circuit_avg'] = 0
-            points_analysis['current_circuit_avg'] = points_analysis.get('avg_points', 0)
         
         # Next race circuit-specific prediction
         next_race = self.get_next_race()
         if next_race is not None and 'circuitId' in next_race and 'circuitId' in all_results.columns:
+            # Next race circuit (should be Hungarian GP)
             next_circuit_id = next_race['circuitId']
             next_circuit_data = all_results[all_results['circuitId'] == next_circuit_id]
+            
             if not next_circuit_data.empty:
+                # Calculate average points at this specific circuit
                 next_circuit_points = next_circuit_data.groupby('driverId')['points'].mean().round(2)
-                points_analysis['next_circuit_avg'] = points_analysis.index.map(
-                    lambda x: next_circuit_points.get(x, points_analysis.loc[x, 'avg_points'] if x in points_analysis.index else 0)
+                points_analysis['n_circuit_avg'] = points_analysis.index.map(
+                    lambda x: next_circuit_points.get(x, 0)
                 )
-            else:
-                points_analysis['next_circuit_avg'] = points_analysis['avg_points']
-        else:
-            points_analysis['next_circuit_avg'] = points_analysis.get('avg_points', 0)
-        
-        # Ensure columns exist for all drivers
-        if 'prev_circuit_avg' not in points_analysis.columns:
-            points_analysis['prev_circuit_avg'] = 0
-        if 'current_circuit_avg' not in points_analysis.columns:
-            points_analysis['current_circuit_avg'] = points_analysis.get('avg_points', 0)
-        if 'next_circuit_avg' not in points_analysis.columns:
-            points_analysis['next_circuit_avg'] = points_analysis.get('avg_points', 0)
         
         # Reorder columns for better presentation
         column_order = ['driver_name', 'total_points', 'avg_points', 'median_points', 
-                       'races', 'hist_avg_points', 'hist_median_points',
-                       'prev_circuit_avg', 'current_circuit_avg', 'next_circuit_avg']
+                       'last_race', 'races', 'hist_avg_points', 'hist_median_points',
+                       'p_circuit_avg', 'c_circuit_avg', 'n_circuit_avg']
         
         # Keep only columns that exist
         final_columns = [col for col in column_order if col in points_analysis.columns]
@@ -744,6 +748,13 @@ class F1PerformanceAnalyzer:
         
         # Drop driver_id index since we already have driver_name
         points_analysis = points_analysis.reset_index(drop=True)
+        
+        # Filter out drivers with no points in current season
+        # A driver should have either scored points or participated in races
+        if 'total_points' in points_analysis.columns and 'races' in points_analysis.columns:
+            # Keep drivers who have either scored points OR participated in races in current season
+            has_activity = (points_analysis['total_points'] > 0) | (points_analysis['races'] > 0)
+            points_analysis = points_analysis[has_activity]
         
         return points_analysis
     
@@ -2265,16 +2276,15 @@ class F1PerformanceAnalyzer:
             # Note: Column order is already set in analyze_points method
             print(points.to_string(index=False))
             
-            # Explain any zeros
-            if not points.empty:
-                zero_points = points[points['total_points'] == 0]
-                if not zero_points.empty:
-                    if 'driver_name' in points.columns:
-                        zero_names = [points.loc[idx, 'driver_name'] for idx in zero_points.index if idx in points.index]
-                        print(f"\nDrivers with 0 points: {', '.join(zero_names)}")
-                    else:
-                        print(f"\nDrivers with 0 points: {', '.join(zero_points.index.tolist())}")
-                    print("(These drivers either didn't finish in points positions or had limited races)")
+            # Add explanations
+            print("\nColumn Definitions:")
+            print("- avg_points: Average points per race in current season (2025)")
+            print("- hist_avg_points: Historical average points per race (2022-2024)")
+            print("- last_race: Points scored in the most recent race")
+            print("- p_circuit_avg: Average points at the previous race's circuit (3-year history)")
+            print("- c_circuit_avg: Average points at the current race's circuit (3-year history)")
+            print("- n_circuit_avg: Average points at the next race's circuit (3-year history)")
+            print("\nNote: Circuit averages are calculated from the last 3 years of racing at each specific track")
         else:
             print("No points data available")
         
