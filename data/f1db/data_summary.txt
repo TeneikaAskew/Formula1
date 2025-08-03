@@ -1,8 +1,56 @@
+Data summary:
+
 ================================================================================
 F1DB DATA SUMMARY
 ================================================================================
-Generated: 2025-08-02 22:52:09
-
+Already have latest F1DB data (version v2025.13.0)
+Loading 46 CSV files...
+  ✓ Loaded engines: 419 rows
+  ✓ Loaded races_driver_standings: 20977 rows
+  ✓ Loaded drivers: 912 rows
+  ✓ Loaded seasons_tyre_manufacturers: 159 rows
+  ✓ Loaded races_warming_up_results: 7683 rows
+  ✓ Loaded races_qualifying_results: 26496 rows
+  ✓ Loaded races_free_practice_3_results: 8510 rows
+  ✓ Loaded seasons_entrants_drivers: 3840 rows
+  ✓ Loaded tyre_manufacturers: 9 rows
+  ✓ Loaded races_fastest_laps: 16638 rows
+  ✓ Loaded grands_prix: 53 rows
+  ✓ Loaded races_qualifying_2_results: 7541 rows
+  ✓ Loaded races_sprint_race_results: 420 rows
+  ✓ Loaded races_pre_qualifying_results: 647 rows
+  ✓ Loaded races_pit_stops: 21758 rows
+  ✓ Loaded races_free_practice_2_results: 15196 rows
+  ✓ Loaded circuits: 77 rows
+  ✓ Loaded entrants: 823 rows
+  ✓ Loaded drivers_family_relationships: 86 rows
+  ✓ Loaded engine_manufacturers: 76 rows
+  ✓ Loaded races: 1149 rows
+  ✓ Loaded races_starting_grid_positions: 25308 rows
+  ✓ Loaded races_constructor_standings: 10379 rows
+  ✓ Loaded seasons_engine_manufacturers: 555 rows
+  ✓ Loaded races_race_results: 27071 rows
+  ✓ Loaded races_sprint_qualifying_results: 300 rows
+  ✓ Loaded chassis: 1138 rows
+  ✓ Loaded seasons_constructor_standings: 710 rows
+  ✓ Loaded seasons_entrants_tyre_manufacturers: 1944 rows
+  ✓ Loaded seasons_drivers: 3379 rows
+  ✓ Loaded constructors_chronology: 207 rows
+  ✓ Loaded constructors: 185 rows
+  ✓ Loaded seasons: 76 rows
+  ✓ Loaded races_free_practice_4_results: 706 rows
+  ✓ Loaded seasons_constructors: 1068 rows
+  ✓ Loaded seasons_entrants_constructors: 1914 rows
+  ✓ Loaded countries: 249 rows
+  ✓ Loaded seasons_entrants_chassis: 2281 rows
+  ✓ Loaded seasons_entrants_engines: 2016 rows
+  ✓ Loaded seasons_driver_standings: 1658 rows
+  ✓ Loaded races_sprint_starting_grid_positions: 419 rows
+  ✓ Loaded seasons_entrants: 1788 rows
+  ✓ Loaded races_free_practice_1_results: 15616 rows
+  ✓ Loaded races_qualifying_1_results: 7707 rows
+  ✓ Loaded races_driver_of_the_day_results: 762 rows
+  ✓ Loaded continents: 7 rows
 
 Found Datasets:
   - races: 1149 rows, 42 columns
@@ -19,6 +67,67 @@ Found Datasets:
 ----------------------------------------
 COLUMN MAPPING ANALYSIS
 ----------------------------------------
+Already have latest F1DB data (version v2025.13.0)
+Loading 46 CSV files...
+  ✓ Loaded engines: 419 rows
+  ✓ Loaded races_driver_standings: 20977 rows
+  ✓ Loaded drivers: 912 rows
+  ✓ Loaded seasons_tyre_manufacturers: 159 rows
+  ✓ Loaded races_warming_up_results: 7683 rows
+  ✓ Loaded races_qualifying_results: 26496 rows
+  ✓ Loaded races_free_practice_3_results: 8510 rows
+  ✓ Loaded seasons_entrants_drivers: 3840 rows
+  ✓ Loaded tyre_manufacturers: 9 rows
+  ✓ Loaded races_fastest_laps: 16638 rows
+  ✓ Loaded grands_prix: 53 rows
+  ✓ Loaded races_qualifying_2_results: 7541 rows
+  ✓ Loaded races_sprint_race_results: 420 rows
+  ✓ Loaded races_pre_qualifying_results: 647 rows
+  ✓ Loaded races_pit_stops: 21758 rows
+  ✓ Loaded races_free_practice_2_results: 15196 rows
+  ✓ Loaded circuits: 77 rows
+  ✓ Loaded entrants: 823 rows
+  ✓ Loaded drivers_family_relationships: 86 rows
+  ✓ Loaded engine_manufacturers: 76 rows
+  ✓ Loaded races: 1149 rows
+  ✓ Loaded races_starting_grid_positions: 25308 rows
+  ✓ Loaded races_constructor_standings: 10379 rows
+  ✓ Loaded seasons_engine_manufacturers: 555 rows
+  ✓ Loaded races_race_results: 27071 rows
+  ✓ Loaded races_sprint_qualifying_results: 300 rows
+  ✓ Loaded chassis: 1138 rows
+  ✓ Loaded seasons_constructor_standings: 710 rows
+  ✓ Loaded seasons_entrants_tyre_manufacturers: 1944 rows
+  ✓ Loaded seasons_drivers: 3379 rows
+  ✓ Loaded constructors_chronology: 207 rows
+  ✓ Loaded constructors: 185 rows
+  ✓ Loaded seasons: 76 rows
+  ✓ Loaded races_free_practice_4_results: 706 rows
+  ✓ Loaded seasons_constructors: 1068 rows
+  ✓ Loaded seasons_entrants_constructors: 1914 rows
+  ✓ Loaded countries: 249 rows
+  ✓ Loaded seasons_entrants_chassis: 2281 rows
+  ✓ Loaded seasons_entrants_engines: 2016 rows
+  ✓ Loaded seasons_driver_standings: 1658 rows
+  ✓ Loaded races_sprint_starting_grid_positions: 419 rows
+  ✓ Loaded seasons_entrants: 1788 rows
+  ✓ Loaded races_free_practice_1_results: 15616 rows
+  ✓ Loaded races_qualifying_1_results: 7707 rows
+  ✓ Loaded races_driver_of_the_day_results: 762 rows
+  ✓ Loaded continents: 7 rows
+
+Validation summary: 46 valid, 46 warnings, 0 errors
+  → Mapped races_race_results to results
+  → Mapped races_qualifying_results to qualifying
+  → Mapped races_sprint_race_results to sprint_results
+  → Mapped races_fastest_laps to fastest_laps
+  → Mapped races_pit_stops to pit_stops
+  → Mapped races_driver_standings to driver_standings
+  → Mapped races_constructor_standings to constructor_standings
+  → Mapped races_race_results to constructor_results
+  → Created synthetic status table from reasonRetired data
+  → Added positionOrder column to results for compatibility
+  → Applied column mappings for ML pipeline compatibility
 
 RESULTS:
   ✓ positionOrder
@@ -64,6 +173,67 @@ CONSTRUCTORS:
 ----------------------------------------
 DATA INTEGRITY
 ----------------------------------------
+Already have latest F1DB data (version v2025.13.0)
+Loading 46 CSV files...
+  ✓ Loaded engines: 419 rows
+  ✓ Loaded races_driver_standings: 20977 rows
+  ✓ Loaded drivers: 912 rows
+  ✓ Loaded seasons_tyre_manufacturers: 159 rows
+  ✓ Loaded races_warming_up_results: 7683 rows
+  ✓ Loaded races_qualifying_results: 26496 rows
+  ✓ Loaded races_free_practice_3_results: 8510 rows
+  ✓ Loaded seasons_entrants_drivers: 3840 rows
+  ✓ Loaded tyre_manufacturers: 9 rows
+  ✓ Loaded races_fastest_laps: 16638 rows
+  ✓ Loaded grands_prix: 53 rows
+  ✓ Loaded races_qualifying_2_results: 7541 rows
+  ✓ Loaded races_sprint_race_results: 420 rows
+  ✓ Loaded races_pre_qualifying_results: 647 rows
+  ✓ Loaded races_pit_stops: 21758 rows
+  ✓ Loaded races_free_practice_2_results: 15196 rows
+  ✓ Loaded circuits: 77 rows
+  ✓ Loaded entrants: 823 rows
+  ✓ Loaded drivers_family_relationships: 86 rows
+  ✓ Loaded engine_manufacturers: 76 rows
+  ✓ Loaded races: 1149 rows
+  ✓ Loaded races_starting_grid_positions: 25308 rows
+  ✓ Loaded races_constructor_standings: 10379 rows
+  ✓ Loaded seasons_engine_manufacturers: 555 rows
+  ✓ Loaded races_race_results: 27071 rows
+  ✓ Loaded races_sprint_qualifying_results: 300 rows
+  ✓ Loaded chassis: 1138 rows
+  ✓ Loaded seasons_constructor_standings: 710 rows
+  ✓ Loaded seasons_entrants_tyre_manufacturers: 1944 rows
+  ✓ Loaded seasons_drivers: 3379 rows
+  ✓ Loaded constructors_chronology: 207 rows
+  ✓ Loaded constructors: 185 rows
+  ✓ Loaded seasons: 76 rows
+  ✓ Loaded races_free_practice_4_results: 706 rows
+  ✓ Loaded seasons_constructors: 1068 rows
+  ✓ Loaded seasons_entrants_constructors: 1914 rows
+  ✓ Loaded countries: 249 rows
+  ✓ Loaded seasons_entrants_chassis: 2281 rows
+  ✓ Loaded seasons_entrants_engines: 2016 rows
+  ✓ Loaded seasons_driver_standings: 1658 rows
+  ✓ Loaded races_sprint_starting_grid_positions: 419 rows
+  ✓ Loaded seasons_entrants: 1788 rows
+  ✓ Loaded races_free_practice_1_results: 15616 rows
+  ✓ Loaded races_qualifying_1_results: 7707 rows
+  ✓ Loaded races_driver_of_the_day_results: 762 rows
+  ✓ Loaded continents: 7 rows
+
+Validation summary: 46 valid, 46 warnings, 0 errors
+  → Mapped races_race_results to results
+  → Mapped races_qualifying_results to qualifying
+  → Mapped races_sprint_race_results to sprint_results
+  → Mapped races_fastest_laps to fastest_laps
+  → Mapped races_pit_stops to pit_stops
+  → Mapped races_driver_standings to driver_standings
+  → Mapped races_constructor_standings to constructor_standings
+  → Mapped races_race_results to constructor_results
+  → Created synthetic status table from reasonRetired data
+  → Added positionOrder column to results for compatibility
+  → Applied column mappings for ML pipeline compatibility
 
 Tables checked: 55
 
@@ -76,17 +246,17 @@ Warnings:
   ⚠ Table 'qualifying' has columns with >50% null values: ['q1', 'q1Millis', 'q2', 'q2Millis', 'q3', 'q3Millis', 'laps']
   ⚠ Table 'sprint_results' has columns with >50% null values: ['timePenalty', 'timePenaltyMillis', 'gapLaps', 'reasonRetired', 'points', 'pitStops']
   ⚠ Table 'constructor_results' has columns with >50% null values: ['time', 'timeMillis', 'timePenalty', 'timePenaltyMillis', 'gapMillis', 'gapLaps', 'interval', 'intervalMillis', 'reasonRetired', 'points', 'pitStops', 'driverOfTheDay']
-  ⚠ Table 'races_starting_grid_positions' has columns with >50% null values: ['gridPenalty', 'gridPenaltyPositions']
-  ⚠ Table 'races_pre_qualifying_results' has columns with >50% null values: ['q1', 'q1Millis', 'q2', 'q2Millis', 'q3', 'q3Millis', 'laps']
-  ⚠ Table 'races_qualifying_1_results' has columns with >50% null values: ['q1', 'q1Millis', 'q2', 'q2Millis', 'q3', 'q3Millis', 'laps']
-  ⚠ Table 'races_qualifying_2_results' has columns with >50% null values: ['q1', 'q1Millis', 'q2', 'q2Millis', 'q3', 'q3Millis', 'laps']
+  ⚠ Table 'races_warming_up_results' has columns with >50% null values: ['laps']
   ⚠ Table 'races_qualifying_results' has columns with >50% null values: ['q1', 'q1Millis', 'q2', 'q2Millis', 'q3', 'q3Millis', 'laps']
+  ⚠ Table 'races_qualifying_2_results' has columns with >50% null values: ['q1', 'q1Millis', 'q2', 'q2Millis', 'q3', 'q3Millis', 'laps']
+  ⚠ Table 'races_sprint_race_results' has columns with >50% null values: ['timePenalty', 'timePenaltyMillis', 'gapLaps', 'reasonRetired', 'points', 'pitStops']
+  ⚠ Table 'races_pre_qualifying_results' has columns with >50% null values: ['q1', 'q1Millis', 'q2', 'q2Millis', 'q3', 'q3Millis', 'laps']
+  ⚠ Table 'races_starting_grid_positions' has columns with >50% null values: ['gridPenalty', 'gridPenaltyPositions']
   ⚠ Table 'races_race_results' has columns with >50% null values: ['time', 'timeMillis', 'timePenalty', 'timePenaltyMillis', 'gapMillis', 'gapLaps', 'interval', 'intervalMillis', 'reasonRetired', 'points', 'pitStops', 'driverOfTheDay']
   ⚠ Table 'races_sprint_qualifying_results' has columns with >50% null values: ['time', 'timeMillis', 'q3', 'q3Millis', 'gap', 'gapMillis', 'interval', 'intervalMillis']
-  ⚠ Table 'races_sprint_race_results' has columns with >50% null values: ['timePenalty', 'timePenaltyMillis', 'gapLaps', 'reasonRetired', 'points', 'pitStops']
-  ⚠ Table 'races_sprint_starting_grid_positions' has columns with >50% null values: ['gridPenalty', 'gridPenaltyPositions']
-  ⚠ Table 'races_warming_up_results' has columns with >50% null values: ['laps']
   ⚠ Table 'seasons_drivers' has columns with >50% null values: ['positionNumber', 'positionText']
+  ⚠ Table 'races_sprint_starting_grid_positions' has columns with >50% null values: ['gridPenalty', 'gridPenaltyPositions']
+  ⚠ Table 'races_qualifying_1_results' has columns with >50% null values: ['q1', 'q1Millis', 'q2', 'q2Millis', 'q3', 'q3Millis', 'laps']
 
 Table Statistics:
   - races: 1,149 rows, 57.9% null values
@@ -102,45 +272,45 @@ Table Statistics:
   - constructor_standings: 10,379 rows, 0.4% null values
   - seasons: 76 rows, 0.0% null values
   - constructor_results: 27,071 rows, 26.7% null values
-  - races_starting_grid_positions: 25,308 rows, 11.8% null values
-  - chassis: 1,138 rows, 0.0% null values
-  - constructors_chronology: 207 rows, 2.7% null values
-  - continents: 7 rows, 3.6% null values
-  - countries: 249 rows, 3.0% null values
+  - engines: 419 rows, 0.1% null values
+  - races_driver_standings: 20,977 rows, 0.4% null values
+  - seasons_tyre_manufacturers: 159 rows, 0.3% null values
+  - races_warming_up_results: 7,683 rows, 3.9% null values
+  - races_qualifying_results: 26,496 rows, 27.8% null values
+  - races_free_practice_3_results: 8,510 rows, 1.9% null values
+  - seasons_entrants_drivers: 3,840 rows, 1.0% null values
+  - tyre_manufacturers: 9 rows, 0.0% null values
+  - races_fastest_laps: 16,638 rows, 1.5% null values
+  - grands_prix: 53 rows, 0.5% null values
+  - races_qualifying_2_results: 7,541 rows, 29.0% null values
+  - races_sprint_race_results: 420 rows, 18.3% null values
+  - races_pre_qualifying_results: 647 rows, 31.7% null values
+  - races_pit_stops: 21,758 rows, 0.0% null values
+  - races_free_practice_2_results: 15,196 rows, 2.2% null values
+  - entrants: 823 rows, 0.0% null values
   - drivers_family_relationships: 86 rows, 0.0% null values
   - engine_manufacturers: 76 rows, 3.6% null values
-  - engines: 419 rows, 0.1% null values
-  - entrants: 823 rows, 0.0% null values
-  - grands_prix: 53 rows, 0.5% null values
+  - races_starting_grid_positions: 25,308 rows, 11.8% null values
   - races_constructor_standings: 10,379 rows, 0.4% null values
-  - races_driver_of_the_day_results: 762 rows, 0.7% null values
-  - races_driver_standings: 20,977 rows, 0.4% null values
-  - races_fastest_laps: 16,638 rows, 1.5% null values
-  - races_free_practice_1_results: 15,616 rows, 2.9% null values
-  - races_free_practice_2_results: 15,196 rows, 2.2% null values
-  - races_free_practice_3_results: 8,510 rows, 1.9% null values
-  - races_free_practice_4_results: 706 rows, 1.4% null values
-  - races_pit_stops: 21,758 rows, 0.0% null values
-  - races_pre_qualifying_results: 647 rows, 31.7% null values
-  - races_qualifying_1_results: 7,707 rows, 28.8% null values
-  - races_qualifying_2_results: 7,541 rows, 29.0% null values
-  - races_qualifying_results: 26,496 rows, 27.8% null values
+  - seasons_engine_manufacturers: 555 rows, 4.9% null values
   - races_race_results: 27,071 rows, 26.7% null values
   - races_sprint_qualifying_results: 300 rows, 24.6% null values
-  - races_sprint_race_results: 420 rows, 18.3% null values
-  - races_sprint_starting_grid_positions: 419 rows, 12.5% null values
-  - races_warming_up_results: 7,683 rows, 3.9% null values
+  - chassis: 1,138 rows, 0.0% null values
   - seasons_constructor_standings: 710 rows, 0.1% null values
-  - seasons_constructors: 1,068 rows, 5.2% null values
-  - seasons_driver_standings: 1,658 rows, 0.0% null values
-  - seasons_drivers: 3,379 rows, 8.3% null values
-  - seasons_engine_manufacturers: 555 rows, 4.9% null values
-  - seasons_entrants_chassis: 2,281 rows, 0.0% null values
-  - seasons_entrants_constructors: 1,914 rows, 0.0% null values
-  - seasons_entrants_drivers: 3,840 rows, 1.0% null values
-  - seasons_entrants_engines: 2,016 rows, 0.0% null values
   - seasons_entrants_tyre_manufacturers: 1,944 rows, 0.0% null values
+  - seasons_drivers: 3,379 rows, 8.3% null values
+  - constructors_chronology: 207 rows, 2.7% null values
+  - races_free_practice_4_results: 706 rows, 1.4% null values
+  - seasons_constructors: 1,068 rows, 5.2% null values
+  - seasons_entrants_constructors: 1,914 rows, 0.0% null values
+  - countries: 249 rows, 3.0% null values
+  - seasons_entrants_chassis: 2,281 rows, 0.0% null values
+  - seasons_entrants_engines: 2,016 rows, 0.0% null values
+  - seasons_driver_standings: 1,658 rows, 0.0% null values
+  - races_sprint_starting_grid_positions: 419 rows, 12.5% null values
   - seasons_entrants: 1,788 rows, 0.0% null values
-  - seasons_tyre_manufacturers: 159 rows, 0.3% null values
-  - tyre_manufacturers: 9 rows, 0.0% null values
+  - races_free_practice_1_results: 15,616 rows, 2.9% null values
+  - races_qualifying_1_results: 7,707 rows, 28.8% null values
+  - races_driver_of_the_day_results: 762 rows, 0.7% null values
+  - continents: 7 rows, 3.6% null values
   - status: 194 rows, 0.0% null values
