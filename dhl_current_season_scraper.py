@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Simplified DHL F1 Pit Stop Scraper - Current Season Focus
-Extracts pit stop data from the current F1 season
+Enhanced DHL F1 Pit Stop Scraper with F1DB ID Mapping
+Extracts pit stop data with proper driver/constructor/race ID mapping
 """
 
 import json
@@ -16,6 +16,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException
 import logging
 from pathlib import Path
+import os
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(message)s')
@@ -30,7 +31,197 @@ class CurrentSeasonScraper:
         self.url = "https://inmotion.dhl/en/formula-1/fastest-pit-stop-award"
         self.data = []
         self.visible = visible
+        self.f1db_data = self._load_f1db_data()
         
+    def _load_f1db_data(self):
+        """Load F1DB reference data for mapping"""
+        f1db_data = {
+            'drivers': pd.DataFrame(),
+            'constructors': pd.DataFrame(),
+            'races': pd.DataFrame(),
+            'circuits': pd.DataFrame()
+        }
+        
+        # Try different data paths
+        data_paths = ["data/f1db", "../data/f1db", "../../data/f1db"]
+        
+        for path in data_paths:
+            if os.path.exists(path):
+                try:
+                    # Load each file separately to handle missing files gracefully
+                    for file_type in ['drivers', 'constructors', 'races', 'circuits']:
+                        file_path = os.path.join(path, f'{file_type}.csv')
+                        if os.path.exists(file_path):
+                            f1db_data[file_type] = pd.read_csv(file_path)
+                            logger.debug(f"Loaded {file_type} from {file_path}")
+                    
+                    if not f1db_data['drivers'].empty:
+                        logger.info(f"✓ Loaded F1DB data from {path}")
+                        break
+                        
+                except Exception as e:
+                    logger.warning(f"Error loading F1DB data from {path}: {e}")
+        
+        return f1db_data
+    
+    def _map_driver_to_id(self, driver_name, team_name=None):
+        """Map driver name to F1DB driver ID"""
+        if self.f1db_data['drivers'].empty or not driver_name:
+            return None
+        
+        drivers = self.f1db_data['drivers']
+        driver_name_lower = driver_name.lower().strip()
+        
+        # Special mappings for current drivers
+        special_mappings = {
+            'verstappen': 'max-verstappen',
+            'perez': 'sergio-perez',
+            'pérez': 'sergio-perez',
+            'hamilton': 'lewis-hamilton',
+            'russell': 'george-russell',
+            'leclerc': 'charles-leclerc',
+            'sainz': 'carlos-sainz-jr',
+            'norris': 'lando-norris',
+            'piastri': 'oscar-piastri',
+            'alonso': 'fernando-alonso',
+            'stroll': 'lance-stroll',
+            'ocon': 'esteban-ocon',
+            'gasly': 'pierre-gasly',
+            'albon': 'alex-albon',
+            'sargeant': 'logan-sargeant',
+            'colapinto': 'franco-colapinto',
+            'bottas': 'valtteri-bottas',
+            'zhou': 'guanyu-zhou',
+            'magnussen': 'kevin-magnussen',
+            'hulkenberg': 'nico-hulkenberg',
+            'hülkenberg': 'nico-hulkenberg',
+            'ricciardo': 'daniel-ricciardo',
+            'tsunoda': 'yuki-tsunoda',
+            'lawson': 'liam-lawson',
+            'bearman': 'oliver-bearman'
+        }
+        
+        # Try last name mapping first
+        parts = driver_name.split()
+        if parts:
+            last_name = parts[-1].lower()
+            if last_name in special_mappings:
+                return special_mappings[last_name]
+        
+        # Try exact match
+        exact_match = drivers[drivers['name'].str.lower() == driver_name_lower]
+        if not exact_match.empty:
+            return exact_match.iloc[0]['id']
+        
+        # Try last name match in database
+        if parts:
+            last_name_match = drivers[drivers['lastName'].str.lower() == parts[-1].lower()]
+            if not last_name_match.empty:
+                return last_name_match.iloc[0]['id']
+        
+        return None
+    
+    def _map_team_to_constructor_id(self, team_name):
+        """Map team name to F1DB constructor ID"""
+        if not team_name:
+            return None
+        
+        team_name_lower = team_name.lower().strip()
+        
+        # Current team mappings
+        team_mappings = {
+            'red bull': 'red-bull',
+            'red bull racing': 'red-bull',
+            'mercedes': 'mercedes',
+            'mercedes amg': 'mercedes',
+            'ferrari': 'ferrari',
+            'mclaren': 'mclaren',
+            'aston martin': 'aston-martin',
+            'alpine': 'alpine',
+            'williams': 'williams',
+            'alphatauri': 'alphatauri',
+            'rb': 'rb',  # AlphaTauri renamed to RB
+            'visa rb': 'rb',
+            'alfa romeo': 'alfa-romeo',
+            'sauber': 'sauber',
+            'haas': 'haas'
+        }
+        
+        for key, value in team_mappings.items():
+            if key in team_name_lower:
+                return value
+        
+        return None
+    
+    def _map_race_to_id(self, race_name, year=None):
+        """Map race name to F1DB race ID"""
+        if self.f1db_data['races'].empty or not race_name:
+            return None
+        
+        races = self.f1db_data['races']
+        race_name_lower = race_name.lower().strip()
+        year = year or datetime.now().year
+        
+        # Filter by year
+        year_races = races[races['year'] == year]
+        if year_races.empty:
+            return None
+        
+        # Try matching by common race name patterns
+        race_keywords = {
+            'bahrain': 'bahrain',
+            'saudi': 'saudi',
+            'jeddah': 'saudi',
+            'australia': 'australia',
+            'melbourne': 'australia',
+            'japan': 'japan',
+            'suzuka': 'japan',
+            'china': 'china',
+            'shanghai': 'china',
+            'miami': 'miami',
+            'imola': 'emilia',
+            'monaco': 'monaco',
+            'spain': 'spain',
+            'barcelona': 'spain',
+            'canada': 'canada',
+            'montreal': 'canada',
+            'austria': 'austria',
+            'spielberg': 'austria',
+            'great britain': 'britain',
+            'british': 'britain',
+            'silverstone': 'britain',
+            'hungary': 'hungary',
+            'hungaroring': 'hungary',
+            'belgium': 'belgium',
+            'spa': 'belgium',
+            'netherlands': 'netherlands',
+            'dutch': 'netherlands',
+            'zandvoort': 'netherlands',
+            'italy': 'italy',
+            'monza': 'italy',
+            'singapore': 'singapore',
+            'united states': 'states',
+            'austin': 'states',
+            'cota': 'states',
+            'mexico': 'mexico',
+            'brazil': 'brazil',
+            'sao paulo': 'brazil',
+            'interlagos': 'brazil',
+            'las vegas': 'vegas',
+            'qatar': 'qatar',
+            'abu dhabi': 'abu-dhabi',
+            'yas marina': 'abu-dhabi'
+        }
+        
+        # Find matching keyword
+        for keyword, search_term in race_keywords.items():
+            if keyword in race_name_lower:
+                for _, race in year_races.iterrows():
+                    if search_term in str(race.get('officialName', '')).lower():
+                        return race['id']
+        
+        return None
+    
     def setup_driver(self):
         """Setup Chrome driver"""
         options = webdriver.ChromeOptions()
@@ -43,98 +234,114 @@ class CurrentSeasonScraper:
         self.wait = WebDriverWait(self.driver, 20)
         
     def extract_pit_stops(self):
-        """Extract pit stop data from current page - prioritize table for complete data"""
-        # First, check if we need to click on the Table tab
+        """Extract pit stop data from current page - ALWAYS prioritize table for complete data"""
+        # First, ALWAYS try to click on the Table tab to ensure we get ALL drivers
         try:
+            # Wait a bit for page to fully load
+            time.sleep(3)
+            
             # Look for tab buttons - try multiple selectors
             tab_selectors = [
-                "a[href='#element_event_grid_row2_col0_table']",  # Specific tab href from your HTML
+                "a[href='#element_event_grid_row2_col0_table']",  # Specific tab href
                 "a[data-toggle='tab'][href*='table']",
                 "li a[href*='table']",
-                ".nav-tabs a:contains('Table')",
-                ".nav-tabs li:nth-child(2) a"  # Second tab is usually Table
+                "ul.nav-tabs a[href*='table']",
+                ".nav-tabs li:nth-child(2) a",  # Second tab is usually Table
+                "a.nav-link[href*='table']"
             ]
             
             table_tab = None
             for selector in tab_selectors:
                 try:
-                    if 'contains' in selector:
-                        # Use XPath for contains
-                        table_tab = self.driver.find_element(By.XPATH, "//a[contains(text(),'Table')]")
-                    else:
-                        table_tab = self.driver.find_element(By.CSS_SELECTOR, selector)
+                    table_tab = self.driver.find_element(By.CSS_SELECTOR, selector)
                     if table_tab:
+                        logger.debug(f"Found table tab with selector: {selector}")
                         break
                 except:
                     continue
+            
+            # If CSS selectors fail, try XPath
+            if not table_tab:
+                try:
+                    table_tab = self.driver.find_element(By.XPATH, "//a[contains(text(),'Table')]")
+                    logger.debug("Found table tab with XPath")
+                except:
+                    pass
                     
             if table_tab:
-                # Check if tab is already active
-                parent_li = table_tab.find_element(By.XPATH, "..")
-                if 'active' not in parent_li.get_attribute('class'):
-                    logger.info("Clicking on Table tab to see all drivers...")
-                    self.driver.execute_script("arguments[0].click();", table_tab)  # Use JS click to avoid interception
-                    time.sleep(2)  # Wait for tab content to load
-                else:
-                    logger.info("Table tab is already active")
+                # Always click the tab to ensure table is visible
+                logger.info("Clicking on Table tab to see ALL drivers...")
+                self.driver.execute_script("arguments[0].click();", table_tab)
+                time.sleep(3)  # Give more time for table to load
+            else:
+                logger.warning("Could not find Table tab - data might be incomplete!")
+                
         except Exception as e:
-            logger.warning(f"Could not find or click table tab: {e}")
-            
-        # Try to extract from table (has all drivers)
+            logger.warning(f"Error handling table tab: {e}")
+        
+        # ONLY extract from table (has ALL drivers - complete data)
         table_data = self.extract_from_table()
         if table_data:
+            logger.info(f"✅ Successfully extracted {len(table_data)} pit stops from TABLE (complete data)")
             return table_data
-            
-        # Fallback to chart data if table not found
-        try:
-            canvas = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "canvas.f1-award-chart"))
-            )
-            
-            json_data = canvas.get_attribute("data-chart-data")
-            if json_data:
-                stops = json.loads(json_data)
-                logger.info(f"✓ Found {len(stops)} pit stops in chart data (top 10 only)")
-                return stops
-                
-        except TimeoutException:
-            logger.warning("Could not find any pit stop data")
-            
+        
+        # NO FALLBACK TO CHART DATA - we only want complete table data
+        logger.error("❌ Table extraction failed - NO DATA EXTRACTED (chart data not allowed)")
         return []
         
     def extract_from_table(self):
         """Extract data from HTML table - contains ALL drivers"""
         try:
-            # Give the page time to update
-            time.sleep(3)
+            # Give the page time to update after tab click
+            time.sleep(2)
             
-            # Find the table - simplified approach
+            # Try multiple table selectors
+            table_selectors = [
+                "table.f1-award-table",
+                "table.table",
+                "#element_event_grid_row2_col0_table table",
+                "div[id*='table'] table",
+                "div.tab-pane.active table",
+                "table"  # Last resort - any table
+            ]
+            
             table = None
-            try:
-                table = self.driver.find_element(By.CSS_SELECTOR, "table.f1-award-table")
-                if not table:
-                    logger.warning("No table found")
-                    return []
-            except:
-                logger.warning("Could not find f1-award-table")
+            for selector in table_selectors:
+                try:
+                    tables = self.driver.find_elements(By.CSS_SELECTOR, selector)
+                    # If multiple tables, find the one with pit stop data
+                    for t in tables:
+                        try:
+                            # Check if table has tbody with rows
+                            tbody = t.find_element(By.TAG_NAME, "tbody")
+                            rows = tbody.find_elements(By.TAG_NAME, "tr")
+                            if len(rows) > 5:  # Should have more than just a few rows
+                                table = t
+                                logger.debug(f"Found table with {len(rows)} rows using selector: {selector}")
+                                break
+                        except:
+                            continue
+                    if table:
+                        break
+                except:
+                    continue
+            
+            if not table:
+                logger.warning("Could not find pit stop table")
                 return []
             
             # Get all rows from tbody
-            try:
-                tbody = table.find_element(By.TAG_NAME, "tbody")
-                rows = tbody.find_elements(By.TAG_NAME, "tr")
-            except:
-                logger.warning("Could not find tbody or rows")
-                return []
+            tbody = table.find_element(By.TAG_NAME, "tbody")
+            rows = tbody.find_elements(By.TAG_NAME, "tr")
                 
-            logger.info(f"Found {len(rows)} rows in table body")
+            logger.info(f"Processing {len(rows)} rows from pit stop table...")
             
             stops = []
             for idx, row in enumerate(rows):
                 try:
                     cells = row.find_elements(By.TAG_NAME, "td")
                     
-                    # Skip if not enough cells or all cells are empty
+                    # Skip if not enough cells
                     if len(cells) < 6:
                         continue
                         
@@ -145,20 +352,37 @@ class CurrentSeasonScraper:
                         
                     # Try to parse the data
                     try:
-                        pos = int(cell_texts[0]) if cell_texts[0] else None
-                        team = cell_texts[1]
-                        driver = cell_texts[2]
-                        time_str = cell_texts[3]
-                        lap = int(cell_texts[4]) if cell_texts[4] else None
-                        points_str = cell_texts[5].replace('*', '').replace(' ', '')
-                        points = int(points_str) if points_str else 0
+                        # Position (first column)
+                        pos_text = cell_texts[0].strip()
+                        if not pos_text or not pos_text.isdigit():
+                            continue
+                        pos = int(pos_text)
                         
-                        if pos and driver and time_str:  # Minimum required fields
+                        # Team and Driver
+                        team = cell_texts[1].strip()
+                        driver = cell_texts[2].strip()
+                        
+                        # Time (must be a valid float)
+                        time_str = cell_texts[3].strip()
+                        if not time_str:
+                            continue
+                        time_val = float(time_str)
+                        
+                        # Lap
+                        lap_text = cell_texts[4].strip()
+                        lap = int(lap_text) if lap_text and lap_text.isdigit() else None
+                        
+                        # Points (handle asterisks and spaces)
+                        points_str = cell_texts[5].replace('*', '').replace(' ', '').strip()
+                        points = int(points_str) if points_str and points_str.isdigit() else 0
+                        
+                        # Validate essential fields
+                        if pos and driver and time_val:
                             stop = {
                                 "position": pos,
                                 "team": team,
                                 "driver": driver,
-                                "time": float(time_str),
+                                "time": time_val,
                                 "lap": lap,
                                 "points": points
                             }
@@ -172,8 +396,12 @@ class CurrentSeasonScraper:
                 except Exception as e:
                     logger.debug(f"Error processing row {idx}: {e}")
                     continue
-                    
-            logger.info(f"✓ Successfully extracted {len(stops)} pit stops from table")
+            
+            if stops:
+                logger.info(f"✅ Successfully extracted {len(stops)} pit stops from table")
+            else:
+                logger.warning("No valid pit stop data found in table")
+                
             return stops
             
         except Exception as e:
@@ -432,31 +660,71 @@ class CurrentSeasonScraper:
                         # Check if data is from table (simpler structure) or JSON (complex structure)
                         if 'driver' in stop and isinstance(stop['driver'], str):
                             # Table data - already has simple structure
+                            driver_name = stop.get('driver')
+                            team_name = stop.get('team')
+                            year = datetime.now().year
+                            
+                            # Map IDs
+                            driver_id = self._map_driver_to_id(driver_name, team_name)
+                            constructor_id = self._map_team_to_constructor_id(team_name)
+                            race_id = self._map_race_to_id(name, year)
+                            
+                            # Get circuit ID from race
+                            circuit_id = None
+                            if race_id and not self.f1db_data['races'].empty:
+                                race_info = self.f1db_data['races'][self.f1db_data['races']['id'] == race_id]
+                                if not race_info.empty:
+                                    circuit_id = race_info.iloc[0].get('circuitId')
+                            
                             formatted_stop = {
                                 'position': stop.get('position'),
-                                'driver': stop.get('driver'),
-                                'team': stop.get('team'),
+                                'driver': driver_name,
+                                'driver_id': driver_id,
+                                'team': team_name,
+                                'constructor_id': constructor_id,
                                 'time': stop.get('time'),
                                 'lap': stop.get('lap'),
                                 'points': stop.get('points'),
-                                'race': name,  # Use the actual race name from the modal
-                                'year': datetime.now().year
+                                'race': name,
+                                'race_id': race_id,
+                                'circuit_id': circuit_id,
+                                'year': year
                             }
                         else:
                             # JSON data - needs parsing
+                            driver_name = f"{stop.get('firstName', '')} {stop.get('lastName', '')}".strip()
+                            team_name = stop.get('team')
+                            year = datetime.now().year
+                            
+                            # Map IDs
+                            driver_id = self._map_driver_to_id(driver_name, team_name)
+                            constructor_id = self._map_team_to_constructor_id(team_name)
+                            race_id = self._map_race_to_id(name, year)
+                            
+                            # Get circuit ID from race
+                            circuit_id = None
+                            if race_id and not self.f1db_data['races'].empty:
+                                race_info = self.f1db_data['races'][self.f1db_data['races']['id'] == race_id]
+                                if not race_info.empty:
+                                    circuit_id = race_info.iloc[0].get('circuitId')
+                            
                             formatted_stop = {
                                 'position': stop.get('position', stop.get('id')),
                                 'driver_number': stop.get('driverNr'),
                                 'driver_tla': stop.get('tla'),
-                                'driver': f"{stop.get('firstName', '')} {stop.get('lastName', '')}".strip(),
-                                'team': stop.get('team'),
+                                'driver': driver_name,
+                                'driver_id': driver_id,
+                                'team': team_name,
+                                'constructor_id': constructor_id,
                                 'time': stop.get('duration'),
                                 'lap': stop.get('lap'),
                                 'points': stop.get('points'),
                                 'start_time': stop.get('startTime', {}).get('date') if isinstance(stop.get('startTime'), dict) else None,
                                 'irregular': stop.get('irregular', False),
                                 'race': name,
-                                'year': datetime.now().year
+                                'race_id': race_id,
+                                'circuit_id': circuit_id,
+                                'year': year
                             }
                         self.data.append(formatted_stop)
                         
@@ -578,6 +846,21 @@ class CurrentSeasonScraper:
         print(f"Races covered: {df_clean['race'].nunique()}")
         print(f"Fastest stop: {df_clean['time'].min():.2f}s")
         print(f"Average time: {df_clean['time'].mean():.2f}s")
+        
+        # ID mapping statistics
+        if 'driver_id' in df.columns:
+            print("\n🔗 ID MAPPING STATISTICS")
+            print("-" * 40)
+            print(f"Mapped drivers: {df['driver_id'].notna().sum()}/{len(df)} ({df['driver_id'].notna().sum()/len(df)*100:.1f}%)")
+            print(f"Mapped constructors: {df['constructor_id'].notna().sum()}/{len(df)} ({df['constructor_id'].notna().sum()/len(df)*100:.1f}%)")
+            print(f"Mapped races: {df['race_id'].notna().sum()}/{len(df)} ({df['race_id'].notna().sum()/len(df)*100:.1f}%)")
+            
+            # Show unmapped drivers if any
+            unmapped_drivers = df[df['driver_id'].isna()]['driver'].unique()
+            if len(unmapped_drivers) > 0:
+                print(f"\nUnmapped drivers: {', '.join(unmapped_drivers[:5])}")
+                if len(unmapped_drivers) > 5:
+                    print(f"... and {len(unmapped_drivers) - 5} more")
         
         print("\n🏆 FASTEST STOPS BY RACE")
         print("-" * 40)
