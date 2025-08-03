@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Formula One Machine Learning Workshop - a comprehensive ML platform for F1 racing analytics serving constructor teams, betting markets, and fans/analysts. The project has evolved from a basic workshop into production-ready solutions with real-world applications.
+This is a Formula One Predictive model - a comprehensive ML platform for F1 racing analytics serving constructor teams, betting markets, and fans/analysts. The project has evolved from a basic workshop into production-ready solutions with real-world applications.
 
 ## Development Commands
 
@@ -32,7 +32,7 @@ This is a Formula One Machine Learning Workshop - a comprehensive ML platform fo
 
 **Windows:**
 ```batch
-.\create_venv_windows.bat
+python -m venv .venv
 .venv\Scripts\activate.bat
 pip install -r requirements.txt
 ```
@@ -44,16 +44,17 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Running Tests and Pipeline
+### Running Pipeline and Analysis
 
 ```bash
-# Test setup (from notebooks/advanced)
-python test_windows_setup.py
+# F1 Performance Analysis
+python notebooks/advanced/f1_performance_analysis.py
 
-# Run F1 pipeline
-python run_f1_pipeline.py              # Upcoming race
-python run_f1_pipeline.py --race-id 1234  # Specific race
-python run_f1_pipeline.py --backtest   # Backtesting mode
+# Enhanced Pipeline (from notebooks/advanced)
+python run_enhanced_pipeline.py
+
+# PrizePicks Data Analysis
+python parse_prizepicks_wagers.py data/prizepicks/lineup.json
 ```
 
 ## Architecture and Key Components
@@ -65,81 +66,86 @@ python run_f1_pipeline.py --backtest   # Backtesting mode
 4. **Predictions**: Position predictions, DNF probability, points scoring, betting odds
 5. **Optimization**: Kelly criterion for bet sizing, prize picks optimization
 
-### Key Notebooks (Active in Pipeline)
-- `notebooks/advanced/F1_Core_Models.ipynb` - Core ML models with proper temporal validation
-- `notebooks/advanced/F1_Feature_Store.ipynb` - Centralized feature engineering (100+ features)
-- `notebooks/advanced/F1_Integrated_Driver_Evaluation.ipynb` - Driver/constructor evaluation system
-- `notebooks/advanced/F1_Prize_Picks_Optimizer.ipynb` - Betting optimization with Kelly criterion
-- `notebooks/advanced/F1_Pipeline_Integration.ipynb` - Full pipeline orchestration
-- `notebooks/advanced/F1_Backtesting_Framework.ipynb` - Historical race prediction validation (integrated)
-- `notebooks/advanced/F1_Explainability_Engine.ipynb` - SHAP-based model interpretability
-
-### Additional Resources
+### Active Notebooks and Scripts
+- `notebooks/advanced/F1DB_Data_Tutorial.ipynb` - F1 database exploration and analysis
 - `notebooks/advanced/F1_Betting_Market_Models.ipynb` - Advanced market calibration techniques
-- `notebooks/advanced/f1_market_calibration.py` - Extracted market calibration functions
-- `notebooks/advanced/F1_Constructor_Driver_Evaluation.ipynb` - Original driver evaluation (superseded)
+- `notebooks/advanced/F1_Constructor_Driver_Evaluation.ipynb` - Constructor and driver evaluation
+- `notebooks/advanced/F1_MLflow_Tracking.ipynb` - Machine learning experiment tracking
+- `notebooks/advanced/F1_Prize_Picks_Optimizer.ipynb` - Betting optimization with Kelly criterion
+
+### Core Python Scripts
+- `notebooks/advanced/f1_performance_analysis.py` - Comprehensive F1 driver performance analysis
+- `notebooks/advanced/run_enhanced_pipeline.py` - Enhanced F1 prediction pipeline
+- `notebooks/advanced/f1_market_calibration.py` - Market calibration functions
+- `parse_prizepicks_wagers.py` - PrizePicks betting data analysis
+- `dhl_pitstop_scraper.py` - DHL pit stop data collection
+
+### Documentation (Guides)
+All documentation has been moved to `notebooks/advanced/guides/`:
+- Architecture guides and summaries
+- Usage instructions and tutorials
+- Pipeline documentation
+- Troubleshooting guides
 
 ### Important Classes and Functions
 
-**Data Pipeline (`notebooks/advanced/run_f1_pipeline.py`):**
-- `F1PredictionsGenerator` - Main class for generating predictions
-- Handles data loading, feature engineering, model training, and prediction generation
-- Includes caching mechanism to avoid reprocessing
+**F1 Performance Analysis (`notebooks/advanced/f1_performance_analysis.py`):**
+- `F1PerformanceAnalyzer` - Main class for comprehensive F1 analysis
+- Driver performance metrics across seasons and circuits
+- Overtakes analysis with circuit-specific calculations
+- Constructor and team performance evaluation
+- Handles data from multiple F1DB sources with temporal consistency
 
-**Model Architecture:**
-- Uses ensemble of Random Forest, XGBoost, and LightGBM
-- Temporal validation to prevent data leakage
-- Feature importance analysis with SHAP
-- Calibrated probabilities for betting markets
+**Enhanced Pipeline (`notebooks/advanced/run_enhanced_pipeline.py`):**
+- Advanced F1 prediction pipeline with weather integration
+- Multi-model ensemble predictions (Random Forest, XGBoost, LightGBM)
+- Temporal validation and backtesting capabilities
+- Automated report generation and model performance tracking
 
-**Backtesting Framework (`notebooks/advanced/F1_Backtesting_Framework.ipynb`):**
-- `F1Backtester` - Class for running historical race predictions
-- Simulates pre-race conditions by splitting data temporally
-- Compares predictions with actual results
-- Calculates accuracy metrics (position error, winner/podium/points accuracy)
-- Batch testing capabilities for multiple races
-- Driver-specific performance analysis
-- Integrated into main pipeline via `run_backtest()` method
+**PrizePicks Analysis (`parse_prizepicks_wagers.py`):**
+- Parses PrizePicks API wager data from JSON format
+- Calculates win rates, ROI, and profit/loss by sport and pick type
+- Generates detailed performance summaries and CSV exports
+- Handles player-level result tracking and analysis
 
 **Market Calibration (`notebooks/advanced/f1_market_calibration.py`):**
 - `OrdinalRegressionClassifier` - Handles ordered nature of F1 positions
 - `calibrate_probabilities_isotonic()` - Isotonic regression for probability calibration
 - `generate_betting_odds()` - Creates calibrated betting odds from predictions
-- `generate_head_to_head_odds()` - Driver matchup probabilities
 - `kelly_criterion_bet_size()` - Optimal bet sizing with fractional Kelly
 
-### Model Performance Metrics
-- Winner Prediction: 65-70% accuracy
-- Podium Prediction: 72-75% accuracy
-- Points Finish: 78-82% accuracy
-- Backtesting ROI: 15-25% (moderate Kelly strategy)
+### Performance Analysis Features
+- **Driver Performance**: Season and circuit-specific metrics for all current F1 drivers
+- **Overtakes Analysis**: Circuit-specific overtaking statistics with previous race data
+- **Constructor Evaluation**: Team performance across seasons and constructors
+- **DHL Pit Stop Integration**: Real-time pit stop data with box time analysis
+- **Temporal Consistency**: All analyses maintain proper data chronology
 
 ### Common Development Tasks
 
-**Adding New Features:**
-1. Update feature engineering in relevant notebooks
-2. Ensure temporal consistency (no future data leakage)
-3. Add to pipeline configuration if needed
-
-**Model Improvements:**
-1. Always use temporal validation (train on past, test on future)
-2. Check for overfitting with backtesting
-3. Update pipeline config with new model parameters
-
-**Running Backtests:**
-```python
-# In notebooks or pipeline
-python run_f1_pipeline.py --backtest --start-date 2023-01-01 --end-date 2023-12-31
-
-# Using the Backtesting Framework notebook
-# Open notebooks/advanced/F1_Backtesting_Framework.ipynb
-# Features: temporal data splitting, single/batch race testing, accuracy metrics, visualizations
+**Running F1 Performance Analysis:**
+```bash
+python notebooks/advanced/f1_performance_analysis.py
 ```
+This generates comprehensive driver analysis with overtakes, performance metrics, and DHL pit stop data.
+
+**PrizePicks Data Analysis:**
+1. Export lineup data from PrizePicks (see PRIZEPICKS_MANUAL_EXPORT_GUIDE.md)
+2. Save as `data/prizepicks/lineup.json`
+3. Run: `python parse_prizepicks_wagers.py data/prizepicks/lineup.json`
+
+**Enhanced Pipeline:**
+```bash
+cd notebooks/advanced
+python run_enhanced_pipeline.py
+```
+Runs the full ML pipeline with weather integration and automated reporting.
 
 ### Environment Variables
 Create `.env` file with:
 ```
 ANTHROPIC_API_KEY=your-api-key-here
+VISUAL_CROSSING_API_KEY=your_visual_crossing_api_key_here
 ```
 
 ### Service Ports
@@ -149,22 +155,30 @@ ANTHROPIC_API_KEY=your-api-key-here
 - FastAPI (dev): 8000
 
 ### Data Directory Structure
-The pipeline automatically searches for data in:
-- `../../data/f1db` (from notebooks/advanced)
-- `../data/f1db` (from notebooks)
-- `data/f1db` (from workspace root)
-- `./data/f1db` (current directory)
+```
+/workspace/
+├── data/
+│   ├── f1db/                    # F1 database CSV files
+│   ├── prizepicks/              # PrizePicks betting data
+│   ├── dhl/                     # DHL pit stop data
+│   ├── weather_cache/           # Weather API cache
+│   └── f1_fantasy/              # F1 fantasy data
+├── notebooks/advanced/
+│   ├── guides/                  # All documentation
+│   ├── data/                    # Notebook-specific data
+│   └── pipeline_outputs/        # Pipeline results
+```
 
 ### Critical Notes
-- Always maintain temporal integrity in ML models (no future data in training)
-- The project uses real F1 data only - no synthetic/fallback data
-- Models are optimized for both accuracy and calibration (important for betting)
-- Pipeline includes automatic caching to speed up repeated runs
-- Backtesting is integrated and recommended before deploying betting strategies
-- Market calibration functions available for enhanced probability estimates
+- **Data Integrity**: Always maintain temporal consistency - no future data in training
+- **Real Data Only**: Project uses actual F1 data, no synthetic fallbacks
+- **Driver Consistency**: F1 performance analysis now shows all active drivers
+- **Documentation**: All guides moved to `notebooks/advanced/guides/`
+- **Clean Architecture**: Test files and utility scripts removed for clarity
 
-### Recent Updates
-- Integrated F1_Backtesting_Framework into main pipeline with `run_backtest()` method
-- Created f1_market_calibration.py module with key betting market functions
-- Removed redundant notebooks: F1_Improved_Models.ipynb and F1_Improved_RF_GB_Models.ipynb
-- All functionality consolidated into F1_Core_Models.ipynb for cleaner architecture
+### Recent Updates (2025-08-03)
+- **Workspace Cleanup**: Removed all test files, utility scripts, and redundant Docker files
+- **Documentation Organization**: Moved all markdown files to `notebooks/advanced/guides/`
+- **Driver Analysis Fix**: Fixed `get_active_drivers()` to use driver_standings data properly
+- **PrizePicks Integration**: Added comprehensive betting data analysis with API parser
+- **Environment Simplification**: Removed redundant venv creation scripts

@@ -32,7 +32,9 @@
       "Bash(cat:*)",
       "Bash(sqlite3:*)",
       "Bash(git checkout:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(tree:*)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": []
   }
