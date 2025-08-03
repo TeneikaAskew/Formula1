@@ -87,13 +87,26 @@ class F1PerformanceAnalyzer:
             return pd.DataFrame()
         
     def get_next_race(self):
-        """Get the next upcoming race"""
+        """Get the next upcoming race (first race without results)"""
         races = self.data.get('races', pd.DataFrame()).copy()
+        results = self.data.get('results', self.data.get('races_race_results', pd.DataFrame()))
+        
         if races.empty or 'date' not in races.columns:
             return None
             
         races['date'] = pd.to_datetime(races['date'])
-        # Get races after today's actual date
+        
+        # Get races that have results
+        if not results.empty:
+            races_with_results = results['raceId'].unique()
+            # Find first race without results
+            races_without_results = races[~races['id'].isin(races_with_results)]
+            
+            if not races_without_results.empty:
+                # Return the earliest race without results
+                return races_without_results.sort_values('date').iloc[0]
+        
+        # Fallback to date-based logic if no results data
         upcoming = races[races['date'] > datetime.now()].sort_values('date')
         
         if upcoming.empty:
@@ -310,13 +323,13 @@ class F1PerformanceAnalyzer:
             'points': ['sum', 'mean']
         }).round(2)
         
-        driver_overtakes.columns = ['total_positions_gained', 'avg_positions_gained', 
-                                   'median_positions_gained', 'races', 'total_points', 'avg_points']
+        driver_overtakes.columns = ['total_pos_gained', 'avg_pos_gained', 
+                                   'median_pos_gained', 'races', 'total_points', 'avg_points']
         
         # Calculate overtakes (only positive position gains)
         recent_data['overtakes'] = recent_data['positions_gained'].apply(lambda x: max(0, x))
         overtakes_by_driver = recent_data.groupby('driverId')['overtakes'].agg(['sum', 'mean', 'median']).round(2)
-        overtakes_by_driver.columns = ['total_overtakes', 'avg_overtakes', 'median_overtakes']
+        overtakes_by_driver.columns = ['total_OT', 'avg_OT', 'median_OT']
         
         # Combine data
         final_data = driver_overtakes.join(overtakes_by_driver)
@@ -341,11 +354,11 @@ class F1PerformanceAnalyzer:
                     columns=final_data.columns
                 )
                 # Set default values
-                for col in ['total_positions_gained', 'total_overtakes', 'total_points', 'races']:
+                for col in ['total_pos_gained', 'total_OT', 'total_points', 'races']:
                     if col in missing_data.columns:
                         missing_data[col] = 0
-                for col in ['avg_positions_gained', 'avg_overtakes', 'median_positions_gained', 
-                           'median_overtakes', 'avg_points']:
+                for col in ['avg_pos_gained', 'avg_OT', 'median_pos_gained', 
+                           'median_OT', 'avg_points']:
                     if col in missing_data.columns:
                         missing_data[col] = 0.0
                 
@@ -360,105 +373,108 @@ class F1PerformanceAnalyzer:
         
         # Add circuit-specific averages for previous, current, and next races
         races = self.data.get('races', pd.DataFrame())
+        
+        # Initialize with defaults
+        final_data['p_circuit_avg'] = 0
+        final_data['c_circuit_avg'] = 0
+        final_data['n_circuit_avg'] = 0
+        
         if 'year' in recent_data.columns and 'date' in races.columns and 'circuitId' in recent_data.columns:
             # Ensure races have proper datetime
             races['date'] = pd.to_datetime(races['date'])
             
-            # Get the most recent race from all races with results
-            results = self.data.get('results', pd.DataFrame())
+            # Get the most recent races with results
+            results = self.data.get('results', self.data.get('races_race_results', pd.DataFrame()))
             if not results.empty:
                 races_with_results = results['raceId'].unique()
-                recent_races = races[races['id'].isin(races_with_results)]
+                
+                # Get the most recent race with results (this is the "current" race)
+                recent_races = races[races['id'].isin(races_with_results)].sort_values('date', ascending=False)
                 
                 if not recent_races.empty:
-                    # Find the most recent race with results (current race - Hungarian GP)
-                    recent_races_sorted = recent_races.sort_values('date', ascending=False)
-                    if len(recent_races_sorted) > 0:
-                        current_race_id = recent_races_sorted.iloc[0]['id']
-                        current_circuit_id = recent_races_sorted.iloc[0]['circuitId']
+                    # Current race (most recent with results - should be 1138 Belgian GP)
+                    current_race = recent_races.iloc[0]
+                    current_circuit_id = current_race['circuitId']
+                    
+                    # Calculate circuit averages for current circuit
+                    current_circuit_data = recent_data[recent_data['circuitId'] == current_circuit_id]
+                    if not current_circuit_data.empty:
+                        current_circuit_overtakes = current_circuit_data.groupby('driverId')['overtakes'].mean().round(2)
+                        final_data['c_circuit_avg'] = final_data.index.map(
+                            lambda x: current_circuit_overtakes.get(x, 0)
+                        )
+                    
+                    # Previous race (race before current - should be 1137 British GP)
+                    if len(recent_races) > 1:
+                        prev_race = recent_races.iloc[1]
+                        prev_circuit_id = prev_race['circuitId']
                         
-                        # Get average overtakes at current circuit (Hungarian GP)
-                        current_circuit_data = recent_data[recent_data['circuitId'] == current_circuit_id]
-                        if not current_circuit_data.empty:
-                            current_circuit_overtakes = current_circuit_data.groupby('driverId')['overtakes'].mean().round(2)
-                            final_data['current_circuit_avg'] = final_data.index.map(
-                                lambda x: current_circuit_overtakes.get(x, final_data.loc[x, 'avg_overtakes'] if x in final_data.index else 0)
+                        # Calculate circuit averages for previous circuit
+                        prev_circuit_data = recent_data[recent_data['circuitId'] == prev_circuit_id]
+                        if not prev_circuit_data.empty:
+                            prev_circuit_overtakes = prev_circuit_data.groupby('driverId')['overtakes'].mean().round(2)
+                            final_data['p_circuit_avg'] = final_data.index.map(
+                                lambda x: prev_circuit_overtakes.get(x, 0)
                             )
-                        else:
-                            final_data['current_circuit_avg'] = final_data['avg_overtakes']
-                        
-                        # Get previous race (second most recent - Belgian GP)
-                        if len(recent_races_sorted) > 1:
-                            prev_race_id = recent_races_sorted.iloc[1]['id']
-                            prev_circuit_id = recent_races_sorted.iloc[1]['circuitId']
-                            
-                            # Get average overtakes at previous circuit (Belgian GP)
-                            prev_circuit_data = recent_data[recent_data['circuitId'] == prev_circuit_id]
-                            if not prev_circuit_data.empty:
-                                prev_circuit_overtakes = prev_circuit_data.groupby('driverId')['overtakes'].mean().round(2)
-                                final_data['prev_circuit_avg'] = final_data.index.map(
-                                    lambda x: prev_circuit_overtakes.get(x, final_data.loc[x, 'avg_overtakes'] if x in final_data.index else 0)
-                                )
-                            else:
-                                final_data['prev_circuit_avg'] = final_data['avg_overtakes']
-                        else:
-                            final_data['prev_circuit_avg'] = 0
-                    else:
-                        final_data['prev_circuit_avg'] = 0
-                        final_data['current_circuit_avg'] = final_data['avg_overtakes']
-                else:
-                    final_data['prev_circuit_avg'] = 0
-                    final_data['current_circuit_avg'] = final_data['avg_overtakes']
-            else:
-                final_data['prev_circuit_avg'] = 0
-                final_data['current_circuit_avg'] = final_data['avg_overtakes']
-        else:
-            final_data['prev_circuit_avg'] = 0
-            final_data['current_circuit_avg'] = final_data.get('avg_overtakes', 0)
-        
-        # Ensure columns exist for all drivers
-        if 'prev_circuit_avg' not in final_data.columns:
-            final_data['prev_circuit_avg'] = 0
-        if 'current_circuit_avg' not in final_data.columns:
-            final_data['current_circuit_avg'] = final_data.get('avg_overtakes', 0)
         
         # Add circuit-specific prediction for next race
         next_race = self.get_next_race()
-        if next_race is not None and 'circuitId' in next_race:
-            # Check if circuitId exists in recent_data
-            if 'circuitId' in recent_data.columns:
-                # Filter recent_data to only include races at the next circuit
-                next_circuit_id = next_race['circuitId']
-                circuit_data = recent_data[recent_data['circuitId'] == next_circuit_id]
+        if next_race is not None and 'circuitId' in next_race and 'circuitId' in recent_data.columns:
+            # Next race circuit (should be 1139 Hungarian GP)
+            next_circuit_id = next_race['circuitId']
+            circuit_data = recent_data[recent_data['circuitId'] == next_circuit_id]
+            
+            if not circuit_data.empty:
+                # Calculate average overtakes at this specific circuit
+                circuit_overtakes = circuit_data.groupby('driverId')['overtakes'].mean().round(2)
+                final_data['n_circuit_avg'] = final_data.index.map(
+                    lambda x: circuit_overtakes.get(x, 0)
+                )
+        
+        # Add last race overtakes
+        final_data['last_race'] = 0
+        if not results.empty and not recent_data.empty:
+            # Get the most recent race with results
+            races_with_results = results['raceId'].unique()
+            recent_races = races[races['id'].isin(races_with_results)].sort_values('date', ascending=False)
+            
+            if not recent_races.empty:
+                last_race_id = recent_races.iloc[0]['id']
                 
-                if not circuit_data.empty:
-                    # Calculate average overtakes at this specific circuit
-                    circuit_overtakes = circuit_data.groupby('driverId')['overtakes'].mean().round(2)
-                    final_data['next_circuit_avg'] = final_data.index.map(
-                        lambda x: circuit_overtakes.get(x, final_data.loc[x, 'avg_overtakes'] if x in final_data.index else 0)
+                # Get overtakes from last race using recent_data which has the overtakes column
+                last_race_data = recent_data[recent_data['raceId'] == last_race_id]
+                if not last_race_data.empty and 'overtakes' in last_race_data.columns:
+                    last_race_overtakes = last_race_data.set_index('driverId')['overtakes']
+                    final_data['last_race'] = final_data.index.map(
+                        lambda x: int(last_race_overtakes.get(x, 0))
                     )
-                else:
-                    # No historical data for this circuit, use overall average
-                    final_data['next_circuit_avg'] = final_data['avg_overtakes']
-            else:
-                # circuitId not available, use overall average
-                final_data['next_circuit_avg'] = final_data['avg_overtakes']
-        else:
-            # No next race found, use overall average
-            final_data['next_circuit_avg'] = final_data['avg_overtakes']
         
         # Reorder columns for better presentation
-        column_order = ['driver_name', 'total_overtakes', 'avg_overtakes', 'avg_points', 
-                       'median_overtakes', 'prev_circuit_avg', 'current_circuit_avg', 
-                       'next_circuit_avg', 'races']
+        column_order = ['driver_name', 'avg_OT', 'avg_points', 
+                       'median_OT', 'last_race', 'p_circuit_avg', 'c_circuit_avg', 
+                       'n_circuit_avg', 'races']
         
-        # Add any remaining columns not in the order list
-        remaining_cols = [col for col in final_data.columns if col not in column_order]
+        # Add any remaining columns not in the order list (except excluded columns)
+        exclude_cols = ['total_OT', 'total_pos_gained', 'total_points', 'avg_pos_gained', 'median_pos_gained']
+        remaining_cols = [col for col in final_data.columns if col not in column_order and col not in exclude_cols]
         column_order.extend(remaining_cols)
         
         # Reorder columns, keeping only those that exist
         final_columns = [col for col in column_order if col in final_data.columns]
         final_data = final_data[final_columns]
+        
+        # Drop driver_id index since we already have driver_name
+        final_data = final_data.reset_index(drop=True)
+        
+        # Filter out drivers with all zeros (no racing data)
+        # Check key columns for non-zero values
+        data_columns = ['avg_OT', 'avg_points', 'races', 'total_pos_gained', 'avg_pos_gained']
+        data_columns = [col for col in data_columns if col in final_data.columns]
+        
+        if data_columns:
+            # Keep rows where at least one data column is non-zero
+            has_data = final_data[data_columns].sum(axis=1) > 0
+            final_data = final_data[has_data]
         
         return final_data
     
@@ -529,7 +545,7 @@ class F1PerformanceAnalyzer:
         
         # Flatten column names
         track_year_analysis.columns = [
-            'total_overtakes', 'avg_overtakes', 'median_overtakes',
+            'total_OT', 'avg_OT', 'median_OT',
             'avg_start_pos', 'avg_finish_pos', 'avg_pos_change'
         ]
         
@@ -546,7 +562,7 @@ class F1PerformanceAnalyzer:
         }).round(2)
         
         overall_stats.columns = [
-            'career_overtakes', 'career_avg_overtakes', 'career_median_overtakes',
+            'career_OT', 'career_avg_OT', 'career_median_OT',
             'career_avg_start', 'career_avg_finish', 'career_avg_pos_change',
             'races_at_track'
         ]
@@ -726,6 +742,9 @@ class F1PerformanceAnalyzer:
         final_columns = [col for col in column_order if col in points_analysis.columns]
         points_analysis = points_analysis[final_columns]
         
+        # Drop driver_id index since we already have driver_name
+        points_analysis = points_analysis.reset_index(drop=True)
+        
         return points_analysis
     
     def analyze_points_by_track_year(self):
@@ -830,7 +849,7 @@ class F1PerformanceAnalyzer:
         races = self.data.get('races', pd.DataFrame())
         
         if pit_stops.empty:
-            return {}
+            return pd.DataFrame()
         
         # Convert time to seconds
         if 'timeMillis' in pit_stops.columns:
@@ -849,7 +868,7 @@ class F1PerformanceAnalyzer:
                     return float(t)
             pit_stops['time_seconds'] = pit_stops['time'].apply(parse_time)
         else:
-            return {}
+            return pd.DataFrame()
         
         # Add year information
         if not races.empty:
@@ -884,6 +903,9 @@ class F1PerformanceAnalyzer:
                 pit_analysis['next_circuit_avg'] = pit_analysis.index.map(
                     lambda x: circuit_times.get(x, pit_analysis.loc[x, 'avg_stop_time'] if x in pit_analysis.index else 0)
                 )
+        
+        # Drop driver_id index since we already have driver_name
+        pit_analysis = pit_analysis.reset_index(drop=True)
         
         return pit_analysis
     
@@ -1217,6 +1239,9 @@ class F1PerformanceAnalyzer:
                     lambda x: circuit_positions.get(x, grid_analysis.loc[x, 'avg_start_position'] if x in grid_analysis.index else 0)
                 )
         
+        # Drop driver_id index since we already have driver_name
+        grid_analysis = grid_analysis.reset_index(drop=True)
+        
         return grid_analysis
     
     def analyze_starting_positions_by_track_year(self):
@@ -1344,7 +1369,7 @@ class F1PerformanceAnalyzer:
         races = self.data.get('races', pd.DataFrame())
         
         if sprint_results.empty:
-            return {}
+            return pd.DataFrame()
         
         # Add year information
         if not races.empty:
@@ -1361,7 +1386,7 @@ class F1PerformanceAnalyzer:
         # Check if we have data
         if recent_sprints.empty:
             print(f"No sprint data found for years {self.current_year - 3} to {self.current_year}")
-            return {}
+            return pd.DataFrame()
         
         # Analyze by driver with correct column names
         agg_dict = {'points': ['sum', 'mean', 'median', 'count']}
@@ -1397,6 +1422,9 @@ class F1PerformanceAnalyzer:
                     lambda x: circuit_sprint_points.get(x, sprint_analysis.loc[x, 'avg_sprint_points'] if x in sprint_analysis.index else 0)
                 )
         
+        # Drop driver_id index since we already have driver_name
+        sprint_analysis = sprint_analysis.reset_index(drop=True)
+        
         return sprint_analysis
     
     def analyze_sprint_points_by_track_year(self):
@@ -1406,7 +1434,7 @@ class F1PerformanceAnalyzer:
         circuits = self.data.get('circuits', pd.DataFrame())
         
         if sprint_results.empty or races.empty:
-            return {}
+            return pd.DataFrame()
         
         # Add year and circuitId information
         if 'year' not in sprint_results.columns or 'circuitId' not in sprint_results.columns:
@@ -2078,6 +2106,25 @@ class F1PerformanceAnalyzer:
             print(f"\nNext Race: {next_race.get('officialName', 'Unknown')} at {circuit_name}")
             print(f"Date: {next_race['date'].strftime('%Y-%m-%d') if pd.notna(next_race.get('date')) else 'Unknown'}")
         
+        # Add current and previous race info
+        races = self.data.get('races', pd.DataFrame())
+        results = self.data.get('results', self.data.get('races_race_results', pd.DataFrame()))
+        if not races.empty and not results.empty:
+            races_with_results = results['raceId'].unique()
+            recent_races_sorted = races[races['id'].isin(races_with_results)].sort_values('date', ascending=False)
+            
+            if len(recent_races_sorted) >= 1:
+                # Current race (most recent with results)
+                current_race = recent_races_sorted.iloc[0]
+                print(f"\nCurrent Race (most recent with results): {current_race.get('officialName', 'Unknown')}")
+                print(f"Date: {current_race['date'].strftime('%Y-%m-%d') if pd.notna(current_race.get('date')) else 'Unknown'}")
+                
+            if len(recent_races_sorted) >= 2:
+                # Previous race
+                prev_race = recent_races_sorted.iloc[1]
+                print(f"\nPrevious Race: {prev_race.get('officialName', 'Unknown')}")
+                print(f"Date: {prev_race['date'].strftime('%Y-%m-%d') if pd.notna(prev_race.get('date')) else 'Unknown'}")
+        
         # 1. Overtakes Analysis
         print("\n" + "="*80)
         print("1. OVERTAKES BY DRIVER (Position Changes)")
@@ -2085,12 +2132,12 @@ class F1PerformanceAnalyzer:
         overtakes = self.analyze_overtakes()
         if not overtakes.empty:
             # Note: Column order is already set in analyze_overtakes method
-            print(overtakes.to_string())
+            print(overtakes.to_string(index=False))
             
             # Show drivers with notable statistics
             print("\nNotable insights:")
-            if 'total_overtakes' in overtakes.columns:
-                top_overtakers = overtakes.nlargest(5, 'total_overtakes')
+            if 'total_OT' in overtakes.columns:
+                top_overtakers = overtakes.nlargest(5, 'total_OT')
                 if 'driver_name' in overtakes.columns:
                     top_names = [overtakes.loc[idx, 'driver_name'] for idx in top_overtakers.index if idx in overtakes.index]
                     print(f"Top 5 overtakers: {', '.join(top_names)}")
@@ -2098,7 +2145,7 @@ class F1PerformanceAnalyzer:
                     print(f"Top 5 overtakers: {', '.join(top_overtakers.index.tolist())}")
                 
                 # Drivers with negative average (lost positions)
-                lost_positions = overtakes[overtakes['avg_positions_gained'] < 0]
+                lost_positions = overtakes[overtakes['avg_pos_gained'] < 0]
                 if not lost_positions.empty:
                     if 'driver_name' in overtakes.columns:
                         lost_names = [overtakes.loc[idx, 'driver_name'] for idx in lost_positions.index if idx in overtakes.index]
@@ -2151,7 +2198,7 @@ class F1PerformanceAnalyzer:
                     recent_data = driver_data[driver_data['year'].isin(recent_years)]
                     if not recent_data.empty:
                         most_recent = recent_data.nlargest(1, 'year').iloc[0]
-                        driver_sort_data.append((driver_id, most_recent['avg_overtakes']))
+                        driver_sort_data.append((driver_id, most_recent['avg_OT']))
                     else:
                         driver_sort_data.append((driver_id, 0))
                 
@@ -2198,13 +2245,13 @@ class F1PerformanceAnalyzer:
                 print("-" * 100)
                 
                 # Sort by average overtakes descending
-                overall_sorted = overall_stats.sort_values('career_avg_overtakes', ascending=False)
+                overall_sorted = overall_stats.sort_values('career_avg_OT', ascending=False)
                 
                 for driver_id, row in overall_sorted.iterrows():
                     driver_name = row.get('driver_name', driver_id)
                     print(f"{driver_name:<25} {row['races_at_track']:<8.0f} "
-                          f"{row['career_overtakes']:<10.0f} {row['career_avg_overtakes']:<8.1f} "
-                          f"{row['career_median_overtakes']:<8.0f} {row['career_avg_start']:<10.1f} "
+                          f"{row['career_OT']:<10.0f} {row['career_avg_OT']:<8.1f} "
+                          f"{row['career_median_OT']:<8.0f} {row['career_avg_start']:<10.1f} "
                           f"{row['career_avg_finish']:<12.1f} {row['career_avg_pos_change']:+10.1f}")
         else:
             print("No track-specific overtake data available for the next race")
@@ -2216,7 +2263,7 @@ class F1PerformanceAnalyzer:
         points = self.analyze_points()
         if not points.empty:
             # Note: Column order is already set in analyze_points method
-            print(points.to_string())
+            print(points.to_string(index=False))
             
             # Explain any zeros
             if not points.empty:
@@ -2335,7 +2382,7 @@ class F1PerformanceAnalyzer:
                 display_cols.append('next_circuit_avg')
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in pit_stops.columns]
-            print(pit_stops[display_cols].to_string())
+            print(pit_stops[display_cols].to_string(index=False))
             
             # Add pit stop explanations
             if not pit_stops.empty:
@@ -2353,7 +2400,7 @@ class F1PerformanceAnalyzer:
             # Add driver names
             drivers = self.data.get('drivers', pd.DataFrame())
             if not drivers.empty:
-                driver_names = drivers.set_index('id')['surname'].to_dict()
+                driver_names = drivers.set_index('id')['name'].to_dict()
                 dhl_stops['driver_name'] = dhl_stops.index.map(driver_names)
             
             # Show main analysis with first stop info
@@ -2368,7 +2415,7 @@ class F1PerformanceAnalyzer:
             
             # Sort by average time (fastest first)
             dhl_stops_sorted = dhl_stops.sort_values('avg_time', ascending=True)
-            print(dhl_stops_sorted[display_cols].to_string())
+            print(dhl_stops_sorted[display_cols].to_string(index=False))
             
             # Show yearly analysis if available
             if hasattr(dhl_stops, 'yearly_data') and not dhl_stops.yearly_data.empty:
@@ -2439,7 +2486,7 @@ class F1PerformanceAnalyzer:
                     if not drivers.empty:
                         year_summary['driver_name'] = year_summary.index.map(driver_names)
                     
-                    print(year_summary[['driver_name', 'avg_time', 'total_stops']].to_string())
+                    print(year_summary[['driver_name', 'avg_time', 'total_stops']].to_string(index=False))
         else:
             print("No DHL pit stop data available")
         
@@ -2540,7 +2587,7 @@ class F1PerformanceAnalyzer:
                 display_cols.append('next_circuit_avg')
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in grid.columns]
-            print(grid[display_cols].to_string())
+            print(grid[display_cols].to_string(index=False))
         else:
             print("No starting position data available")
         
@@ -2665,7 +2712,7 @@ class F1PerformanceAnalyzer:
                 display_cols.append('next_circuit_avg')
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in sprint.columns]
-            print(sprint[display_cols].to_string())
+            print(sprint[display_cols].to_string(index=False))
         else:
             print("No sprint race data available")
         
@@ -2776,7 +2823,7 @@ class F1PerformanceAnalyzer:
                           'net_OT', 'prizepicks_pts']
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in teammate.columns]
-            print(teammate[display_cols].to_string())
+            print(teammate[display_cols].to_string(index=False))
             print("\nNote: PrizePicks awards +1.5 points for overtaking teammate, -1.5 for being overtaken")
         else:
             print("No teammate battle data available")
@@ -2894,7 +2941,7 @@ class F1PerformanceAnalyzer:
                           'avg_lap_number', 'seasons_with_fl', 'fastest_lap_points']
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in fastest.columns]
-            print(fastest[display_cols].to_string())
+            print(fastest[display_cols].to_string(index=False))
             print("\nNote: Fastest lap awards 1 F1 point (if finishing in top 10)")
         else:
             print("No fastest lap data available")
@@ -3005,10 +3052,11 @@ class F1PerformanceAnalyzer:
 
 def test_analyzer():
     """Test the analyzer with sample data"""
-    from f1db_data_loader import load_f1db_data
+    from f1db_data_loader import F1DBDataLoader
     
-    # Load data
-    data = load_f1db_data()
+    # Load data using F1DBDataLoader with no update check for tests
+    loader = F1DBDataLoader()
+    data = loader.load_csv_data(validate=False, check_updates=False)
     
     # Create analyzer
     analyzer = F1PerformanceAnalyzer(data)
@@ -3204,7 +3252,7 @@ if __name__ == "__main__":
 #         # Calculate overtakes (only positive position gains)
 #         recent_data['overtakes'] = recent_data['positions_gained'].apply(lambda x: max(0, x))
 #         overtakes_by_driver = recent_data.groupby('driverId')['overtakes'].agg(['sum', 'mean', 'median']).round(2)
-#         overtakes_by_driver.columns = ['total_overtakes', 'avg_overtakes', 'median_overtakes']
+#         overtakes_by_driver.columns = ['total_OT', 'avg_OT', 'median_OT']
         
 #         # Combine data
 #         final_data = driver_overtakes.join(overtakes_by_driver)
@@ -3221,7 +3269,7 @@ if __name__ == "__main__":
 #             if not circuit_data.empty:
 #                 circuit_overtakes = circuit_data.groupby('driverId')['overtakes'].mean().round(2)
 #                 final_data['next_circuit_avg'] = final_data.index.map(
-#                     lambda x: circuit_overtakes.get(x, final_data.loc[x, 'avg_overtakes'] if x in final_data.index else 0)
+#                     lambda x: circuit_overtakes.get(x, final_data.loc[x, 'avg_OT'] if x in final_data.index else 0)
 #                 )
         
 #         return final_data
@@ -3656,7 +3704,7 @@ if __name__ == "__main__":
 #                 print(f"Top 5 overtakers: {', '.join(top_overtakers.index.tolist())}")
                 
 #                 # Drivers with negative average (lost positions)
-#                 lost_positions = overtakes[overtakes['avg_positions_gained'] < 0]
+#                 lost_positions = overtakes[overtakes['avg_pos_gained'] < 0]
 #                 if not lost_positions.empty:
 #                     print(f"Drivers who typically lost positions: {', '.join(lost_positions.index.tolist())}")
 #         else:
@@ -3705,7 +3753,7 @@ if __name__ == "__main__":
 #                 print("-" * 100)
                 
 #                 # Sort by average overtakes descending
-#                 overall_sorted = overall_stats.sort_values('career_avg_overtakes', ascending=False)
+#                 overall_sorted = overall_stats.sort_values('career_avg_OT', ascending=False)
                 
 #                 for driver_id, row in overall_sorted.iterrows():
 #                     driver_name = row.get('driver_name', driver_id)
@@ -3747,7 +3795,7 @@ if __name__ == "__main__":
 #             display_cols = ['avg_stop_time', 'median_stop_time', 'best_stop_time', 'total_stops']
 #             if 'next_circuit_avg' in pit_stops.columns:
 #                 display_cols.append('next_circuit_avg')
-#             print(pit_stops[display_cols].to_string())
+#             print(pit_stops[display_cols].to_string(index=False))
             
 #             # Add pit stop explanations
 #             if not pit_stops.empty:
@@ -3767,7 +3815,7 @@ if __name__ == "__main__":
 #                 display_cols.append('avg_points_per_race')
 #             if 'next_circuit_avg' in grid.columns:
 #                 display_cols.append('next_circuit_avg')
-#             print(grid[display_cols].to_string())
+#             print(grid[display_cols].to_string(index=False))
 #         else:
 #             print("No starting position data available")
         
@@ -3780,7 +3828,7 @@ if __name__ == "__main__":
 #             display_cols = ['total_sprint_points', 'avg_sprint_points', 'median_sprint_points', 'sprint_races']
 #             if 'next_circuit_avg' in sprint.columns:
 #                 display_cols.append('next_circuit_avg')
-#             print(sprint[display_cols].to_string())
+#             print(sprint[display_cols].to_string(index=False))
 #         else:
 #             print("No sprint race data available")
         
