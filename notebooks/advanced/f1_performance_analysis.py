@@ -290,11 +290,60 @@ class F1PerformanceAnalyzer:
         # Filter to only current season drivers
         final_data = self.filter_current_season_drivers(final_data)
         
+        # Ensure all active drivers are included (even with no data)
+        active_drivers = self.get_active_drivers()
+        if not active_drivers.empty:
+            # Create empty rows for missing drivers
+            all_driver_ids = set(active_drivers['id'].values)
+            existing_ids = set(final_data.index)
+            missing_ids = all_driver_ids - existing_ids
+            
+            if missing_ids:
+                # Create empty DataFrame for missing drivers
+                missing_data = pd.DataFrame(
+                    index=list(missing_ids),
+                    columns=final_data.columns
+                )
+                # Set default values
+                for col in ['total_positions_gained', 'total_overtakes', 'total_points', 'races']:
+                    if col in missing_data.columns:
+                        missing_data[col] = 0
+                for col in ['avg_positions_gained', 'avg_overtakes', 'median_positions_gained', 
+                           'median_overtakes', 'avg_points']:
+                    if col in missing_data.columns:
+                        missing_data[col] = 0.0
+                
+                # Combine with existing data
+                final_data = pd.concat([final_data, missing_data])
+        
         # Add driver names
         drivers = self.data.get('drivers', pd.DataFrame())
         if not drivers.empty:
             driver_map = dict(zip(drivers['id'], drivers['name']))
             final_data['driver_name'] = final_data.index.map(driver_map)
+        
+        # Add previous race overtakes
+        races = self.data.get('races', pd.DataFrame())
+        if 'year' in recent_data.columns and 'date' in races.columns:
+            # Get the most recent race
+            races_with_results = recent_data['raceId'].unique()
+            recent_races = races[races['id'].isin(races_with_results)]
+            if not recent_races.empty:
+                # Find the most recent race
+                recent_races_sorted = recent_races.sort_values('date', ascending=False)
+                if len(recent_races_sorted) > 0:
+                    prev_race_id = recent_races_sorted.iloc[0]['id']
+                    prev_race_data = recent_data[recent_data['raceId'] == prev_race_id]
+                    
+                    # Calculate overtakes for previous race
+                    prev_overtakes = prev_race_data.groupby('driverId')['overtakes'].sum()
+                    final_data['prev_circuit'] = final_data.index.map(
+                        lambda x: int(prev_overtakes.get(x, 0)) if x in prev_overtakes.index else 0
+                    )
+        
+        # Ensure prev_circuit column exists for all drivers
+        if 'prev_circuit' not in final_data.columns:
+            final_data['prev_circuit'] = 0
         
         # Add circuit-specific prediction for next race
         next_race = self.get_next_race()
@@ -459,6 +508,31 @@ class F1PerformanceAnalyzer:
         
         # Filter to only current season drivers
         points_analysis = self.filter_current_season_drivers(points_analysis)
+        
+        # Ensure all active drivers are included (even with no data)
+        active_drivers = self.get_active_drivers()
+        if not active_drivers.empty:
+            # Create empty rows for missing drivers
+            all_driver_ids = set(active_drivers['id'].values)
+            existing_ids = set(points_analysis.index)
+            missing_ids = all_driver_ids - existing_ids
+            
+            if missing_ids:
+                # Create empty DataFrame for missing drivers
+                missing_data = pd.DataFrame(
+                    index=list(missing_ids),
+                    columns=points_analysis.columns
+                )
+                # Set default values
+                for col in ['total_points', 'races']:
+                    if col in missing_data.columns:
+                        missing_data[col] = 0
+                for col in ['avg_points', 'median_points', 'hist_avg_points', 'hist_median_points']:
+                    if col in missing_data.columns:
+                        missing_data[col] = 0.0
+                
+                # Combine with existing data
+                points_analysis = pd.concat([points_analysis, missing_data])
         
         # Add driver names
         drivers = self.data.get('drivers', pd.DataFrame())
@@ -1694,10 +1768,10 @@ class F1PerformanceAnalyzer:
         print("="*80)
         overtakes = self.analyze_overtakes()
         if not overtakes.empty:
-            display_cols = ['driver_name', 'total_overtakes', 'avg_overtakes', 'median_overtakes', 'avg_points', 'races']
+            display_cols = ['driver_name', 'total_overtakes', 'avg_overtakes', 'median_overtakes', 'prev_circuit', 'avg_points', 'races']
             if 'next_circuit_avg' in overtakes.columns:
                 display_cols.append('next_circuit_avg')
-            # Remove driver_name if it doesn't exist
+            # Remove columns that don't exist
             display_cols = [col for col in display_cols if col in overtakes.columns]
             print(overtakes[display_cols].to_string())
             
