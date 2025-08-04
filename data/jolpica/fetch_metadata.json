@@ -1,5 +1,5 @@
 {
-  "last_fetch": "2025-08-03T21:35:27.901253",
+  "last_fetch": "2025-08-04T08:54:21.607997",
   "fetched_races": {
     "2020_1": {
       "fetched_at": "2025-08-03T21:09:03.916193",
@@ -100,6 +100,258 @@
     "2020_17": {
       "fetched_at": "2025-08-03T21:35:27.900210",
       "filepath": "data/jolpica/laps/2020/2020_round_17_laps.json",
+      "race_name": "Abu Dhabi Grand Prix",
+      "total_laps": 55
+    },
+    "2019_1": {
+      "fetched_at": "2025-08-04T08:24:28.333910",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_01_laps.json",
+      "race_name": "Australian Grand Prix",
+      "total_laps": 58
+    },
+    "2019_2": {
+      "fetched_at": "2025-08-04T08:24:40.487105",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_02_laps.json",
+      "race_name": "Bahrain Grand Prix",
+      "total_laps": 57
+    },
+    "2019_3": {
+      "fetched_at": "2025-08-04T08:24:52.380459",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_03_laps.json",
+      "race_name": "Chinese Grand Prix",
+      "total_laps": 56
+    },
+    "2019_4": {
+      "fetched_at": "2025-08-04T08:25:03.514120",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_04_laps.json",
+      "race_name": "Azerbaijan Grand Prix",
+      "total_laps": 51
+    },
+    "2019_5": {
+      "fetched_at": "2025-08-04T08:25:17.974998",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_05_laps.json",
+      "race_name": "Spanish Grand Prix",
+      "total_laps": 66
+    },
+    "2019_6": {
+      "fetched_at": "2025-08-04T08:25:35.313248",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_06_laps.json",
+      "race_name": "Monaco Grand Prix",
+      "total_laps": 78
+    },
+    "2019_7": {
+      "fetched_at": "2025-08-04T08:25:50.696506",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_07_laps.json",
+      "race_name": "Canadian Grand Prix",
+      "total_laps": 70
+    },
+    "2019_8": {
+      "fetched_at": "2025-08-04T08:26:07.500592",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_08_laps.json",
+      "race_name": "French Grand Prix",
+      "total_laps": 53
+    },
+    "2019_9": {
+      "fetched_at": "2025-08-04T08:26:52.649615",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_09_laps.json",
+      "race_name": "Austrian Grand Prix",
+      "total_laps": 71
+    },
+    "2019_10": {
+      "fetched_at": "2025-08-04T08:27:22.839971",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_10_laps.json",
+      "race_name": "British Grand Prix",
+      "total_laps": 52
+    },
+    "2019_11": {
+      "fetched_at": "2025-08-04T08:27:55.312382",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_11_laps.json",
+      "race_name": "German Grand Prix",
+      "total_laps": 64
+    },
+    "2019_12": {
+      "fetched_at": "2025-08-04T08:28:37.808086",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_12_laps.json",
+      "race_name": "Hungarian Grand Prix",
+      "total_laps": 70
+    },
+    "2019_13": {
+      "fetched_at": "2025-08-04T08:29:02.282574",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_13_laps.json",
+      "race_name": "Belgian Grand Prix",
+      "total_laps": 44
+    },
+    "2019_14": {
+      "fetched_at": "2025-08-04T08:29:31.624439",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_14_laps.json",
+      "race_name": "Italian Grand Prix",
+      "total_laps": 53
+    },
+    "2019_15": {
+      "fetched_at": "2025-08-04T08:30:07.749013",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_15_laps.json",
+      "race_name": "Singapore Grand Prix",
+      "total_laps": 61
+    },
+    "2019_16": {
+      "fetched_at": "2025-08-04T08:30:35.334498",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_16_laps.json",
+      "race_name": "Russian Grand Prix",
+      "total_laps": 53
+    },
+    "2019_17": {
+      "fetched_at": "2025-08-04T08:31:07.053423",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_17_laps.json",
+      "race_name": "Japanese Grand Prix",
+      "total_laps": 52
+    },
+    "2019_18": {
+      "fetched_at": "2025-08-04T08:31:46.630168",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_18_laps.json",
+      "race_name": "Mexican Grand Prix",
+      "total_laps": 71
+    },
+    "2019_19": {
+      "fetched_at": "2025-08-04T08:32:20.189025",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_19_laps.json",
+      "race_name": "United States Grand Prix",
+      "total_laps": 56
+    },
+    "2019_20": {
+      "fetched_at": "2025-08-04T08:33:02.129728",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_20_laps.json",
+      "race_name": "Brazilian Grand Prix",
+      "total_laps": 71
+    },
+    "2019_21": {
+      "fetched_at": "2025-08-04T08:33:34.985999",
+      "filepath": "data\\jolpica\\laps\\2019\\2019_round_21_laps.json",
+      "race_name": "Abu Dhabi Grand Prix",
+      "total_laps": 55
+    },
+    "2018_1": {
+      "fetched_at": "2025-08-04T08:34:13.864004",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_01_laps.json",
+      "race_name": "Australian Grand Prix",
+      "total_laps": 58
+    },
+    "2018_2": {
+      "fetched_at": "2025-08-04T08:34:53.797550",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_02_laps.json",
+      "race_name": "Bahrain Grand Prix",
+      "total_laps": 57
+    },
+    "2018_3": {
+      "fetched_at": "2025-08-04T08:35:17.345077",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_03_laps.json",
+      "race_name": "Chinese Grand Prix",
+      "total_laps": 56
+    },
+    "2018_4": {
+      "fetched_at": "2025-08-04T08:35:48.208614",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_04_laps.json",
+      "race_name": "Azerbaijan Grand Prix",
+      "total_laps": 51
+    },
+    "2018_5": {
+      "fetched_at": "2025-08-04T08:36:21.351187",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_05_laps.json",
+      "race_name": "Spanish Grand Prix",
+      "total_laps": 66
+    },
+    "2018_6": {
+      "fetched_at": "2025-08-04T08:37:07.482757",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_06_laps.json",
+      "race_name": "Monaco Grand Prix",
+      "total_laps": 78
+    },
+    "2018_7": {
+      "fetched_at": "2025-08-04T08:49:07.939370",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_07_laps.json",
+      "race_name": "Canadian Grand Prix",
+      "total_laps": 68
+    },
+    "2018_8": {
+      "fetched_at": "2025-08-04T08:49:19.086971",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_08_laps.json",
+      "race_name": "French Grand Prix",
+      "total_laps": 53
+    },
+    "2018_9": {
+      "fetched_at": "2025-08-04T08:49:33.438582",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_09_laps.json",
+      "race_name": "Austrian Grand Prix",
+      "total_laps": 71
+    },
+    "2018_10": {
+      "fetched_at": "2025-08-04T08:49:43.457341",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_10_laps.json",
+      "race_name": "British Grand Prix",
+      "total_laps": 52
+    },
+    "2018_11": {
+      "fetched_at": "2025-08-04T08:49:57.864841",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_11_laps.json",
+      "race_name": "German Grand Prix",
+      "total_laps": 67
+    },
+    "2018_12": {
+      "fetched_at": "2025-08-04T08:50:14.004682",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_12_laps.json",
+      "race_name": "Hungarian Grand Prix",
+      "total_laps": 70
+    },
+    "2018_13": {
+      "fetched_at": "2025-08-04T08:50:22.380127",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_13_laps.json",
+      "race_name": "Belgian Grand Prix",
+      "total_laps": 44
+    },
+    "2018_14": {
+      "fetched_at": "2025-08-04T08:50:32.393444",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_14_laps.json",
+      "race_name": "Italian Grand Prix",
+      "total_laps": 53
+    },
+    "2018_15": {
+      "fetched_at": "2025-08-04T08:50:59.504727",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_15_laps.json",
+      "race_name": "Singapore Grand Prix",
+      "total_laps": 61
+    },
+    "2018_16": {
+      "fetched_at": "2025-08-04T08:51:30.128661",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_16_laps.json",
+      "race_name": "Russian Grand Prix",
+      "total_laps": 53
+    },
+    "2018_17": {
+      "fetched_at": "2025-08-04T08:51:59.770051",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_17_laps.json",
+      "race_name": "Japanese Grand Prix",
+      "total_laps": 53
+    },
+    "2018_18": {
+      "fetched_at": "2025-08-04T08:52:29.653856",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_18_laps.json",
+      "race_name": "United States Grand Prix",
+      "total_laps": 56
+    },
+    "2018_19": {
+      "fetched_at": "2025-08-04T08:53:08.280071",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_19_laps.json",
+      "race_name": "Mexican Grand Prix",
+      "total_laps": 71
+    },
+    "2018_20": {
+      "fetched_at": "2025-08-04T08:53:47.295045",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_20_laps.json",
+      "race_name": "Brazilian Grand Prix",
+      "total_laps": 71
+    },
+    "2018_21": {
+      "fetched_at": "2025-08-04T08:54:21.599292",
+      "filepath": "data\\jolpica\\laps\\2018\\2018_round_21_laps.json",
       "race_name": "Abu Dhabi Grand Prix",
       "total_laps": 55
     }
@@ -435,5 +687,13 @@
       "round": 24,
       "error": "429 Client Error: Too Many Requests for url: https://api.jolpi.ca/ergast/f1/2024/24/laps.json?limit=2000&offset=100"
     }
-  ]
+  ],
+  "statistics": {
+    "total_requests": 169,
+    "successful_requests": 169,
+    "rate_limit_hits": 30,
+    "errors": 0,
+    "races_fetched": 15,
+    "laps_fetched": 898
+  }
 }
