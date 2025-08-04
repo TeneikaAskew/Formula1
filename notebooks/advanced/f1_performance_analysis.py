@@ -2487,6 +2487,263 @@ class F1PerformanceAnalyzer:
         # Always use driver IDs to avoid ambiguity
         return driver_ids
     
+    def calculate_first_pit_stop_time(self):
+        """Calculate first pit stop duration (service time) using DHL data with detailed breakdown"""
+        dhl_data = self.dhl_data.copy()
+        
+        if dhl_data.empty:
+            return pd.DataFrame()
+        
+        # Map driver names to IDs (reuse logic from analyze_dhl_pit_stops)
+        drivers = self.data.get('drivers', pd.DataFrame())
+        if not drivers.empty:
+            # First check if driver_id column already exists
+            if 'driver_id' in dhl_data.columns and dhl_data['driver_id'].notna().any():
+                dhl_data['driverId'] = dhl_data['driver_id']
+            else:
+                # Create driver mapping
+                driver_mapping = {}
+                for _, driver in drivers.iterrows():
+                    full_name = f"{driver.get('forename', '')} {driver.get('surname', '')}".strip()
+                    last_name = driver.get('surname', '')
+                    driver_id = driver.get('id')
+                    driver_mapping[full_name.lower()] = driver_id
+                    driver_mapping[last_name.lower()] = driver_id
+                
+                # Special mappings
+                special_mappings = {
+                    'hulkenberg': 'nico-hulkenberg', 'hülkenberg': 'nico-hulkenberg',
+                    'sainz': 'carlos-sainz-jr', 'perez': 'sergio-perez', 'pérez': 'sergio-perez',
+                    'magnussen': 'kevin-magnussen', 'leclerc': 'charles-leclerc',
+                    'zhou': 'guanyu-zhou', 'ricciardo': 'daniel-ricciardo',
+                    'verstappen': 'max-verstappen', 'bottas': 'valtteri-bottas'
+                }
+                
+                def map_driver(driver_name):
+                    driver_lower = driver_name.lower()
+                    if driver_lower in special_mappings:
+                        return special_mappings[driver_lower]
+                    return driver_mapping.get(driver_lower)
+                
+                dhl_data['driverId'] = dhl_data['driver'].apply(map_driver)
+            
+            dhl_data = dhl_data.dropna(subset=['driverId'])
+        
+        # Get event/race column
+        group_column = 'event_id' if 'event_id' in dhl_data.columns else 'race'
+        
+        # Calculate first stop statistics
+        first_stop_stats = pd.DataFrame()
+        
+        if group_column in dhl_data.columns:
+            # Get first stop for each driver in each race (lowest lap number)
+            first_stops = dhl_data.sort_values(['driverId', group_column, 'lap']).groupby(['driverId', group_column]).first()
+            
+            # Calculate statistics for first stops only
+            first_stop_stats = first_stops.groupby('driverId')['time'].agg([
+                ('avg_1st_stop', 'mean'),
+                ('median_1st_stop', 'median'),
+                ('best_1st_stop', 'min'),
+                ('worst_1st_stop', 'max'),
+                ('races_with_1st_stop', 'count')
+            ]).round(3)
+            
+            # Also add the average lap number of first stop
+            avg_first_lap = first_stops.groupby('driverId')['lap'].mean().round(1)
+            first_stop_stats['avg_1st_stop_lap'] = avg_first_lap
+        
+        # Calculate overall statistics (all stops)
+        overall_stats = dhl_data.groupby('driverId')['time'].agg([
+            ('avg_all_stops', 'mean'),
+            ('median_all_stops', 'median'),
+            ('best_all_stops', 'min'),
+            ('total_stops', 'count')
+        ]).round(3)
+        
+        # Combine first stop and overall statistics
+        combined_stats = first_stop_stats.join(overall_stats, how='outer')
+        
+        # Add driver names
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            combined_stats['driver_name'] = combined_stats.index.map(driver_map)
+        
+        # Calculate consistency metric for first stops
+        if 'avg_1st_stop' in combined_stats.columns and 'median_1st_stop' in combined_stats.columns:
+            combined_stats['1st_stop_consistency'] = (
+                combined_stats['avg_1st_stop'] - combined_stats['median_1st_stop']
+            ).abs().round(3)
+        
+        # Filter to current season drivers
+        combined_stats = self.filter_current_season_drivers(combined_stats)
+        
+        # Sort by average first stop time
+        if 'avg_1st_stop' in combined_stats.columns:
+            combined_stats = combined_stats.sort_values('avg_1st_stop')
+        
+        return combined_stats
+    
+    def calculate_prizepicks_overtake_points(self):
+        """Calculate PrizePicks overtake points with teammate adjustments"""
+        results = self.data.get('results', pd.DataFrame()).copy()
+        grid = self.data.get('races_starting_grid_positions', pd.DataFrame()).copy()
+        races = self.data.get('races', pd.DataFrame())
+        drivers = self.data.get('drivers', pd.DataFrame())
+        driver_standings = self.data.get('driver_standings', pd.DataFrame())
+        
+        if results.empty or grid.empty:
+            return pd.DataFrame()
+        
+        # Add race year
+        if not races.empty:
+            results = results.merge(races[['id', 'year']], left_on='raceId', right_on='id', how='left')
+        
+        # Filter recent years
+        recent_results = results[results['year'] >= self.current_year - 1] if 'year' in results.columns else results
+        
+        # Merge with grid positions
+        overtake_data = recent_results.merge(
+            grid[['raceId', 'driverId', 'positionNumber']].rename(columns={'positionNumber': 'gridPosition'}),
+            on=['raceId', 'driverId'],
+            how='left'
+        )
+        
+        # Get constructor info for teammate detection
+        if 'constructorId' in overtake_data.columns and not driver_standings.empty:
+            # Get current constructor mappings
+            current_constructors = driver_standings[driver_standings['year'] == self.current_year][['driverId', 'constructorId']].drop_duplicates()
+            constructor_map = dict(zip(current_constructors['driverId'], current_constructors['constructorId']))
+            overtake_data['current_constructorId'] = overtake_data['driverId'].map(constructor_map)
+        
+        # Calculate base overtake points
+        overtake_data['base_overtake_points'] = overtake_data['gridPosition'] - overtake_data['positionNumber']
+        
+        # Identify teammate overtakes
+        if 'constructorId' in overtake_data.columns:
+            # Group by race and constructor to find teammates
+            for race_id in overtake_data['raceId'].unique():
+                race_data = overtake_data[overtake_data['raceId'] == race_id]
+                
+                for constructor_id in race_data['constructorId'].unique():
+                    if pd.notna(constructor_id):
+                        constructor_drivers = race_data[race_data['constructorId'] == constructor_id]
+                        
+                        if len(constructor_drivers) == 2:
+                            driver1, driver2 = constructor_drivers['driverId'].values[:2]
+                            pos1_start = constructor_drivers[constructor_drivers['driverId'] == driver1]['gridPosition'].values[0]
+                            pos1_end = constructor_drivers[constructor_drivers['driverId'] == driver1]['positionNumber'].values[0]
+                            pos2_start = constructor_drivers[constructor_drivers['driverId'] == driver2]['gridPosition'].values[0]
+                            pos2_end = constructor_drivers[constructor_drivers['driverId'] == driver2]['positionNumber'].values[0]
+                            
+                            # Check if they swapped positions
+                            if pd.notna(pos1_start) and pd.notna(pos1_end) and pd.notna(pos2_start) and pd.notna(pos2_end):
+                                if (pos1_start > pos2_start and pos1_end < pos2_end):
+                                    # Driver 1 overtook teammate
+                                    overtake_data.loc[(overtake_data['raceId'] == race_id) & 
+                                                    (overtake_data['driverId'] == driver1), 'teammate_bonus'] = 0.5
+                                    overtake_data.loc[(overtake_data['raceId'] == race_id) & 
+                                                    (overtake_data['driverId'] == driver2), 'teammate_penalty'] = -0.5
+                                elif (pos2_start > pos1_start and pos2_end < pos1_end):
+                                    # Driver 2 overtook teammate
+                                    overtake_data.loc[(overtake_data['raceId'] == race_id) & 
+                                                    (overtake_data['driverId'] == driver2), 'teammate_bonus'] = 0.5
+                                    overtake_data.loc[(overtake_data['raceId'] == race_id) & 
+                                                    (overtake_data['driverId'] == driver1), 'teammate_penalty'] = -0.5
+        
+        # Calculate final PrizePicks overtake points
+        overtake_data['teammate_bonus'] = overtake_data.get('teammate_bonus', 0).fillna(0)
+        overtake_data['teammate_penalty'] = overtake_data.get('teammate_penalty', 0).fillna(0)
+        overtake_data['prizepicks_overtake_points'] = (overtake_data['base_overtake_points'] + 
+                                                       overtake_data['teammate_bonus'] + 
+                                                       overtake_data['teammate_penalty'])
+        
+        # Aggregate by driver
+        driver_overtake_points = overtake_data.groupby('driverId').agg({
+            'prizepicks_overtake_points': ['mean', 'median', 'sum', 'std'],
+            'base_overtake_points': ['mean', 'sum'],
+            'teammate_bonus': 'sum',
+            'teammate_penalty': 'sum',
+            'raceId': 'count'
+        }).round(2)
+        
+        driver_overtake_points.columns = ['avg_pp_overtake_pts', 'median_pp_overtake_pts', 
+                                         'total_pp_overtake_pts', 'std_pp_overtake_pts',
+                                         'avg_base_overtake_pts', 'total_base_overtake_pts',
+                                         'total_teammate_bonuses', 'total_teammate_penalties',
+                                         'races_analyzed']
+        
+        # Filter to current season drivers
+        driver_overtake_points = self.filter_current_season_drivers(driver_overtake_points)
+        
+        # Add driver names
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            driver_overtake_points['driver_name'] = driver_overtake_points.index.map(driver_map)
+        
+        return driver_overtake_points
+    
+    def calculate_win_podium_probabilities(self):
+        """Calculate win and podium probabilities based on historical performance"""
+        results = self.data.get('results', pd.DataFrame()).copy()
+        races = self.data.get('races', pd.DataFrame())
+        
+        if results.empty:
+            return pd.DataFrame()
+        
+        # Add year info
+        if not races.empty:
+            results = results.merge(races[['id', 'year']], left_on='raceId', right_on='id', how='left')
+        
+        # Filter recent years
+        recent_results = results[results['year'] >= self.current_year - 2] if 'year' in results.columns else results
+        
+        # Calculate probabilities
+        driver_probs = recent_results.groupby('driverId').agg({
+            'positionNumber': [
+                lambda x: (x == 1).sum(),  # wins
+                lambda x: (x <= 3).sum(),  # podiums
+                lambda x: (x <= 10).sum(), # points finishes
+                'count'                    # total races
+            ]
+        })
+        
+        driver_probs.columns = ['wins', 'podiums', 'points_finishes', 'total_races']
+        
+        # Calculate probabilities
+        driver_probs['win_probability'] = (driver_probs['wins'] / driver_probs['total_races'] * 100).round(1)
+        driver_probs['podium_probability'] = (driver_probs['podiums'] / driver_probs['total_races'] * 100).round(1)
+        driver_probs['points_probability'] = (driver_probs['points_finishes'] / driver_probs['total_races'] * 100).round(1)
+        
+        # Calculate expected points per race
+        points_map = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1}
+        
+        def calc_expected_points(driver_results):
+            total_points = 0
+            for pos in driver_results:
+                if pd.notna(pos) and pos <= 10:
+                    total_points += points_map.get(int(pos), 0)
+            return total_points / len(driver_results) if len(driver_results) > 0 else 0
+        
+        expected_points = recent_results.groupby('driverId')['positionNumber'].apply(calc_expected_points)
+        driver_probs['expected_points_per_race'] = expected_points.round(2)
+        
+        # DNF probability
+        driver_probs['dnf_count'] = recent_results.groupby('driverId')['statusId'].apply(
+            lambda x: (x > 1).sum()  # statusId > 1 usually means DNF
+        )
+        driver_probs['dnf_probability'] = (driver_probs['dnf_count'] / driver_probs['total_races'] * 100).round(1)
+        
+        # Filter to current season drivers
+        driver_probs = self.filter_current_season_drivers(driver_probs)
+        
+        # Add driver names
+        drivers = self.data.get('drivers', pd.DataFrame())
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            driver_probs['driver_name'] = driver_probs.index.map(driver_map)
+        
+        return driver_probs
+    
     def generate_all_tables(self):
         """Generate all performance analysis tables"""
         print("\n" + "="*80)
@@ -3049,7 +3306,16 @@ class F1PerformanceAnalyzer:
                 display_cols.append('next_circuit_avg')
             # Remove driver_name if it doesn't exist
             display_cols = [col for col in display_cols if col in pit_stops.columns]
-            print(pit_stops[display_cols].to_string(index=False))
+            
+            # Filter out rows where all numeric columns are NaN
+            numeric_cols = ['avg_stop_time', 'median_stop_time', 'best_stop_time', 'total_stops']
+            numeric_cols = [col for col in numeric_cols if col in pit_stops.columns]
+            pit_stops_filtered = pit_stops.dropna(subset=numeric_cols, how='all')
+            
+            if not pit_stops_filtered.empty:
+                print(pit_stops_filtered[display_cols].to_string(index=False))
+            else:
+                print("No valid pit stop data available")
             
             # Add pit stop explanations
             if not pit_stops.empty:
@@ -3082,7 +3348,18 @@ class F1PerformanceAnalyzer:
             
             # Sort by average time (fastest first)
             dhl_stops_sorted = dhl_stops.sort_values('avg_time', ascending=True)
-            print(dhl_stops_sorted[display_cols].to_string(index=False))
+            
+            # Filter out rows where all numeric columns are NaN
+            numeric_cols = ['avg_time', 'median_time', 'best_time', 'total_stops']
+            if 'avg_first_stop' in dhl_stops.columns:
+                numeric_cols.extend(['avg_first_stop', 'best_first_stop'])
+            numeric_cols = [col for col in numeric_cols if col in dhl_stops.columns]
+            dhl_stops_filtered = dhl_stops_sorted.dropna(subset=numeric_cols, how='all')
+            
+            if not dhl_stops_filtered.empty:
+                print(dhl_stops_filtered[display_cols].to_string(index=False))
+            else:
+                print("No valid DHL pit stop data available")
             
             # Show yearly analysis if available
             if hasattr(dhl_stops, 'yearly_data') and not dhl_stops.yearly_data.empty:
@@ -3576,6 +3853,125 @@ class F1PerformanceAnalyzer:
         else:
             print("No fastest lap data available for this circuit")
         
+        # 8. First Pit Stop Time Analysis (PrizePicks)
+        print("\n" + "="*80)
+        print("8. FIRST PIT STOP TIME ANALYSIS (seconds) - PrizePicks Metric")
+        print("="*80)
+        first_stops = self.calculate_first_pit_stop_time()
+        if not first_stops.empty:
+            # Display columns for first stop analysis
+            display_cols = ['driver_name', 'avg_1st_stop', 'median_1st_stop', 
+                          'best_1st_stop', 'worst_1st_stop', 'avg_1st_stop_lap', 
+                          'races_with_1st_stop', '1st_stop_consistency']
+            # Add overall stop columns
+            overall_cols = ['avg_all_stops', 'median_all_stops', 'total_stops']
+            display_cols.extend(overall_cols)
+            
+            # Filter to existing columns
+            display_cols = [col for col in display_cols if col in first_stops.columns]
+            
+            # Filter out rows with NaN values in first stop data
+            numeric_cols = ['avg_1st_stop', 'median_1st_stop', 'best_1st_stop']
+            numeric_cols = [col for col in numeric_cols if col in first_stops.columns]
+            first_stops_filtered = first_stops.dropna(subset=numeric_cols, how='all')
+            
+            if not first_stops_filtered.empty:
+                print("First pit stop vs Overall pit stop analysis from DHL official data:")
+                print("\nFIRST STOP ONLY | OVERALL STATS")
+                print(first_stops_filtered[display_cols].to_string(index=False))
+                print("\nColumn Explanations:")
+                print("FIRST STOP COLUMNS:")
+                print("- avg_1st_stop: Average duration of FIRST pit stop only (seconds)")
+                print("- median_1st_stop: Median duration of FIRST pit stop (typical performance)")
+                print("- best_1st_stop: Fastest FIRST pit stop recorded")
+                print("- worst_1st_stop: Slowest FIRST pit stop recorded")
+                print("- avg_1st_stop_lap: Average lap number when first stop occurs")
+                print("- races_with_1st_stop: Number of races with first stop data")
+                print("- 1st_stop_consistency: |avg - median| for first stops (lower = more consistent)")
+                print("\nOVERALL COLUMNS:")
+                print("- avg_all_stops: Average duration across ALL pit stops")
+                print("- median_all_stops: Median duration across ALL pit stops")
+                print("- total_stops: Total number of pit stops recorded")
+                print("\nNote: For PrizePicks '1st Pit Stop Time' betting, use the FIRST STOP columns")
+                
+                # Show insights
+                if 'avg_1st_stop' in first_stops_filtered.columns and 'avg_all_stops' in first_stops_filtered.columns:
+                    # Find drivers whose first stops are notably different from their overall average
+                    first_stops_filtered['diff_1st_vs_all'] = (
+                        first_stops_filtered['avg_1st_stop'] - first_stops_filtered['avg_all_stops']
+                    ).round(3)
+                    
+                    slower_first = first_stops_filtered[first_stops_filtered['diff_1st_vs_all'] > 0.1].nlargest(5, 'diff_1st_vs_all')
+                    if not slower_first.empty:
+                        print("\nDrivers with slower first stops than average:")
+                        for _, driver in slower_first.iterrows():
+                            print(f"- {driver['driver_name']}: First stop {driver['diff_1st_vs_all']:.3f}s slower than overall avg")
+            else:
+                print("No first pit stop time data available")
+        else:
+            print("No DHL pit stop data available for analysis")
+        
+        # 9. PrizePicks Overtake Points Analysis
+        print("\n" + "="*80)
+        print("9. PRIZEPICKS OVERTAKE POINTS ANALYSIS")
+        print("="*80)
+        pp_overtakes = self.calculate_prizepicks_overtake_points()
+        if not pp_overtakes.empty:
+            display_cols = ['driver_name', 'avg_pp_overtake_pts', 'median_pp_overtake_pts', 
+                          'total_teammate_bonuses', 'total_teammate_penalties', 'races_analyzed']
+            display_cols = [col for col in display_cols if col in pp_overtakes.columns]
+            
+            # Sort by average PrizePicks overtake points
+            pp_overtakes_sorted = pp_overtakes.sort_values('avg_pp_overtake_pts', ascending=False)
+            
+            print("PrizePicks Overtake Points = (Start Position - Finish Position) + Teammate Adjustments")
+            print("Teammate bonus: +0.5 for passing teammate, -0.5 for being passed by teammate")
+            print(pp_overtakes_sorted[display_cols].head(20).to_string(index=False))
+            
+            # Notable insights
+            if 'total_teammate_bonuses' in pp_overtakes.columns:
+                most_teammate_passes = pp_overtakes.nlargest(5, 'total_teammate_bonuses')
+                if not most_teammate_passes.empty:
+                    print("\nDrivers with most teammate overtakes:")
+                    for _, driver in most_teammate_passes.iterrows():
+                        if 'driver_name' in driver:
+                            print(f"- {driver['driver_name']}: {driver['total_teammate_bonuses']:.1f} bonuses")
+        else:
+            print("No data available for PrizePicks overtake points calculation")
+        
+        # 10. Win/Podium/DNF Probability Analysis
+        print("\n" + "="*80)
+        print("10. WIN/PODIUM/DNF PROBABILITY ANALYSIS")
+        print("="*80)
+        probabilities = self.calculate_win_podium_probabilities()
+        if not probabilities.empty:
+            display_cols = ['driver_name', 'win_probability', 'podium_probability', 
+                          'points_probability', 'expected_points_per_race', 'dnf_probability', 'total_races']
+            display_cols = [col for col in display_cols if col in probabilities.columns]
+            
+            # Sort by expected points per race
+            if 'expected_points_per_race' in probabilities.columns:
+                probabilities_sorted = probabilities.sort_values('expected_points_per_race', ascending=False)
+            else:
+                probabilities_sorted = probabilities.sort_values('win_probability', ascending=False)
+            
+            print("Probabilities based on last 2 years of race results:")
+            print(probabilities_sorted[display_cols].head(20).to_string(index=False))
+            
+            # Highlight key insights
+            print("\nKey Insights:")
+            if 'win_probability' in probabilities.columns:
+                top_winners = probabilities[probabilities['win_probability'] > 0].nlargest(5, 'win_probability')
+                if not top_winners.empty:
+                    print(f"Most likely to win: {', '.join([row['driver_name'] for _, row in top_winners.iterrows() if 'driver_name' in row])}")
+            
+            if 'dnf_probability' in probabilities.columns:
+                high_dnf = probabilities[probabilities['dnf_probability'] > 20]
+                if not high_dnf.empty:
+                    print(f"High DNF risk (>20%): {', '.join([row['driver_name'] for _, row in high_dnf.iterrows() if 'driver_name' in row])}")
+        else:
+            print("No data available for probability calculations")
+        
         
         print("\n" + "="*80)
         print("ANALYSIS NOTES:")
@@ -3585,6 +3981,9 @@ class F1PerformanceAnalyzer:
         print("- Median values provide insight into typical performance (less affected by outliers)")
         print("- Data includes races from the last 3 years for relevance")
         print("- DHL pit stop data: Official DHL fastest pit stop competition results")
+        print("- First Pit Stop Time: Actual pit box service duration from DHL data (PrizePicks metric)")
+        print("- PrizePicks Overtake Points: Grid - Finish + teammate adjustments (+0.5/-0.5)")
+        print("- Probabilities: Based on last 2 years, useful for betting market analysis")
         
         # Initialize missing variables to empty DataFrames if not analyzed
         if 'pit_stops' not in locals():
@@ -3601,7 +4000,10 @@ class F1PerformanceAnalyzer:
             'dhl_pit_stops': dhl_stops,
             'starting_positions': grid,
             'sprint_points': sprint,
-            'fastest_laps': fastest
+            'fastest_laps': fastest,
+            'first_pit_stop_time': first_stops if 'first_stops' in locals() else pd.DataFrame(),
+            'prizepicks_overtakes': pp_overtakes if 'pp_overtakes' in locals() else pd.DataFrame(),
+            'probabilities': probabilities if 'probabilities' in locals() else pd.DataFrame()
         }
 
 
