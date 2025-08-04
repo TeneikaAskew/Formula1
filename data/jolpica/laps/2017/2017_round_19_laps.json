@@ -1,0 +1,5810 @@
+{
+  "season": 2017,
+  "round": 19,
+  "raceName": "Brazilian Grand Prix",
+  "circuitId": "interlagos",
+  "date": "2017-11-12",
+  "time": "16:00:00Z",
+  "laps": [
+    {
+      "number": "1",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:52.494"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:53.660"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:55.614"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:56.575"
+        },
+        {
+          "driverId": "alonso",
+          "position": "5",
+          "time": "1:58.369"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:59.487"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "2:01.133"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "2:02.710"
+        },
+        {
+          "driverId": "sainz",
+          "position": "9",
+          "time": "2:04.058"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "2:06.060"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "11",
+          "time": "2:08.622"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "12",
+          "time": "2:09.705"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "2:10.945"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "14",
+          "time": "2:11.703"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "2:12.823"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "16",
+          "time": "2:14.928"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "17",
+          "time": "2:16.146"
+        }
+      ]
+    },
+    {
+      "number": "2",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "2:18.392"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "2:18.940"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "2:19.111"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "2:18.955"
+        },
+        {
+          "driverId": "alonso",
+          "position": "5",
+          "time": "2:18.727"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "2:18.600"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "2:18.040"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "2:17.762"
+        },
+        {
+          "driverId": "sainz",
+          "position": "9",
+          "time": "2:18.977"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "2:18.443"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "11",
+          "time": "2:17.861"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "12",
+          "time": "2:17.971"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "2:17.844"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "14",
+          "time": "2:14.734"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "15",
+          "time": "2:18.697"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "2:18.974"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "17",
+          "time": "2:16.740"
+        }
+      ]
+    },
+    {
+      "number": "3",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "2:11.713"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "2:11.684"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "2:11.629"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "2:11.505"
+        },
+        {
+          "driverId": "alonso",
+          "position": "5",
+          "time": "2:11.228"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "2:11.250"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "2:11.657"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "2:11.913"
+        },
+        {
+          "driverId": "sainz",
+          "position": "9",
+          "time": "2:11.660"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "2:11.147"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "11",
+          "time": "2:11.131"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "12",
+          "time": "2:11.072"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "2:11.595"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "14",
+          "time": "2:11.693"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "15",
+          "time": "2:11.950"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "2:11.837"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "17",
+          "time": "2:12.136"
+        }
+      ]
+    },
+    {
+      "number": "4",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:59.419"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:58.911"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:57.567"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:57.841"
+        },
+        {
+          "driverId": "alonso",
+          "position": "5",
+          "time": "1:58.375"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:58.891"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:58.780"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "1:58.556"
+        },
+        {
+          "driverId": "sainz",
+          "position": "9",
+          "time": "1:59.219"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "1:58.809"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "11",
+          "time": "1:58.153"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "12",
+          "time": "1:58.605"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:58.093"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "14",
+          "time": "1:57.941"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "15",
+          "time": "1:58.287"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:58.811"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "17",
+          "time": "1:58.599"
+        }
+      ]
+    },
+    {
+      "number": "5",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:59.402"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:58.629"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:58.216"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:57.765"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:54.993"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:56.585"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:54.143"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "1:53.426"
+        },
+        {
+          "driverId": "sainz",
+          "position": "9",
+          "time": "1:50.650"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "1:50.675"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "11",
+          "time": "1:49.763"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "12",
+          "time": "1:48.512"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:47.499"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "14",
+          "time": "1:46.894"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "15",
+          "time": "1:46.638"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:44.875"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "17",
+          "time": "1:44.016"
+        }
+      ]
+    },
+    {
+      "number": "6",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.666"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:14.274"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.830"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.905"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:15.579"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:16.437"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:16.364"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "1:16.664"
+        },
+        {
+          "driverId": "sainz",
+          "position": "9",
+          "time": "1:16.942"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "1:17.278"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "11",
+          "time": "1:17.296"
+        },
+        {
+          "driverId": "stroll",
+          "position": "12",
+          "time": "1:17.308"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "13",
+          "time": "1:17.272"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:18.568"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "15",
+          "time": "1:17.590"
+        }
+      ]
+    },
+    {
+      "number": "7",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.649"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.814"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.097"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.679"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:14.842"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:15.162"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:15.582"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "1:15.750"
+        },
+        {
+          "driverId": "sainz",
+          "position": "9",
+          "time": "1:16.328"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "1:16.265"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "11",
+          "time": "1:15.845"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "12",
+          "time": "1:16.495"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:16.923"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:16.575"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "15",
+          "time": "1:15.994"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:17.463"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:17.494"
+        }
+      ]
+    },
+    {
+      "number": "8",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.859"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:14.316"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.097"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.178"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:14.818"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.611"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:15.431"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "1:15.621"
+        },
+        {
+          "driverId": "sainz",
+          "position": "9",
+          "time": "1:15.752"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "10",
+          "time": "1:15.366"
+        },
+        {
+          "driverId": "gasly",
+          "position": "11",
+          "time": "1:16.169"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "12",
+          "time": "1:16.692"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:16.059"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:16.159"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "15",
+          "time": "1:15.836"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:16.309"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.142"
+        }
+      ]
+    },
+    {
+      "number": "9",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:14.049"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:14.086"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.353"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.399"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:14.837"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.748"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:15.036"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "1:15.405"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "9",
+          "time": "1:14.562"
+        },
+        {
+          "driverId": "sainz",
+          "position": "10",
+          "time": "1:15.804"
+        },
+        {
+          "driverId": "gasly",
+          "position": "11",
+          "time": "1:16.220"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "12",
+          "time": "1:15.797"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.832"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "14",
+          "time": "1:15.615"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "15",
+          "time": "1:16.946"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:16.433"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:17.215"
+        }
+      ]
+    },
+    {
+      "number": "10",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.924"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.921"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.173"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.251"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:14.805"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.631"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:14.690"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "1:14.948"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "9",
+          "time": "1:13.830"
+        },
+        {
+          "driverId": "sainz",
+          "position": "10",
+          "time": "1:16.418"
+        },
+        {
+          "driverId": "gasly",
+          "position": "11",
+          "time": "1:15.889"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "12",
+          "time": "1:16.137"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:16.203"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "14",
+          "time": "1:15.833"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "15",
+          "time": "1:15.959"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:16.243"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.270"
+        }
+      ]
+    },
+    {
+      "number": "11",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.744"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.922"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.083"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.117"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:14.708"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.924"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:14.732"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "8",
+          "time": "1:14.221"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "9",
+          "time": "1:15.933"
+        },
+        {
+          "driverId": "sainz",
+          "position": "10",
+          "time": "1:15.488"
+        },
+        {
+          "driverId": "gasly",
+          "position": "11",
+          "time": "1:15.787"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "12",
+          "time": "1:14.730"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "13",
+          "time": "1:16.788"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:16.940"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "15",
+          "time": "1:16.002"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:16.203"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.306"
+        }
+      ]
+    },
+    {
+      "number": "12",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.782"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:14.185"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.014"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.032"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:14.736"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.754"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:15.237"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "8",
+          "time": "1:14.136"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "9",
+          "time": "1:15.402"
+        },
+        {
+          "driverId": "sainz",
+          "position": "10",
+          "time": "1:15.780"
+        },
+        {
+          "driverId": "gasly",
+          "position": "11",
+          "time": "1:15.731"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "12",
+          "time": "1:15.292"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "13",
+          "time": "1:15.767"
+        }
+      ]
+    },
+    {
+      "number": "13",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.990"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.967"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.349"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.279"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:14.897"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.870"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:14.995"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "8",
+          "time": "1:14.601"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "9",
+          "time": "1:15.512"
+        },
+        {
+          "driverId": "sainz",
+          "position": "10",
+          "time": "1:15.558"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "11",
+          "time": "1:14.664"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:16.427"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "13",
+          "time": "1:16.095"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:15.684"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "15",
+          "time": "1:15.946"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:16.048"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.904"
+        }
+      ]
+    },
+    {
+      "number": "14",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:14.068"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:14.007"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.452"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.202"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:15.013"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:15.125"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "7",
+          "time": "1:15.408"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:16.655"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "9",
+          "time": "1:15.599"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "10",
+          "time": "1:15.078"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.796"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:16.050"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.915"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:17.167"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "15",
+          "time": "1:16.022"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:16.345"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.624"
+        }
+      ]
+    },
+    {
+      "number": "15",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:14.102"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.941"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.524"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.481"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:14.947"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.881"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "7",
+          "time": "1:14.441"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.996"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "9",
+          "time": "1:15.253"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "10",
+          "time": "1:14.705"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:16.440"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.859"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.904"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:16.439"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:17.813"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:16.282"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.689"
+        }
+      ]
+    },
+    {
+      "number": "16",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:14.373"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:14.133"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.299"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.364"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:15.003"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.841"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "7",
+          "time": "1:14.477"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.740"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "9",
+          "time": "1:15.529"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "10",
+          "time": "1:14.872"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.846"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.866"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.930"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:15.734"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:16.061"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:16.293"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.450"
+        }
+      ]
+    },
+    {
+      "number": "17",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:14.155"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:14.215"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.424"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.582"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:15.155"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:15.279"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "7",
+          "time": "1:14.625"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.714"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "9",
+          "time": "1:15.393"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "10",
+          "time": "1:14.632"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.444"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.765"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.755"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:15.822"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:15.903"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:16.148"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.407"
+        }
+      ]
+    },
+    {
+      "number": "18",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:14.035"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:14.091"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.210"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.335"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:14.904"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.972"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "7",
+          "time": "1:14.104"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.656"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "9",
+          "time": "1:15.217"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "10",
+          "time": "1:14.440"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.283"
+        }
+      ]
+    },
+    {
+      "number": "19",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.779"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.730"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.812"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.063"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:14.828"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.708"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "7",
+          "time": "1:14.383"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.505"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "9",
+          "time": "1:14.268"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:16.088"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.077"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.451"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.378"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:15.350"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:15.892"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:15.635"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.338"
+        }
+      ]
+    },
+    {
+      "number": "20",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.697"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.626"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.808"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.913"
+        },
+        {
+          "driverId": "massa",
+          "position": "5",
+          "time": "1:15.086"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "6",
+          "time": "1:14.255"
+        },
+        {
+          "driverId": "alonso",
+          "position": "7",
+          "time": "1:15.620"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:15.128"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "9",
+          "time": "1:14.524"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:15.217"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.218"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.712"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.341"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:15.423"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:15.884"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "16",
+          "time": "1:15.845"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.148"
+        }
+      ]
+    },
+    {
+      "number": "21",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.927"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.848"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.133"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.440"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:14.327"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:15.929"
+        },
+        {
+          "driverId": "alonso",
+          "position": "7",
+          "time": "1:15.367"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.856"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "9",
+          "time": "1:14.704"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:15.207"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.393"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:16.015"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.649"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:15.740"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "15",
+          "time": "1:16.113"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "16",
+          "time": "1:17.725"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.253"
+        }
+      ]
+    },
+    {
+      "number": "22",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.869"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.720"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.998"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.227"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:13.485"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:15.064"
+        },
+        {
+          "driverId": "alonso",
+          "position": "7",
+          "time": "1:15.072"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.658"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "9",
+          "time": "1:14.104"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.904"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.292"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:16.060"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.405"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:15.579"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "15",
+          "time": "1:15.512"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "16",
+          "time": "1:15.824"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.071"
+        }
+      ]
+    },
+    {
+      "number": "23",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.636"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.761"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.702"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.859"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:14.004"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:14.925"
+        },
+        {
+          "driverId": "alonso",
+          "position": "7",
+          "time": "1:14.808"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.587"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "9",
+          "time": "1:14.010"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.825"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.186"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.853"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.968"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:15.541"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "15",
+          "time": "1:15.880"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "16",
+          "time": "1:15.635"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:16.020"
+        }
+      ]
+    },
+    {
+      "number": "24",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.796"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.828"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:14.208"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.119"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:13.686"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:14.910"
+        },
+        {
+          "driverId": "alonso",
+          "position": "7",
+          "time": "1:15.050"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.665"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "9",
+          "time": "1:13.902"
+        }
+      ]
+    },
+    {
+      "number": "25",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.558"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.649"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.599"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.995"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:13.320"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:14.835"
+        },
+        {
+          "driverId": "alonso",
+          "position": "7",
+          "time": "1:14.892"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.967"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "9",
+          "time": "1:14.161"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.699"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.054"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.362"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.560"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:15.365"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "15",
+          "time": "1:15.410"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "16",
+          "time": "1:15.667"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:15.961"
+        }
+      ]
+    },
+    {
+      "number": "26",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.711"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.574"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.588"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.605"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:13.124"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:14.600"
+        },
+        {
+          "driverId": "alonso",
+          "position": "7",
+          "time": "1:14.493"
+        },
+        {
+          "driverId": "perez",
+          "position": "8",
+          "time": "1:14.714"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "9",
+          "time": "1:14.126"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.637"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.744"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.445"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.515"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "14",
+          "time": "1:15.554"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "15",
+          "time": "1:15.491"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "16",
+          "time": "1:15.717"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:15.928"
+        }
+      ]
+    },
+    {
+      "number": "27",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.744"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "2",
+          "time": "1:13.833"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:18.607"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:15.097"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:13.482"
+        },
+        {
+          "driverId": "alonso",
+          "position": "6",
+          "time": "1:14.924"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:14.834"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "8",
+          "time": "1:14.309"
+        },
+        {
+          "driverId": "massa",
+          "position": "9",
+          "time": "1:19.443"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.966"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.044"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.630"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:15.536"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "14",
+          "time": "1:15.479"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "15",
+          "time": "1:20.756"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "16",
+          "time": "1:15.813"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "17",
+          "time": "1:15.781"
+        }
+      ]
+    },
+    {
+      "number": "28",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:18.799"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "2",
+          "time": "1:13.767"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "3",
+          "time": "1:13.384"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:19.822"
+        },
+        {
+          "driverId": "bottas",
+          "position": "5",
+          "time": "1:28.879"
+        },
+        {
+          "driverId": "perez",
+          "position": "6",
+          "time": "1:14.943"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "7",
+          "time": "1:14.739"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:19.116"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "9",
+          "time": "1:15.011"
+        },
+        {
+          "driverId": "sainz",
+          "position": "10",
+          "time": "1:14.868"
+        },
+        {
+          "driverId": "massa",
+          "position": "11",
+          "time": "1:30.525"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.652"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:20.380"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "14",
+          "time": "1:15.408"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:15.622"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:15.592"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:31.413"
+        }
+      ]
+    },
+    {
+      "number": "29",
+      "Timings": [
+        {
+          "driverId": "raikkonen",
+          "position": "1",
+          "time": "1:19.147"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "2",
+          "time": "1:13.395"
+        },
+        {
+          "driverId": "vettel",
+          "position": "3",
+          "time": "1:28.889"
+        },
+        {
+          "driverId": "bottas",
+          "position": "4",
+          "time": "1:13.349"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "5",
+          "time": "1:14.660"
+        },
+        {
+          "driverId": "perez",
+          "position": "6",
+          "time": "1:16.695"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "7",
+          "time": "1:29.634"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "8",
+          "time": "1:15.171"
+        },
+        {
+          "driverId": "sainz",
+          "position": "9",
+          "time": "1:14.981"
+        },
+        {
+          "driverId": "massa",
+          "position": "10",
+          "time": "1:13.744"
+        },
+        {
+          "driverId": "alonso",
+          "position": "11",
+          "time": "1:30.857"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.532"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:15.314"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:15.399"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:15.565"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:30.490"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:14.658"
+        }
+      ]
+    },
+    {
+      "number": "30",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.271"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:12.996"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.224"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:29.316"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "5",
+          "time": "1:14.110"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "6",
+          "time": "1:13.727"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:15.930"
+        }
+      ]
+    },
+    {
+      "number": "31",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.419"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.228"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.533"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:12.997"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "5",
+          "time": "1:13.927"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "6",
+          "time": "1:13.029"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:15.315"
+        },
+        {
+          "driverId": "massa",
+          "position": "8",
+          "time": "1:14.275"
+        },
+        {
+          "driverId": "alonso",
+          "position": "9",
+          "time": "1:14.204"
+        },
+        {
+          "driverId": "sainz",
+          "position": "10",
+          "time": "1:20.094"
+        },
+        {
+          "driverId": "gasly",
+          "position": "11",
+          "time": "1:15.408"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.618"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "13",
+          "time": "1:31.971"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:16.118"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:15.738"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:14.959"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:14.838"
+        }
+      ]
+    },
+    {
+      "number": "32",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.480"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.155"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.379"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.150"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "5",
+          "time": "1:13.750"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "6",
+          "time": "1:13.239"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:14.729"
+        },
+        {
+          "driverId": "massa",
+          "position": "8",
+          "time": "1:14.277"
+        },
+        {
+          "driverId": "alonso",
+          "position": "9",
+          "time": "1:14.272"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "1:15.403"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "11",
+          "time": "1:15.357"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "12",
+          "time": "1:14.264"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "13",
+          "time": "1:15.431"
+        },
+        {
+          "driverId": "sainz",
+          "position": "14",
+          "time": "1:31.024"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:15.749"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:14.753"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:14.942"
+        }
+      ]
+    },
+    {
+      "number": "33",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.208"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.363"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.557"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:12.945"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:13.032"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:15.700"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:14.489"
+        },
+        {
+          "driverId": "massa",
+          "position": "8",
+          "time": "1:14.132"
+        },
+        {
+          "driverId": "alonso",
+          "position": "9",
+          "time": "1:13.967"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "1:15.111"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "11",
+          "time": "1:14.283"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:16.062"
+        },
+        {
+          "driverId": "sainz",
+          "position": "13",
+          "time": "1:13.805"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:15.713"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:15.768"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:14.907"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:14.906"
+        }
+      ]
+    },
+    {
+      "number": "34",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.283"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.216"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.954"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.349"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:13.028"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.876"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:14.764"
+        },
+        {
+          "driverId": "massa",
+          "position": "8",
+          "time": "1:14.077"
+        },
+        {
+          "driverId": "alonso",
+          "position": "9",
+          "time": "1:14.286"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "1:15.109"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "11",
+          "time": "1:14.183"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.368"
+        },
+        {
+          "driverId": "sainz",
+          "position": "13",
+          "time": "1:14.332"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:16.344"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:15.554"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:14.517"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:14.781"
+        }
+      ]
+    },
+    {
+      "number": "35",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.152"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.549"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.491"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.438"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:12.864"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.738"
+        },
+        {
+          "driverId": "perez",
+          "position": "7",
+          "time": "1:19.630"
+        },
+        {
+          "driverId": "massa",
+          "position": "8",
+          "time": "1:14.044"
+        },
+        {
+          "driverId": "alonso",
+          "position": "9",
+          "time": "1:14.135"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "1:15.085"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "11",
+          "time": "1:14.265"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.157"
+        },
+        {
+          "driverId": "sainz",
+          "position": "13",
+          "time": "1:13.974"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:15.407"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:15.229"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:14.399"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:15.033"
+        }
+      ]
+    },
+    {
+      "number": "36",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.511"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.145"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.393"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.332"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:13.131"
+        }
+      ]
+    },
+    {
+      "number": "37",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.591"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.514"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.468"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.028"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:12.912"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.770"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.375"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.280"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.527"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "1:15.302"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "11",
+          "time": "1:14.240"
+        },
+        {
+          "driverId": "sainz",
+          "position": "12",
+          "time": "1:14.349"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:16.358"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:15.252"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:15.439"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:15.402"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:14.988"
+        }
+      ]
+    },
+    {
+      "number": "38",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.520"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.618"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.464"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.283"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:13.132"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.783"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.934"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.153"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.562"
+        },
+        {
+          "driverId": "gasly",
+          "position": "10",
+          "time": "1:15.432"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "11",
+          "time": "1:14.614"
+        },
+        {
+          "driverId": "sainz",
+          "position": "12",
+          "time": "1:14.210"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:15.236"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:15.183"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:15.076"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:15.205"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:14.900"
+        }
+      ]
+    },
+    {
+      "number": "39",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.502"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.358"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.146"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.196"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:12.763"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.576"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.913"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.916"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.242"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:13.867"
+        },
+        {
+          "driverId": "gasly",
+          "position": "11",
+          "time": "1:15.961"
+        },
+        {
+          "driverId": "sainz",
+          "position": "12",
+          "time": "1:14.156"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:14.871"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:15.206"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:15.141"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:15.046"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:16.564"
+        }
+      ]
+    },
+    {
+      "number": "40",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.706"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.216"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.220"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.116"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:13.000"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.519"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.353"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.917"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.750"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.295"
+        },
+        {
+          "driverId": "gasly",
+          "position": "11",
+          "time": "1:15.532"
+        },
+        {
+          "driverId": "sainz",
+          "position": "12",
+          "time": "1:14.333"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:15.027"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:15.528"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:16.663"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:17.606"
+        },
+        {
+          "driverId": "brendon_hartley",
+          "position": "17",
+          "time": "1:21.791"
+        }
+      ]
+    },
+    {
+      "number": "41",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:14.757"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:13.825"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:14.106"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.422"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:13.078"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.917"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.196"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.958"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:14.009"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.432"
+        },
+        {
+          "driverId": "gasly",
+          "position": "11",
+          "time": "1:15.660"
+        },
+        {
+          "driverId": "sainz",
+          "position": "12",
+          "time": "1:14.153"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:15.070"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:15.351"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:16.694"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:16.167"
+        }
+      ]
+    },
+    {
+      "number": "42",
+      "Timings": [
+        {
+          "driverId": "hamilton",
+          "position": "1",
+          "time": "1:13.748"
+        },
+        {
+          "driverId": "vettel",
+          "position": "2",
+          "time": "1:14.415"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:13.620"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.276"
+        }
+      ]
+    },
+    {
+      "number": "43",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.693"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "2",
+          "time": "1:19.036"
+        },
+        {
+          "driverId": "bottas",
+          "position": "3",
+          "time": "1:14.597"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "4",
+          "time": "1:13.450"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:13.088"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:19.472"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.087"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.059"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:14.197"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.541"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.502"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:16.803"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:15.279"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:15.225"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:17.457"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:16.502"
+        }
+      ]
+    },
+    {
+      "number": "44",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.527"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.191"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.412"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.463"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:29.255"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:14.089"
+        },
+        {
+          "driverId": "alonso",
+          "position": "7",
+          "time": "1:14.159"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "8",
+          "time": "1:29.632"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:14.214"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.516"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.701"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.483"
+        },
+        {
+          "driverId": "gasly",
+          "position": "13",
+          "time": "1:20.400"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "14",
+          "time": "1:20.958"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:17.236"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:17.105"
+        }
+      ]
+    },
+    {
+      "number": "45",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.386"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.418"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.606"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:14.700"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.423"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:14.058"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "7",
+          "time": "1:12.732"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.747"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.685"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.247"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.181"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.132"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:14.882"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "14",
+          "time": "1:16.460"
+        },
+        {
+          "driverId": "gasly",
+          "position": "15",
+          "time": "1:31.797"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "16",
+          "time": "1:32.461"
+        }
+      ]
+    },
+    {
+      "number": "46",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.129"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.063"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.337"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.116"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.012"
+        },
+        {
+          "driverId": "massa",
+          "position": "6",
+          "time": "1:14.060"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "7",
+          "time": "1:13.664"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.868"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.648"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.247"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.436"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.171"
+        },
+        {
+          "driverId": "stroll",
+          "position": "13",
+          "time": "1:14.734"
+        },
+        {
+          "driverId": "gasly",
+          "position": "14",
+          "time": "1:13.521"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:17.611"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "16",
+          "time": "1:14.180"
+        }
+      ]
+    },
+    {
+      "number": "47",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.112"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.143"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.024"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.046"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.328"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.884"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:15.238"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.327"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:14.069"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.118"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.471"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.418"
+        },
+        {
+          "driverId": "gasly",
+          "position": "13",
+          "time": "1:14.075"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:16.349"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:16.250"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "16",
+          "time": "1:14.161"
+        }
+      ]
+    },
+    {
+      "number": "48",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.985"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.205"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.321"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.141"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:13.774"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.851"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.309"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.377"
+        }
+      ]
+    },
+    {
+      "number": "49",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.343"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.585"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.225"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.137"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.939"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.512"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.152"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.036"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.885"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.053"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.265"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:17.156"
+        },
+        {
+          "driverId": "gasly",
+          "position": "13",
+          "time": "1:13.962"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.883"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.156"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:44.760"
+        }
+      ]
+    },
+    {
+      "number": "50",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.170"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.252"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.547"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.211"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.641"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.151"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.906"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.843"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.851"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.347"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.528"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.603"
+        },
+        {
+          "driverId": "gasly",
+          "position": "13",
+          "time": "1:14.395"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:15.181"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.478"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:14.876"
+        }
+      ]
+    },
+    {
+      "number": "51",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.372"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.376"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.200"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.939"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.456"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.112"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.911"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.981"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.884"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.479"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.642"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:16.386"
+        },
+        {
+          "driverId": "gasly",
+          "position": "13",
+          "time": "1:14.292"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.758"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.390"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:15.970"
+        }
+      ]
+    },
+    {
+      "number": "52",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.406"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.171"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.788"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.501"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.355"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.836"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.979"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.923"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.991"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.425"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.543"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:16.445"
+        },
+        {
+          "driverId": "gasly",
+          "position": "13",
+          "time": "1:14.133"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:15.340"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.428"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:14.394"
+        }
+      ]
+    },
+    {
+      "number": "53",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.139"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.229"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.550"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.370"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.912"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:14.111"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.956"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.822"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.710"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.049"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.281"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:14.977"
+        },
+        {
+          "driverId": "gasly",
+          "position": "13",
+          "time": "1:13.818"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.921"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.139"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:14.338"
+        }
+      ]
+    },
+    {
+      "number": "54",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.983"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.960"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.044"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.048"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.712"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:14.086"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.001"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.655"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.552"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.369"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.370"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.157"
+        }
+      ]
+    },
+    {
+      "number": "55",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.206"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.109"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.189"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.062"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.598"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:14.254"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.026"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.969"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.708"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.077"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.619"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.124"
+        },
+        {
+          "driverId": "gasly",
+          "position": "13",
+          "time": "1:13.870"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.227"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.134"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:14.205"
+        }
+      ]
+    },
+    {
+      "number": "56",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.070"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.240"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.968"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.074"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.419"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.810"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.522"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.541"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.511"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:13.909"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:16.883"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.150"
+        },
+        {
+          "driverId": "gasly",
+          "position": "13",
+          "time": "1:13.630"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.246"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:13.866"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:13.880"
+        }
+      ]
+    },
+    {
+      "number": "57",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.903"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.788"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:13.513"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.008"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.020"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.624"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.589"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.451"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.315"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:13.758"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.304"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "12",
+          "time": "1:15.255"
+        },
+        {
+          "driverId": "gasly",
+          "position": "13",
+          "time": "1:14.601"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:13.987"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:13.760"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:16.275"
+        }
+      ]
+    },
+    {
+      "number": "58",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.763"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.466"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.663"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "4",
+          "time": "1:13.095"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "5",
+          "time": "1:12.357"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.080"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.520"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.660"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.134"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:13.952"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:13.950"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:14.782"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:16.454"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.260"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.086"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:17.580"
+        }
+      ]
+    },
+    {
+      "number": "59",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:13.156"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.902"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.638"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:12.523"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:15.027"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.083"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.648"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.669"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.217"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:13.937"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:15.548"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:13.988"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:15.262"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.474"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:13.934"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:13.926"
+        }
+      ]
+    },
+    {
+      "number": "60",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.976"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.035"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.732"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:11.932"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:14.136"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.068"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.452"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.488"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.222"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:13.972"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:13.862"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:13.445"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:14.812"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.584"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.548"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:15.280"
+        }
+      ]
+    },
+    {
+      "number": "61",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.739"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.585"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.492"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:12.255"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:13.501"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:12.865"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.618"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.580"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.052"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.881"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:13.865"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:13.323"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:14.968"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.701"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.891"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:14.237"
+        }
+      ]
+    },
+    {
+      "number": "62",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.894"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.787"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.709"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:11.918"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:18.899"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:12.456"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.641"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.647"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.278"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:18.771"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:13.981"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:13.527"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:15.965"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.396"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.512"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:13.981"
+        }
+      ]
+    },
+    {
+      "number": "63",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.539"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.982"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.928"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:11.845"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:29.246"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:12.263"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:13.605"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.650"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.523"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:15.341"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:13.869"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:13.428"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:15.261"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:14.672"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:14.279"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:14.252"
+        }
+      ]
+    },
+    {
+      "number": "64",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.782"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.660"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.595"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:12.309"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:11.044"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.558"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.108"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:13.780"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.510"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.128"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.076"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:13.578"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:15.448"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:15.104"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:15.341"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:13.699"
+        }
+      ]
+    },
+    {
+      "number": "65",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.714"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.677"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.736"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:12.171"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:12.448"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:13.689"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.400"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.309"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:13.928"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.115"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:13.861"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:13.527"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:15.520"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:15.794"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:15.924"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:14.168"
+        }
+      ]
+    },
+    {
+      "number": "66",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.849"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.552"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.672"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:12.119"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:12.541"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:14.064"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.420"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.448"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:14.290"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.118"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.224"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:14.732"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "13",
+          "time": "1:16.919"
+        },
+        {
+          "driverId": "stroll",
+          "position": "14",
+          "time": "1:15.517"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "15",
+          "time": "1:15.448"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "16",
+          "time": "1:13.532"
+        }
+      ]
+    },
+    {
+      "number": "67",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.704"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.660"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.988"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:13.150"
+        }
+      ]
+    },
+    {
+      "number": "68",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.610"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.697"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.581"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:12.694"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:12.231"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:12.575"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.436"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.511"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:14.473"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:14.309"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:13.959"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:14.502"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "13",
+          "time": "1:14.371"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "14",
+          "time": "1:16.979"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:13.963"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:33.077"
+        }
+      ]
+    },
+    {
+      "number": "69",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.603"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:12.551"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.988"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:12.789"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:12.434"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:12.506"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:15.066"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.834"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:14.954"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:13.854"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:13.828"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:13.502"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "13",
+          "time": "1:14.125"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "14",
+          "time": "1:16.903"
+        },
+        {
+          "driverId": "grosjean",
+          "position": "15",
+          "time": "1:13.799"
+        },
+        {
+          "driverId": "stroll",
+          "position": "16",
+          "time": "1:11.862"
+        }
+      ]
+    },
+    {
+      "number": "70",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.719"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.047"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.672"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:12.549"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:12.239"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:12.286"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:14.784"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:14.779"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:14.665"
+        },
+        {
+          "driverId": "hulkenberg",
+          "position": "10",
+          "time": "1:13.949"
+        },
+        {
+          "driverId": "sainz",
+          "position": "11",
+          "time": "1:14.255"
+        },
+        {
+          "driverId": "gasly",
+          "position": "12",
+          "time": "1:15.181"
+        },
+        {
+          "driverId": "ericsson",
+          "position": "13",
+          "time": "1:13.666"
+        },
+        {
+          "driverId": "wehrlein",
+          "position": "14",
+          "time": "1:17.183"
+        }
+      ]
+    },
+    {
+      "number": "71",
+      "Timings": [
+        {
+          "driverId": "vettel",
+          "position": "1",
+          "time": "1:12.971"
+        },
+        {
+          "driverId": "bottas",
+          "position": "2",
+          "time": "1:13.274"
+        },
+        {
+          "driverId": "raikkonen",
+          "position": "3",
+          "time": "1:12.809"
+        },
+        {
+          "driverId": "hamilton",
+          "position": "4",
+          "time": "1:13.168"
+        },
+        {
+          "driverId": "max_verstappen",
+          "position": "5",
+          "time": "1:12.637"
+        },
+        {
+          "driverId": "ricciardo",
+          "position": "6",
+          "time": "1:12.029"
+        },
+        {
+          "driverId": "massa",
+          "position": "7",
+          "time": "1:15.619"
+        },
+        {
+          "driverId": "alonso",
+          "position": "8",
+          "time": "1:15.716"
+        },
+        {
+          "driverId": "perez",
+          "position": "9",
+          "time": "1:15.539"
+        }
+      ]
+    }
+  ]
+}
