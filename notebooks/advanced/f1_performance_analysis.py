@@ -393,6 +393,43 @@ class F1PerformanceAnalyzer:
             # Get driver summary
             driver_summary = self.lap_analyzer.get_driver_overtake_summary(overtake_data)
             
+            # Map driver IDs to F1DB format
+            driver_summary = self._map_lap_driver_ids_to_f1db(driver_summary)
+            
+            # Map overtake data IDs too
+            overtake_data = overtake_data.copy()
+            lap_to_f1db_map = {
+                'max_verstappen': 'max-verstappen',
+                'norris': 'lando-norris',
+                'russell': 'george-russell', 
+                'hamilton': 'lewis-hamilton',
+                'leclerc': 'charles-leclerc',
+                'piastri': 'oscar-piastri',
+                'alonso': 'fernando-alonso',
+                'gasly': 'pierre-gasly',
+                'ocon': 'esteban-ocon',
+                'stroll': 'lance-stroll',
+                'albon': 'alexander-albon',
+                'tsunoda': 'yuki-tsunoda',
+                'hulkenberg': 'nico-hulkenberg',
+                'bearman': 'oliver-bearman',
+                'antonelli': 'andrea-kimi-antonelli',
+                'bortoleto': 'gabriel-bortoleto',
+                'lawson': 'liam-lawson',
+                'hadjar': 'isack-hadjar',
+                'doohan': 'jack-doohan',
+                'colapinto': 'franco-colapinto',
+                'perez': 'sergio-perez',
+                'sainz': 'carlos-sainz-jr',
+                'bottas': 'valtteri-bottas',
+                'magnussen': 'kevin-magnussen',
+                'zhou': 'guanyu-zhou',
+                'ricciardo': 'daniel-ricciardo',
+                'sargeant': 'logan-sargeant'
+            }
+            overtake_data['driverId'] = overtake_data['driverId'].map(lap_to_f1db_map)
+            overtake_data = overtake_data[overtake_data['driverId'].notna()]
+            
             # Convert to expected format
             return self._format_overtake_results(driver_summary, overtake_data)
             
@@ -667,17 +704,34 @@ class F1PerformanceAnalyzer:
         # Create base DataFrame with required columns
         formatted_data = pd.DataFrame()
         
-        # Map from lap analyzer results to expected format
-        formatted_data['total_overtakes'] = driver_summary['total_overtakes_made']
-        formatted_data['avg_overtakes'] = driver_summary['avg_overtakes_per_race']
-        formatted_data['median_overtakes'] = driver_summary['total_overtakes_made'] / driver_summary['races_participated']  # Approximation
-        formatted_data['total_overtaken_by'] = driver_summary['total_overtaken_by']
-        formatted_data['net_overtakes'] = driver_summary['net_overtakes']
-        formatted_data['races'] = driver_summary['races_participated']
-        formatted_data['max_single_race'] = driver_summary['max_overtakes_single_race']
+        # Add driver IDs as index (driver_summary already has driverId as index after mapping)
+        formatted_data.index = driver_summary.index
         
-        # Add driver IDs as index
-        formatted_data.index = driver_summary['driverId']
+        # Add driver names FIRST
+        drivers = self.data.get('drivers', pd.DataFrame())
+        if not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            formatted_data['driver_name'] = formatted_data.index.map(driver_map)
+        else:
+            formatted_data['driver_name'] = formatted_data.index
+        
+        # Map from lap analyzer results to expected format - using OTs instead of overtakes
+        formatted_data['total_OTs'] = driver_summary['total_overtakes_made']
+        formatted_data['avg_OTs'] = driver_summary['avg_overtakes_per_race']
+        formatted_data['median_OTs'] = (driver_summary['total_overtakes_made'] / driver_summary['races_participated']).round(2)
+        formatted_data['OTd_by'] = driver_summary['total_overtaken_by']
+        formatted_data['net_OTs'] = driver_summary['net_overtakes']
+        formatted_data['races'] = driver_summary['races_participated']
+        formatted_data['max_OTs'] = driver_summary['max_overtakes_single_race']
+        
+        # Get recent race performance
+        if not overtake_data.empty:
+            # Get most recent race data for each driver
+            recent_race_data = overtake_data.loc[overtake_data.groupby('driverId')['round'].idxmax()]
+            recent_race_overtakes = dict(zip(recent_race_data['driverId'], recent_race_data['overtakes_made']))
+            formatted_data['last_race_OTs'] = formatted_data.index.map(lambda x: recent_race_overtakes.get(x, 0))
+        else:
+            formatted_data['last_race_OTs'] = 0
         
         # Get points data from F1DB for these drivers
         results = self.data.get('results', self.data.get('races_race_results', pd.DataFrame()))
@@ -695,47 +749,122 @@ class F1PerformanceAnalyzer:
         formatted_data['total_points'] = formatted_data.get('total_points', 0).fillna(0)
         formatted_data['avg_points'] = formatted_data.get('avg_points', 0.0).fillna(0.0)
         
-        # Add driver names
-        drivers = self.data.get('drivers', pd.DataFrame())
-        if not drivers.empty:
-            driver_map = dict(zip(drivers['id'], drivers['name']))
-            formatted_data['driver_name'] = formatted_data.index.map(driver_map)
+        # Add circuit-specific overtake averages
+        formatted_data['c_race_OTs'] = 0
+        formatted_data['n_race_OTs'] = 0
         
-        # Add circuit-specific data (simplified for now)
-        formatted_data['p_circuit_avg'] = 0
-        formatted_data['c_circuit_avg'] = 0  
-        formatted_data['n_circuit_avg'] = 0
-        formatted_data['n_circuit_pts'] = 0
-        formatted_data['p_circuit_pts'] = 0
-        formatted_data['last_race'] = 0
-        formatted_data['last_race_pts'] = 0
+        # Get race information
+        races = self.data.get('races', pd.DataFrame())
+        if not races.empty and not overtake_data.empty:
+            # Ensure races have proper datetime
+            races['date'] = pd.to_datetime(races['date'])
+            
+            # Get the most recent races with results
+            results = self.data.get('results', self.data.get('races_race_results', pd.DataFrame()))
+            if not results.empty:
+                races_with_results = results['raceId'].unique()
+                
+                # Get the most recent race with results (current race)
+                recent_races = races[races['id'].isin(races_with_results)].sort_values('date', ascending=False)
+                
+                if not recent_races.empty:
+                    # Current race circuit
+                    current_race = recent_races.iloc[0]
+                    current_circuit_id = current_race['circuitId']
+                    
+                    # Calculate average overtakes at current circuit
+                    current_circuit_data = overtake_data[overtake_data['circuitId'] == current_circuit_id]
+                    if not current_circuit_data.empty:
+                        circuit_avg_overtakes = current_circuit_data.groupby('driverId')['overtakes_made'].mean().round(1)
+                        formatted_data['c_race_OTs'] = formatted_data.index.map(
+                            lambda x: circuit_avg_overtakes.get(x, 0)
+                        )
+            
+            # Get next race circuit
+            next_race = self.get_next_race()
+            if next_race is not None and 'circuitId' in next_race:
+                next_circuit_id = next_race['circuitId']
+                
+                # Calculate average overtakes at next circuit
+                next_circuit_data = overtake_data[overtake_data['circuitId'] == next_circuit_id]
+                if not next_circuit_data.empty:
+                    next_circuit_avg = next_circuit_data.groupby('driverId')['overtakes_made'].mean().round(1)
+                    formatted_data['n_race_OTs'] = formatted_data.index.map(
+                        lambda x: next_circuit_avg.get(x, 0)
+                    )
         
-        # Get recent race performance
-        if not overtake_data.empty:
-            # Get most recent race data for each driver
-            recent_race_data = overtake_data.loc[overtake_data.groupby('driverId')['round'].idxmax()]
-            recent_race_overtakes = dict(zip(recent_race_data['driverId'], recent_race_data['overtakes_made']))
-            formatted_data['last_race'] = formatted_data.index.map(lambda x: recent_race_overtakes.get(x, 0))
-        
-        # Reset index to match expected format
-        formatted_data = formatted_data.reset_index()
-        formatted_data = formatted_data.rename(columns={'index': 'driverId'})
-        
-        # Filter to only current season drivers
-        formatted_data = self.filter_current_season_drivers(formatted_data.set_index('driverId'))
+        # Get current season driver IDs
+        current_drivers = self.get_active_drivers()
+        if not current_drivers.empty:
+            current_ids = current_drivers['id'].values
+            # Filter formatted_data to only include current drivers
+            formatted_data = formatted_data[formatted_data.index.isin(current_ids)]
         
         # Reset index and clean up
         formatted_data = formatted_data.reset_index(drop=True)
         
-        # Rename columns to match expected format
-        column_mapping = {
-            'total_overtakes': 'total_pos_gained',
-            'avg_overtakes': 'avg_pos_gained', 
-            'median_overtakes': 'median_pos_gained'
-        }
-        formatted_data = formatted_data.rename(columns=column_mapping)
+        # Define column order with driver_name first
+        column_order = [
+            'driver_name', 'total_OTs', 'avg_OTs', 'median_OTs', 
+            'last_race_OTs', 'c_race_OTs', 'n_race_OTs', 
+            'OTd_by', 'net_OTs', 'max_OTs',
+            'races', 'total_points', 'avg_points'
+        ]
+        
+        # Select only columns that exist in the order we want
+        existing_columns = [col for col in column_order if col in formatted_data.columns]
+        formatted_data = formatted_data[existing_columns]
         
         return formatted_data
+    
+    def _map_lap_driver_ids_to_f1db(self, driver_summary: pd.DataFrame) -> pd.DataFrame:
+        """Map lap data driver IDs to F1DB driver IDs"""
+        if driver_summary.empty:
+            return driver_summary
+        
+        # Create mapping from lap data IDs to F1DB IDs
+        driver_id_mapping = {
+            'max_verstappen': 'max-verstappen',
+            'norris': 'lando-norris',
+            'russell': 'george-russell', 
+            'hamilton': 'lewis-hamilton',
+            'leclerc': 'charles-leclerc',
+            'piastri': 'oscar-piastri',
+            'alonso': 'fernando-alonso',
+            'gasly': 'pierre-gasly',
+            'ocon': 'esteban-ocon',
+            'stroll': 'lance-stroll',
+            'albon': 'alexander-albon',
+            'tsunoda': 'yuki-tsunoda',
+            'hulkenberg': 'nico-hulkenberg',
+            'bearman': 'oliver-bearman',
+            'antonelli': 'andrea-kimi-antonelli',
+            'bortoleto': 'gabriel-bortoleto',
+            'lawson': 'liam-lawson',
+            'hadjar': 'isack-hadjar',
+            'doohan': 'jack-doohan',
+            'colapinto': 'franco-colapinto',
+            'perez': 'sergio-perez',
+            'sainz': 'carlos-sainz-jr',
+            'bottas': 'valtteri-bottas',
+            'magnussen': 'kevin-magnussen',
+            'zhou': 'guanyu-zhou',
+            'ricciardo': 'daniel-ricciardo',
+            'sargeant': 'logan-sargeant'
+        }
+        
+        # Map the driver IDs
+        driver_summary['f1db_driver_id'] = driver_summary['driverId'].map(driver_id_mapping)
+        
+        # Keep only drivers that mapped successfully
+        mapped_drivers = driver_summary[driver_summary['f1db_driver_id'].notna()].copy()
+        mapped_drivers['driverId'] = mapped_drivers['f1db_driver_id']
+        mapped_drivers = mapped_drivers.drop('f1db_driver_id', axis=1)
+        
+        # Set driverId as index to match expected format
+        mapped_drivers = mapped_drivers.set_index('driverId')
+        
+        return mapped_drivers
     
     def analyze_fantasy_overtakes(self):
         """Analyze F1 Fantasy overtake data"""
@@ -821,6 +950,16 @@ class F1PerformanceAnalyzer:
         
         # Filter to current season drivers
         fantasy_df = self.filter_current_season_drivers(fantasy_df)
+        
+        # Rename sprint_overtake_bonus columns to sprint_OTs
+        rename_map = {}
+        for col in fantasy_df.columns:
+            if 'sprint_overtake_bonus' in col:
+                new_col = col.replace('sprint_overtake_bonus', 'sprint_OTs')
+                rename_map[col] = new_col
+        
+        if rename_map:
+            fantasy_df = fantasy_df.rename(columns=rename_map)
         
         return fantasy_df
     
@@ -1342,7 +1481,8 @@ class F1PerformanceAnalyzer:
             dhl_data = dhl_data.dropna(subset=['driverId'])
         
         # Map race names to circuit IDs
-        if not races.empty and not circuits.empty and 'race' in dhl_data.columns:
+        race_column = 'event_name' if 'event_name' in dhl_data.columns else 'race'
+        if not races.empty and not circuits.empty and race_column in dhl_data.columns:
             # Create mapping from race names to circuit IDs
             race_circuit_map = {}
             circuit_name_map = {}
@@ -1363,7 +1503,7 @@ class F1PerformanceAnalyzer:
                 circuit_name_map[circuit['id']] = circuit['name']
             
             # Add circuit IDs to DHL data
-            dhl_data['circuitId'] = dhl_data['race'].str.lower().map(
+            dhl_data['circuitId'] = dhl_data[race_column].str.lower().map(
                 lambda x: next((cid for race_name, cid in race_circuit_map.items() 
                               if race_name in x or x in race_name), None)
             )
@@ -1378,8 +1518,16 @@ class F1PerformanceAnalyzer:
         dhl_analysis.columns = ['avg_time', 'median_time', 'best_time', 'total_stops', 'best_time_lap']
         
         # Add first stop analysis
-        first_stops = dhl_data.sort_values(['driverId', 'year', 'race', 'lap']).groupby(['driverId', 'race']).first()
-        first_stop_analysis = first_stops.groupby('driverId')['time'].agg(['mean', 'median', 'min', 'count']).round(3)
+        # Use event_id instead of race for grouping
+        sort_columns = ['driverId', 'lap']
+        group_column = 'event_id' if 'event_id' in dhl_data.columns else 'race'
+        
+        if group_column in dhl_data.columns:
+            first_stops = dhl_data.sort_values(sort_columns).groupby(['driverId', group_column]).first()
+            first_stop_analysis = first_stops.groupby('driverId')['time'].agg(['mean', 'median', 'min', 'count']).round(3)
+        else:
+            # Fallback: just group by driver
+            first_stop_analysis = dhl_data.groupby('driverId')['time'].agg(['mean', 'median', 'min', 'count']).round(3)
         first_stop_analysis.columns = ['avg_first_stop', 'median_first_stop', 'best_first_stop', 'first_stop_races']
         
         # Join first stop analysis to main analysis
@@ -2512,11 +2660,15 @@ class F1PerformanceAnalyzer:
             
             print("\nColumn Explanations:")
             if self.lap_analyzer is not None:
-                print("- avg_pos_gained: Average real overtakes made per race (lap-by-lap analysis)")
-                print("- median_pos_gained: Median overtakes made per race")
-                print("- last_race: Overtakes made in the most recent race")
-                print("- total_pos_gained: Total overtakes made across all races")
-                print("- net_overtakes: Net overtakes (overtakes made - times overtaken)")
+                print("- total_OTs: Total overtakes made across all races")
+                print("- avg_OTs: Average real overtakes made per race (lap-by-lap analysis)")
+                print("- median_OTs: Median overtakes made per race")
+                print("- last_race_OTs: Overtakes made in the most recent race")
+                print("- c_race_OTs: Historical average overtakes at current race circuit")
+                print("- n_race_OTs: Historical average overtakes at next race circuit")
+                print("- OTd_by: Total times overtaken by other drivers")
+                print("- net_OTs: Net overtakes (overtakes made - times overtaken)")
+                print("- max_OTs: Maximum overtakes in a single race")
                 print("\nNote: This shows ACTUAL on-track overtakes from lap-by-lap data")
             else:
                 print("- avg_pos_gained: Average positions gained per race (grid - finish, positive = gained positions)")
@@ -2529,22 +2681,54 @@ class F1PerformanceAnalyzer:
             
             # Show drivers with notable statistics
             print("\nNotable insights:")
-            if 'avg_pos_gained' in overtakes.columns:
-                top_gainers = overtakes.nlargest(5, 'avg_pos_gained')
-                if 'driver_name' in overtakes.columns:
-                    top_names = [overtakes.loc[idx, 'driver_name'] for idx in top_gainers.index if idx in overtakes.index]
-                    print(f"Top 5 position gainers: {', '.join(top_names)}")
-                else:
-                    print(f"Top 5 position gainers: {', '.join(top_gainers.index.tolist())}")
-                
-                # Drivers with negative average (lost positions)
-                lost_positions = overtakes[overtakes['avg_pos_gained'] < 0]
-                if not lost_positions.empty:
+            
+            if self.lap_analyzer is not None:
+                # Real overtakes analysis
+                if 'avg_OTs' in overtakes.columns:
+                    top_overtakers = overtakes.nlargest(5, 'avg_OTs')
                     if 'driver_name' in overtakes.columns:
-                        lost_names = [overtakes.loc[idx, 'driver_name'] for idx in lost_positions.index if idx in overtakes.index]
-                        print(f"Drivers who typically lost positions: {', '.join(lost_names)}")
+                        top_names = [overtakes.loc[idx, 'driver_name'] for idx in top_overtakers.index if idx in overtakes.index]
+                        print(f"Top 5 overtakers (by avg/race): {', '.join(top_names)}")
+                    
+                    # Show total overtakes too
+                    if 'total_OTs' in overtakes.columns:
+                        total_ots = overtakes['total_OTs'].sum()
+                        print(f"Total overtakes recorded: {int(total_ots)}")
+                    
+                    # Show best net overtakers
+                    if 'net_OTs' in overtakes.columns:
+                        best_net = overtakes.nlargest(3, 'net_OTs')
+                        if 'driver_name' in overtakes.columns:
+                            net_names = [overtakes.loc[idx, 'driver_name'] for idx in best_net.index if idx in overtakes.index]
+                            print(f"Best net overtakers: {', '.join(net_names)}")
+            else:
+                # Position-based analysis
+                if 'avg_pos_gained' in overtakes.columns:
+                    top_gainers = overtakes.nlargest(5, 'avg_pos_gained')
+                    if 'driver_name' in overtakes.columns:
+                        top_names = [overtakes.loc[idx, 'driver_name'] for idx in top_gainers.index if idx in overtakes.index]
+                        print(f"Top 5 position gainers: {', '.join(top_names)}")
                     else:
-                        print(f"Drivers who typically lost positions: {', '.join(lost_positions.index.tolist())}")
+                        print(f"Top 5 position gainers: {', '.join(top_gainers.index.tolist())}")
+                    
+                    # For position-based analysis, show negative performers
+                    lost_positions = overtakes[overtakes['avg_pos_gained'] < 0]
+                    if not lost_positions.empty:
+                        if 'driver_name' in overtakes.columns:
+                            lost_names = [overtakes.loc[idx, 'driver_name'] for idx in lost_positions.index if idx in overtakes.index]
+                            print(f"Drivers who typically lost positions: {', '.join(lost_names)}")
+                        else:
+                            print(f"Drivers who typically lost positions: {', '.join(lost_positions.index.tolist())}")
+                else:
+                    # For real overtakes, show total overtakes
+                    if 'total_pos_gained' in overtakes.columns:
+                        total_overtakes = overtakes['total_pos_gained'].sum()
+                        print(f"Total overtakes recorded: {int(total_overtakes)}")
+                        if 'net_overtakes' in overtakes.columns:
+                            top_net = overtakes.nlargest(3, 'net_overtakes')
+                            if 'driver_name' in overtakes.columns:
+                                net_names = [overtakes.loc[idx, 'driver_name'] for idx in top_net.index if idx in overtakes.index]
+                                print(f"Best net overtakers: {', '.join(net_names)}")
         else:
             print("No overtake data available")
         
@@ -2585,8 +2769,8 @@ class F1PerformanceAnalyzer:
         if not fantasy_overtakes.empty:
             # Sprint overtakes section
             sprint_cols = ['driver_name', 'total_races']
-            sprint_overtake_cols = [col for col in fantasy_overtakes.columns if 'sprint_overtake' in col and '_avg_pts' in col]
-            sprint_count_cols = [col for col in fantasy_overtakes.columns if 'sprint_overtake' in col and '_avg_count' in col]
+            sprint_overtake_cols = [col for col in fantasy_overtakes.columns if ('sprint_overtake' in col or 'sprint_OTs' in col) and '_avg_pts' in col]
+            sprint_count_cols = [col for col in fantasy_overtakes.columns if ('sprint_overtake' in col or 'sprint_OTs' in col) and '_avg_count' in col]
             
             # Add sprint columns
             sprint_cols.extend(sprint_overtake_cols)
@@ -2596,16 +2780,18 @@ class F1PerformanceAnalyzer:
             sprint_cols = [col for col in sprint_cols if col in fantasy_overtakes.columns]
             
             # Filter to drivers with sprint overtake data
-            has_sprint_data = fantasy_overtakes[fantasy_overtakes['sprint_overtake_bonus_avg_pts'] > 0] if 'sprint_overtake_bonus_avg_pts' in fantasy_overtakes.columns else fantasy_overtakes
+            # Check for both old and new column names
+            sprint_pts_col = 'sprint_OTs_avg_pts' if 'sprint_OTs_avg_pts' in fantasy_overtakes.columns else 'sprint_overtake_bonus_avg_pts'
+            has_sprint_data = fantasy_overtakes[fantasy_overtakes[sprint_pts_col] > 0] if sprint_pts_col in fantasy_overtakes.columns else fantasy_overtakes
             
             if not has_sprint_data.empty:
                 print("\nSprint Overtake Points Summary:")
-                print(has_sprint_data.sort_values('sprint_overtake_bonus_avg_pts', ascending=False)[sprint_cols].head(15).to_string(index=False))
+                print(has_sprint_data.sort_values(sprint_pts_col, ascending=False)[sprint_cols].head(15).to_string(index=False))
                 
                 print("\nColumn Explanations:")
-                print("- sprint_overtake_bonus_avg_pts: Average fantasy points per race from sprint overtaking")
-                print("- sprint_overtake_bonus_circuit_avg_pts: Average at the next race circuit")
-                print("- sprint_overtake_bonus_avg_count: Average number of sprint overtakes per race")
+                print("- sprint_OTs_avg_pts: Average fantasy points per race from sprint overtaking")
+                print("- sprint_OTs_circuit_avg_pts: Average at the next race circuit")
+                print("- sprint_OTs_avg_count: Average number of sprint overtakes per race")
             else:
                 print("No sprint overtake data available")
             
@@ -2620,7 +2806,12 @@ class F1PerformanceAnalyzer:
                 print("\nComparison: Position-based vs Fantasy overtakes:")
                 # Find drivers who excel in fantasy but not position-based
                 fantasy_leaders = set(fantasy_overtakes.nlargest(10, 'total_overtake_points')['driver_name'].tolist())
-                position_leaders = set(overtakes.nlargest(10, 'avg_pos_gained')['driver_name'].tolist())
+                # Use appropriate column name based on whether we have real overtakes or position-based
+                overtake_col = 'avg_OTs' if self.lap_analyzer is not None else 'avg_pos_gained'
+                if overtake_col in overtakes.columns:
+                    position_leaders = set(overtakes.nlargest(10, overtake_col)['driver_name'].tolist())
+                else:
+                    position_leaders = set()
                 
                 fantasy_only = fantasy_leaders - position_leaders
                 if fantasy_only:
