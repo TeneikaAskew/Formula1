@@ -1,0 +1,208 @@
+{
+  "data": {
+    "chart": [
+      {
+        "id": 7240,
+        "driverNr": 16,
+        "tla": "LEC",
+        "firstName": "Charles",
+        "lastName": "Leclerc",
+        "team": "Ferrari",
+        "duration": 2.32,
+        "startTime": {
+          "date": "2025-03-16 16:17:28.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 34,
+        "points": 25,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7241,
+        "driverNr": 44,
+        "tla": "HAM",
+        "firstName": "Lewis",
+        "lastName": "Hamilton",
+        "team": "Ferrari",
+        "duration": 2.38,
+        "startTime": {
+          "date": "2025-03-16 16:42:38.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 47,
+        "points": 18,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7242,
+        "driverNr": 63,
+        "tla": "RUS",
+        "firstName": "George",
+        "lastName": "Russell",
+        "team": "Mercedes",
+        "duration": 2.43,
+        "startTime": {
+          "date": "2025-03-16 16:17:17.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 34,
+        "points": 15,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7243,
+        "driverNr": 22,
+        "tla": "TSU",
+        "firstName": "Yuki",
+        "lastName": "Tsunoda",
+        "team": "Racing Bulls",
+        "duration": 2.47,
+        "startTime": {
+          "date": "2025-03-16 16:42:42.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 47,
+        "points": 12,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7244,
+        "driverNr": 87,
+        "tla": "BEA",
+        "firstName": "Oliver",
+        "lastName": "Bearman",
+        "team": "Haas",
+        "duration": 2.49,
+        "startTime": {
+          "date": "2025-03-16 15:29:03.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 4,
+        "points": 10,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7245,
+        "driverNr": 31,
+        "tla": "OCO",
+        "firstName": "Esteban",
+        "lastName": "Ocon",
+        "team": "Haas",
+        "duration": 2.54,
+        "startTime": {
+          "date": "2025-03-16 15:28:55.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 4,
+        "points": 8,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7247,
+        "driverNr": 1,
+        "tla": "VER",
+        "firstName": "Max",
+        "lastName": "Verstappen",
+        "team": "Red Bull",
+        "duration": 2.56,
+        "startTime": {
+          "date": "2025-03-16 16:40:15.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 46,
+        "points": 6,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7248,
+        "driverNr": 30,
+        "tla": "LAW",
+        "firstName": "Liam",
+        "lastName": "Lawson",
+        "team": "Red Bull",
+        "duration": 2.58,
+        "startTime": {
+          "date": "2025-03-16 15:29:00.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 4,
+        "points": 4,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7251,
+        "driverNr": 12,
+        "tla": "ANT",
+        "firstName": "Andrea Kimi",
+        "lastName": "Antonelli",
+        "team": "Mercedes",
+        "duration": 2.73,
+        "startTime": {
+          "date": "2025-03-16 16:15:54.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 33,
+        "points": 2,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7252,
+        "driverNr": 23,
+        "tla": "ALB",
+        "firstName": "Alexander",
+        "lastName": "Albon",
+        "team": "Williams",
+        "duration": 2.75,
+        "startTime": {
+          "date": "2025-03-16 16:15:41.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 33,
+        "points": 1,
+        "irregular": false,
+        "notes": ""
+      }
+    ],
+    "sort": "1",
+    "event_id": 1086,
+    "headline": {
+      "style": {
+        "size": "3",
+        "align": "c"
+      },
+      "headline": {
+        "style": {
+          "color": "b",
+          "uppercase": false
+        }
+      },
+      "headline_type": "2"
+    },
+    "list_item_title": "Australia"
+  },
+  "htmlList": {
+    "table": "\n<table class=\"f1-award-table\">\n  <tr>\n    <th class=\"align-center\">Pos.</th>\n    <th>Team</th>\n    <th>Driver</th>\n    <th>Time (sec)</th>\n    <th>Lap</th>\n    <th>Points</th>\n  </tr>\n      <tr>\n      <td class=\"align-center\"><strong>1</strong></td>\n      <td>Ferrari</td>\n      <td>Leclerc</td>\n      <td>2.32</td>\n      <td>34</td>\n      <td><strong>25</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>2</strong></td>\n      <td>Ferrari</td>\n      <td>Hamilton</td>\n      <td>2.38</td>\n      <td>47</td>\n      <td><strong>18</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>3</strong></td>\n      <td>Mercedes</td>\n      <td>Russell</td>\n      <td>2.43</td>\n      <td>34</td>\n      <td><strong>15</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>4</strong></td>\n      <td>Racing Bulls</td>\n      <td>Tsunoda</td>\n      <td>2.47</td>\n      <td>47</td>\n      <td><strong>12</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>5</strong></td>\n      <td>Haas</td>\n      <td>Bearman</td>\n      <td>2.49</td>\n      <td>4</td>\n      <td><strong>10</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>6</strong></td>\n      <td>Haas</td>\n      <td>Ocon</td>\n      <td>2.54</td>\n      <td>4</td>\n      <td><strong>8</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>7</strong></td>\n      <td>Ferrari</td>\n      <td>Hamilton</td>\n      <td>2.55</td>\n      <td>33</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>8</strong></td>\n      <td>Red Bull</td>\n      <td>Verstappen</td>\n      <td>2.56</td>\n      <td>46</td>\n      <td><strong>6</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>9</strong></td>\n      <td>Red Bull</td>\n      <td>Lawson</td>\n      <td>2.58</td>\n      <td>4</td>\n      <td><strong>4</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>10</strong></td>\n      <td>Racing Bulls</td>\n      <td>Tsunoda</td>\n      <td>2.67</td>\n      <td>33</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>11</strong></td>\n      <td>Haas</td>\n      <td>Ocon</td>\n      <td>2.69</td>\n      <td>46</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>12</strong></td>\n      <td>Mercedes</td>\n      <td>Antonelli</td>\n      <td>2.73</td>\n      <td>33</td>\n      <td><strong>2</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>13</strong></td>\n      <td>Williams</td>\n      <td>Albon</td>\n      <td>2.75</td>\n      <td>33</td>\n      <td><strong>1</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>14</strong></td>\n      <td>Mercedes</td>\n      <td>Russell</td>\n      <td>2.76</td>\n      <td>44</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>15</strong></td>\n      <td>Red Bull</td>\n      <td>Verstappen</td>\n      <td>2.77</td>\n      <td>34</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>16</strong></td>\n      <td>McLaren</td>\n      <td>Norris</td>\n      <td>2.79</td>\n      <td>34</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>17</strong></td>\n      <td>Haas</td>\n      <td>Bearman</td>\n      <td>2.80</td>\n      <td>44</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>18</strong></td>\n      <td>Haas</td>\n      <td>Ocon</td>\n      <td>2.82</td>\n      <td>39</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>19</strong></td>\n      <td>Aston Martin</td>\n      <td>Stroll</td>\n      <td>2.82</td>\n      <td>44</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>20</strong></td>\n      <td>Aston Martin</td>\n      <td>Stroll</td>\n      <td>2.87</td>\n      <td>33</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>21</strong></td>\n      <td>Red Bull</td>\n      <td>Lawson</td>\n      <td>2.94</td>\n      <td>33</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>22</strong></td>\n      <td>Mercedes</td>\n      <td>Antonelli</td>\n      <td>3.05</td>\n      <td>44</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>23</strong></td>\n      <td>McLaren</td>\n      <td>Norris</td>\n      <td>3.19</td>\n      <td>44</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>24</strong></td>\n      <td>Ferrari</td>\n      <td>Leclerc</td>\n      <td>3.28</td>\n      <td>47</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>25</strong></td>\n      <td>Alpine</td>\n      <td>Gasly</td>\n      <td>3.32</td>\n      <td>46</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>26</strong></td>\n      <td>McLaren</td>\n      <td>Piastri</td>\n      <td>3.45</td>\n      <td>44</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>27</strong></td>\n      <td>Williams</td>\n      <td>Albon</td>\n      <td>3.54</td>\n      <td>44</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>28</strong></td>\n      <td>Alpine</td>\n      <td>Gasly</td>\n      <td>3.66</td>\n      <td>33</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>29</strong></td>\n      <td>McLaren</td>\n      <td>Piastri</td>\n      <td>3.72</td>\n      <td>34</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>30</strong></td>\n      <td>Sauber</td>\n      <td>Hulkenberg</td>\n      <td>4.01</td>\n      <td>44</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>31</strong></td>\n      <td>Haas</td>\n      <td>Bearman</td>\n      <td>4.95</td>\n      <td>39</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>32</strong></td>\n      <td>Sauber</td>\n      <td>Hulkenberg</td>\n      <td>5.13</td>\n      <td>33</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>33</strong></td>\n      <td>Sauber</td>\n      <td>Bortoleto</td>\n      <td>5.59</td>\n      <td>33</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>34</strong></td>\n      <td>Sauber</td>\n      <td>Bortoleto</td>\n      <td>9.33</td>\n      <td>44</td>\n      <td><strong>0</strong></td>\n    </tr>\n  </table>\n\n",
+    "content": "<div class=\"f1-award-content\"><html-content-element class=\"html html--v3\" id=\"element_event_html\"><div class=\"height-toggleable box-gradient\"><div class=\"running-text\"><h3>Ferrari perform DHL Fastest Pit Stop in Australia, but get the timing wrong</h3><p>Towards the end of last year, the Ferrari, Red Bull and McLaren mechanics were taking turns to chalk up the DHL Fastest Pit Stop. With a one-two in the first race of 2025, the Italian team have carried on where they left off. Unfortunately for them, though, it was only the stops themselves that they got right in Australia, not the timing. </p><p>The crew excelled during their second stop of the day, when they swapped intermediates for slicks on Charles Leclerc\u2019s car on lap 34. Despite the difficulties caused by the wet conditions, they managed a superb tire change of 2.32 seconds. </p><p>Almost equally impressive was the second fastest stop of 2.38 seconds for Lewis Hamilton\u2019s car on lap 47 in the rain. Yet the achievement brings only limited satisfaction, as they should actually have called the seven-time champion into the pits on lap 44, when another shower hit the track, and switched him back to intermediates. </p><p>However, Ferrari failed to make the right decision with both cars and stayed out far too long in the false hope that the rain would stop quickly. Ultimately, Leclerc and Hamilton had to settle for eighth and tenth place respectively. \u201cIt was a tough race and there are things we have to review and work on,\u201d said Leclerc afterwards. \u201cWe weren\u2019t the fastest out there, but in such weather conditions, there was a chance of scoring some big points which we didn\u2019t capitalize on today.\u201d </p></div></div><read-more-element\n        class=\"height-toggle-new js-toggle-height state-closed\"\n        data-target=\"#element_event_html .height-toggleable\"\n        data-scroll-target=\"#element_event_html\"\n        data-scroll-offset=\"-15\"\n    ><div class=\"text\"><span class=\"open-text\">Read more</span><span class=\"close-text\">Close</span></div></read-more-element></html-content-element></div>",
+    "video": "<div class='f1-award-video'><full-player\n  id=\"p781605926_player\"\n  class=\"player player--video-js\" data-analytics=\"\"      data-aspectratio-desktop=\"16:9\"\n            data-aspectratio-mobile=\"1:1\"\n      ><div class=\"player__inner\"><video-js\n      id=\"p781605926_player_video\"\n      class=\"player__video\"\n       preload=\"metadata\"  data-poster-desktop=\"https://images.inmotion.dhl/MYFjQaB-XB-zewHDACtWVxtWhVuhjBxAu52IdArP9I0/format:jpeg/width:1920/bG9jYWw6Ly8vemZzL2RobG1lZGlhL3ZpZGVvL3JlZ2lzdGVyZWQvMjAyNS8wMy8xNTg1NTZhOGUxMTIzYTdlYTMxMmRhZDcwZTVhNDM3OS5qcGc\"\n      data-poster-mobile=\"https://images.inmotion.dhl/xJhbhuWzwYNwHpuqtjqU8XZ8T3IdH_7w0iol8k2lzto/format:jpeg/width:1920/bG9jYWw6Ly8vemZzL2RobG1lZGlhL3ZpZGVvL3JlZ2lzdGVyZWQvMjAyNS8wMy81N2YzZTQ4NTU3ZWYxY2IwMmFkMDYxYzBjY2E2MDZlMC5qcGc\"\n      playsinline\n    ><source\n          type=\"video/mp4\"\n          label=\"1080p\"\n          data-src-desktop=\"https://media.inmotion.dhl/video/registered/2025/03/158556a8e1123a7ea312dad70e5a4379_1080p.mp4\"/><source\n          type=\"video/mp4\"\n          label=\"1080p\"\n          data-src-mobile=\"https://media.inmotion.dhl/video/registered/2025/03/57f3e48557ef1cb02ad061c0cca606e0_1080p.mp4\"/></video-js></div></full-player></div>",
+    "header": "<div class=\"f1-award-header\"><header class=\"headline-group headline-group--size-3 headline-group--align-c\"><h2 class=\"headline color-b\">\n\n    FORMULA 1 LOUIS VUITTON AUSTRALIAN GRAND PRIX 2025\n\n            </h2></header></div>"
+  }
+}
