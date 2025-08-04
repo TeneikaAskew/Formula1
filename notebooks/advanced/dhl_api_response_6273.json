@@ -1,0 +1,203 @@
+{
+  "data": {
+    "chart": [
+      {
+        "id": 7150,
+        "driverNr": 4,
+        "tla": "NOR",
+        "firstName": "Lando",
+        "lastName": "Norris",
+        "team": "McLaren",
+        "duration": 2.08,
+        "startTime": {
+          "date": "2024-12-08 17:42:58.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 26,
+        "points": 25,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7151,
+        "driverNr": 55,
+        "tla": "SAI",
+        "firstName": "Carlos",
+        "lastName": "Sainz",
+        "team": "Ferrari",
+        "duration": 2.23,
+        "startTime": {
+          "date": "2024-12-08 17:41:31.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 25,
+        "points": 18,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7152,
+        "driverNr": 22,
+        "tla": "TSU",
+        "firstName": "Yuki",
+        "lastName": "Tsunoda",
+        "team": "RB",
+        "duration": 2.41,
+        "startTime": {
+          "date": "2024-12-08 17:37:54.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 22,
+        "points": 15,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7153,
+        "driverNr": 63,
+        "tla": "RUS",
+        "firstName": "George",
+        "lastName": "Russell",
+        "team": "Mercedes",
+        "duration": 2.49,
+        "startTime": {
+          "date": "2024-12-08 17:43:19.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 26,
+        "points": 12,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7154,
+        "driverNr": 44,
+        "tla": "HAM",
+        "firstName": "Lewis",
+        "lastName": "Hamilton",
+        "team": "Mercedes",
+        "duration": 2.52,
+        "startTime": {
+          "date": "2024-12-08 17:55:25.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 34,
+        "points": 10,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7155,
+        "driverNr": 27,
+        "tla": "HUL",
+        "firstName": "Nico",
+        "lastName": "Hulkenberg",
+        "team": "Haas",
+        "duration": 2.54,
+        "startTime": {
+          "date": "2024-12-08 17:24:01.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 13,
+        "points": 8,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7156,
+        "driverNr": 20,
+        "tla": "MAG",
+        "firstName": "Kevin",
+        "lastName": "Magnussen",
+        "team": "Haas",
+        "duration": 2.61,
+        "startTime": {
+          "date": "2024-12-08 17:48:34.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 29,
+        "points": 6,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7157,
+        "driverNr": 10,
+        "tla": "GAS",
+        "firstName": "Pierre",
+        "lastName": "Gasly",
+        "team": "Alpine",
+        "duration": 2.67,
+        "startTime": {
+          "date": "2024-12-08 17:25:22.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 14,
+        "points": 4,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7158,
+        "driverNr": 61,
+        "tla": "DOO",
+        "firstName": "Jack",
+        "lastName": "Doohan",
+        "team": "Alpine",
+        "duration": 2.67,
+        "startTime": {
+          "date": "2024-12-08 17:37:53.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 22,
+        "points": 2,
+        "irregular": false,
+        "notes": ""
+      },
+      {
+        "id": 7159,
+        "driverNr": 18,
+        "tla": "STR",
+        "firstName": "Lance",
+        "lastName": "Stroll",
+        "team": "Aston Martin",
+        "duration": 2.68,
+        "startTime": {
+          "date": "2024-12-08 17:52:59.000000",
+          "timezone_type": 3,
+          "timezone": "UTC"
+        },
+        "lap": 32,
+        "points": 1,
+        "irregular": false,
+        "notes": ""
+      }
+    ],
+    "sort": "24",
+    "event_id": 1039,
+    "headline": {
+      "headline": {
+        "style": {
+          "uppercase": false
+        }
+      },
+      "headline_type": "1"
+    },
+    "list_item_title": "Abu Dhabi"
+  },
+  "htmlList": {
+    "table": "\n<table class=\"f1-award-table\">\n  <tr>\n    <th class=\"align-center\">Pos.</th>\n    <th>Team</th>\n    <th>Driver</th>\n    <th>Time (sec)</th>\n    <th>Lap</th>\n    <th>Points</th>\n  </tr>\n      <tr>\n      <td class=\"align-center\"><strong>1</strong></td>\n      <td>McLaren</td>\n      <td>Norris</td>\n      <td>2.08</td>\n      <td>26</td>\n      <td><strong>25</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>2</strong></td>\n      <td>Ferrari</td>\n      <td>Sainz</td>\n      <td>2.23</td>\n      <td>25</td>\n      <td><strong>18</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>3</strong></td>\n      <td>RB</td>\n      <td>Tsunoda</td>\n      <td>2.41</td>\n      <td>22</td>\n      <td><strong>15</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>4</strong></td>\n      <td>Mercedes</td>\n      <td>Russell</td>\n      <td>2.49</td>\n      <td>26</td>\n      <td><strong>12</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>5</strong></td>\n      <td>Mercedes</td>\n      <td>Hamilton</td>\n      <td>2.52</td>\n      <td>34</td>\n      <td><strong>10</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>6</strong></td>\n      <td>Haas</td>\n      <td>Hulkenberg</td>\n      <td>2.54</td>\n      <td>13</td>\n      <td><strong>8</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>7</strong></td>\n      <td>Haas</td>\n      <td>Magnussen</td>\n      <td>2.61</td>\n      <td>29</td>\n      <td><strong>6</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>8</strong></td>\n      <td>Alpine</td>\n      <td>Gasly</td>\n      <td>2.67</td>\n      <td>14</td>\n      <td><strong>4</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>9</strong></td>\n      <td>Alpine</td>\n      <td>Doohan</td>\n      <td>2.67</td>\n      <td>22</td>\n      <td><strong>2</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>10</strong></td>\n      <td>Aston Martin</td>\n      <td>Stroll</td>\n      <td>2.68</td>\n      <td>32</td>\n      <td><strong>1</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>11</strong></td>\n      <td>Ferrari</td>\n      <td>Leclerc</td>\n      <td>2.78</td>\n      <td>20</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>12</strong></td>\n      <td>Haas</td>\n      <td>Magnussen</td>\n      <td>2.85</td>\n      <td>55</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>13</strong></td>\n      <td>Haas</td>\n      <td>Magnussen</td>\n      <td>2.99</td>\n      <td>30</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>14</strong></td>\n      <td>Williams</td>\n      <td>Albon</td>\n      <td>3.16</td>\n      <td>12</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>15</strong></td>\n      <td>Aston Martin</td>\n      <td>Alonso</td>\n      <td>3.44</td>\n      <td>37</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>16</strong></td>\n      <td>RB</td>\n      <td>Lawson</td>\n      <td>3.58</td>\n      <td>24</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>17</strong></td>\n      <td>Sauber</td>\n      <td>Zhou</td>\n      <td>3.78</td>\n      <td>12</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>18</strong></td>\n      <td>Aston Martin</td>\n      <td>Stroll</td>\n      <td>4.00</td>\n      <td>11</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>19</strong></td>\n      <td>RB</td>\n      <td>Lawson</td>\n      <td>4.25</td>\n      <td>23</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>20</strong></td>\n      <td>Aston Martin</td>\n      <td>Alonso</td>\n      <td>4.30</td>\n      <td>13</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>21</strong></td>\n      <td>McLaren</td>\n      <td>Piastri</td>\n      <td>4.43</td>\n      <td>4</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>22</strong></td>\n      <td>Williams</td>\n      <td>Colapinto</td>\n      <td>4.95</td>\n      <td>3</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>23</strong></td>\n      <td>Haas</td>\n      <td>Magnussen</td>\n      <td>7.27</td>\n      <td>12</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>24</strong></td>\n      <td>Sauber</td>\n      <td>Zhou</td>\n      <td>9.24</td>\n      <td>39</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>25</strong></td>\n      <td>RB</td>\n      <td>Lawson</td>\n      <td>12.21</td>\n      <td>29</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>26</strong></td>\n      <td>McLaren</td>\n      <td>Piastri</td>\n      <td>13.42</td>\n      <td>32</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>27</strong></td>\n      <td>Red Bull</td>\n      <td>Verstappen</td>\n      <td>13.56</td>\n      <td>29</td>\n      <td><strong>0</strong></td>\n    </tr>\n      <tr>\n      <td class=\"align-center\"><strong>28</strong></td>\n      <td>Sauber</td>\n      <td>Bottas</td>\n      <td>21.54</td>\n      <td>6</td>\n      <td><strong>0</strong></td>\n    </tr>\n  </table>\n\n",
+    "content": "<div class=\"f1-award-content\"><html-content-element class=\"html html--v3\" id=\"element_event_html\"><div class=\"height-toggleable box-gradient\"><div class=\"running-text\"><h3>Abu Dhabi sees McLaren take DHL Fastest Pit Stop and seal constructors\u2019 title win</h3><p>McLaren and Lando Norris could not afford to make any mistakes at the Abu Dhabi season finale, as the constructors\u2019 title was in the balance. Lando Norris and Oscar Piastri started the race from the front row with a 21-point lead over Ferrari, in view of which, the constructors\u2019 title deciding round should not have been a particularly close call. </p><p>Yes indeed, Lando Norris was able to assert his lead in pole position at the start, but Oscar Piastri suffered a contact at the hands of Max Verstappen in the first turn and dropped way down the running order to the back of the field, which served to make the scrap with Ferrari all the more exciting. McLaren\u2019s hopes now rested solely in the hands of Lando Norris. A win would give them the title, so it was pretty obvious that he and the team would have to deliver a perfect race. </p><p>And that\u2019s just what they did. Lando Norris maintained his lead from start to finish. On coming into the pits for his one and only stop on lap 26, his pit crew also delivered a brilliant performance, and McLaren secured the last remaining DHL Fastest Pit Stop of the season with a time spent stationary of a mere 2.08 seconds for the tire swap. </p><p>Well now, that result was never going to change things in the overall standings of the DHL Fastest Pit Stop Award, as Red Bull had already taken the title, but the perfectly executed tire change was a decisive factor in the scrap with Ferrari. After the race where his victory in Abu Dhabi sealed the constructors\u2019 title for McLaren, a delighted Lando Norris told us: \u201cThis feels incredible.The team have done an amazing job this season to come from where we were at the beginning. I\u2019m so proud of everyone.\u201d </p></div></div><read-more-element\n        class=\"height-toggle-new js-toggle-height state-closed\"\n        data-target=\"#element_event_html .height-toggleable\"\n        data-scroll-target=\"#element_event_html\"\n        data-scroll-offset=\"-15\"\n    ><div class=\"text\"><span class=\"open-text\">Read more</span><span class=\"close-text\">Close</span></div></read-more-element></html-content-element></div>",
+    "video": "<div class='f1-award-video'><full-player\n  id=\"p582206416_player\"\n  class=\"player player--video-js\" data-analytics=\"ABU\"      data-aspectratio-desktop=\"16:9\"\n            data-aspectratio-mobile=\"1:1\"\n      ><div class=\"player__inner\"><video-js\n      id=\"p582206416_player_video\"\n      class=\"player__video\"\n       preload=\"metadata\"  data-poster-desktop=\"https://images.inmotion.dhl/73FzkcBt6WdwYSU9M2PNsilraAbBt8Q1OFcax0OG0vc/format:jpeg/width:1920/bG9jYWw6Ly8vemZzL2RobG1lZGlhL3ZpZGVvL3JlZ2lzdGVyZWQvMjAyNC8xMi9kN2NiODI5OTAyODIyMTQ4ZjdiNTY4YjViNjhkNTY3YS5qcGc\"\n      data-poster-mobile=\"https://images.inmotion.dhl/aW8O9UkBWP-yNacoy2k95KFSYFmLYHs3Hyog65J1SCk/format:jpeg/width:1920/bG9jYWw6Ly8vemZzL2RobG1lZGlhL3ZpZGVvL3JlZ2lzdGVyZWQvMjAyNC8xMi81YTI3OThlN2U5YjEyMGFkNzdkOTc3NzFmMDRmYjg2YS5qcGc\"\n      playsinline\n    ><source\n          type=\"video/mp4\"\n          label=\"1080p\"\n          data-src-desktop=\"https://media.inmotion.dhl/video/registered/2024/12/d7cb829902822148f7b568b5b68d567a_1080p.mp4\"/><source\n          type=\"video/mp4\"\n          label=\"1080p\"\n          data-src-mobile=\"https://media.inmotion.dhl/video/registered/2024/12/5a2798e7e9b120ad77d97771f04fb86a_1080p.mp4\"/></video-js></div></full-player></div>",
+    "header": "<div class=\"f1-award-header\"><header class=\"headline-group\"><h1 class=\"headline\">\n\n    Formula 1 Etihad Airways Abu Dhabi Grand Prix 2024\n\n            </h1></header></div>"
+  }
+}

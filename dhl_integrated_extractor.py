@@ -31,8 +31,27 @@ class DHLIntegratedExtractor:
     
     def __init__(self):
         self.base_url = "https://inmotion.dhl"
-        self.events_endpoint = f"{self.base_url}/api/f1-award-element-data/6367"
-        self.driver_endpoint = f"{self.base_url}/api/f1-award-element-data/6365"
+        
+        # Multiple endpoint configurations for different years
+        self.endpoints = {
+            2025: {
+                'events': f"{self.base_url}/api/f1-award-element-data/6367",
+                'drivers': f"{self.base_url}/api/f1-award-element-data/6365"
+            },
+            2024: {
+                'events': f"{self.base_url}/api/f1-award-element-data/6276",
+                'drivers': f"{self.base_url}/api/f1-award-element-data/6273"
+            },
+            2023: {
+                'events': f"{self.base_url}/api/f1-award-element-data/6284",
+                'drivers': f"{self.base_url}/api/f1-award-element-data/6282"
+            }
+        }
+        
+        # Default to 2025 for backward compatibility
+        self.events_endpoint = self.endpoints[2025]['events']
+        self.driver_endpoint = self.endpoints[2025]['drivers']
+        
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -64,8 +83,10 @@ class DHLIntegratedExtractor:
             'Alpine': 'alpine',
             'Williams': 'williams',
             'Racing Bulls': 'rb',
+            'RB': 'rb',  # Short form in 2024
             'Haas': 'haas',
-            'Sauber': 'sauber'
+            'Sauber': 'sauber',
+            'AlphaTauri': 'alphatauri'  # 2023 team name
         }
         
         # Circuit mappings
@@ -128,23 +149,31 @@ class DHLIntegratedExtractor:
         self.driver_mapping = self._build_driver_mapping()
     
     def _build_driver_mapping(self):
-        """Build driver mapping for 2025 season"""
-        season_2025 = self.season_drivers_df[self.season_drivers_df['year'] == 2025].copy()
-        season_2025 = season_2025.merge(
-            self.drivers_df[['id', 'lastName']], 
-            left_on='driverId', 
-            right_on='id', 
-            suffixes=('', '_driver')
-        )
-        
+        """Build driver mapping for multiple seasons"""
         driver_mapping = {}
-        for _, row in season_2025.iterrows():
-            if not pd.isna(row['lastName']) and not row.get('testDriver', False):
-                key = (row['lastName'].lower(), row['constructorId'])
-                driver_mapping[key] = row['driverId']
         
-        # Add special cases
+        # Build mappings for 2023, 2024, and 2025
+        for year in [2023, 2024, 2025]:
+            season_data = self.season_drivers_df[self.season_drivers_df['year'] == year].copy()
+            season_data = season_data.merge(
+                self.drivers_df[['id', 'lastName']], 
+                left_on='driverId', 
+                right_on='id', 
+                suffixes=('', '_driver')
+            )
+            
+            for _, row in season_data.iterrows():
+                if not pd.isna(row['lastName']) and not row.get('testDriver', False):
+                    # Include year in the key for year-specific mappings
+                    key = (row['lastName'].lower(), row['constructorId'], year)
+                    driver_mapping[key] = row['driverId']
+                    # Also add without year for backward compatibility
+                    key_no_year = (row['lastName'].lower(), row['constructorId'])
+                    driver_mapping[key_no_year] = row['driverId']
+        
+        # Add special cases for all years
         special_cases = {
+            # 2025 special cases
             ('antonelli', 'mercedes'): 'andrea-kimi-antonelli',
             ('bearman', 'haas'): 'oliver-bearman',
             ('bortoleto', 'sauber'): 'gabriel-bortoleto',
@@ -155,17 +184,35 @@ class DHLIntegratedExtractor:
             ('tsunoda', 'red-bull'): 'yuki-tsunoda',
             ('hulkenberg', 'sauber'): 'nico-hulkenberg',
             ('sainz', 'williams'): 'carlos-sainz-jr',
+            
+            # 2023-2024 special cases
+            ('ricciardo', 'alphatauri'): 'daniel-ricciardo',
+            ('ricciardo', 'rb'): 'daniel-ricciardo',
+            ('tsunoda', 'alphatauri'): 'yuki-tsunoda',
+            ('piastri', 'mclaren'): 'oscar-piastri',
+            ('doohan', 'alpine'): 'jack-doohan',
+            ('de-vries', 'alphatauri'): 'nyck-de-vries',
+            
+            # Year-specific mappings
+            ('ricciardo', 'alphatauri', 2023): 'daniel-ricciardo',
+            ('ricciardo', 'rb', 2024): 'daniel-ricciardo',
+            ('tsunoda', 'alphatauri', 2023): 'yuki-tsunoda',
+            ('tsunoda', 'rb', 2024): 'yuki-tsunoda',
         }
         driver_mapping.update(special_cases)
         
         return driver_mapping
     
-    def extract_events(self):
-        """Extract all events and create race mapping"""
-        logger.info("Extracting events from DHL API...")
+    def extract_events(self, year=None):
+        """Extract all events and create race mapping for a specific year"""
+        if year is None:
+            year = 2025  # Default to 2025 for backward compatibility
+            
+        logger.info(f"Extracting events from DHL API for {year}...")
         
         try:
-            response = self.session.get(self.events_endpoint)
+            events_endpoint = self.endpoints[year]['events']
+            response = self.session.get(events_endpoint)
             response.raise_for_status()
             
             data = response.json()
@@ -179,20 +226,20 @@ class DHLIntegratedExtractor:
                 events_df['date_parsed'] = events_df['date'].apply(
                     lambda x: x.get('date', '').split(' ')[0] if isinstance(x, dict) else ''
                 )
-                events_df['year'] = pd.to_datetime(events_df['date_parsed']).dt.year
+                events_df['year'] = year
             
             # Map to F1DB races
             events_df['f1db_race_id'] = events_df.apply(self._map_event_to_race, axis=1)
             
             # Save events with mapping
-            events_file = self.output_dir / 'dhl_events_mapped_2025.csv'
+            events_file = self.output_dir / f'dhl_events_mapped_{year}.csv'
             events_df.to_csv(events_file, index=False)
             logger.info(f"✅ Saved {len(events_df)} events with race mapping to {events_file}")
             
             return events_df, data
             
         except Exception as e:
-            logger.error(f"Failed to extract events: {e}")
+            logger.error(f"Failed to extract events for {year}: {e}")
             return pd.DataFrame(), None
     
     def _map_event_to_race(self, event_row):
@@ -233,12 +280,20 @@ class DHLIntegratedExtractor:
         
         return None
     
-    def map_driver(self, driver_name, constructor_id):
+    def map_driver(self, driver_name, constructor_id, year=None):
         """Map driver name to F1DB driver ID"""
         if pd.isna(driver_name) or pd.isna(constructor_id):
             return None
         
         driver_lastname = str(driver_name).lower().strip()
+        
+        # Try year-specific mapping first
+        if year:
+            key_with_year = (driver_lastname, constructor_id, year)
+            if key_with_year in self.driver_mapping:
+                return self.driver_mapping[key_with_year]
+        
+        # Fall back to general mapping
         key = (driver_lastname, constructor_id)
         return self.driver_mapping.get(key)
     
@@ -272,14 +327,18 @@ class DHLIntegratedExtractor:
         
         return pit_stops
     
-    def extract_all_driver_data(self, events_df):
+    def extract_all_driver_data(self, events_df, year=None):
         """Extract driver pit stop data for all events with full mapping"""
-        logger.info("Extracting driver pit stop data with full F1DB mapping...")
+        if year is None:
+            year = 2025  # Default to 2025 for backward compatibility
+            
+        logger.info(f"Extracting driver pit stop data for {year} with full F1DB mapping...")
         
         all_driver_data = []
+        drivers_endpoint = self.endpoints[year]['drivers']
         
         # Process each event
-        for idx, event in tqdm(events_df.iterrows(), total=len(events_df), desc="Processing events"):
+        for idx, event in tqdm(events_df.iterrows(), total=len(events_df), desc=f"Processing {year} events"):
             event_id = event['id']
             event_name = event['title']
             event_date = event.get('date_parsed', '')
@@ -298,7 +357,7 @@ class DHLIntegratedExtractor:
             
             try:
                 # Fetch driver data for this event
-                url = f"{self.driver_endpoint}?event={event_id}"
+                url = f"{drivers_endpoint}?event={event_id}"
                 response = self.session.get(url)
                 response.raise_for_status()
                 
@@ -316,8 +375,8 @@ class DHLIntegratedExtractor:
                         # Map constructor
                         constructor_id = self.map_team_to_constructor(stop['team'])
                         
-                        # Map driver
-                        driver_id = self.map_driver(stop['driver'], constructor_id)
+                        # Map driver with year
+                        driver_id = self.map_driver(stop['driver'], constructor_id, year)
                         
                         # Build complete record
                         complete_stop = {
@@ -347,11 +406,8 @@ class DHLIntegratedExtractor:
         # Convert to DataFrame
         driver_df = pd.DataFrame(all_driver_data)
         
-        # Save to CSV
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        driver_file = self.output_dir / f'dhl_pitstops_integrated_{timestamp}.csv'
-        driver_df.to_csv(driver_file, index=False)
-        logger.info(f"✅ Saved {len(driver_df)} fully integrated pit stops to {driver_file}")
+        # Don't save here - let the main function handle saving all years together
+        logger.info(f"✅ Extracted {len(driver_df)} fully integrated pit stops for {year}")
         
         return driver_df
     
@@ -396,9 +452,22 @@ class DHLIntegratedExtractor:
         """Show summary of extracted data"""
         print("\n📊 EXTRACTION SUMMARY")
         print("=" * 50)
-        print(f"Events extracted: {len(events_df)}")
-        print(f"Events mapped to races: {events_df['f1db_race_id'].notna().sum()}/{len(events_df)}")
-        print(f"Constructor averages: {len(constructor_df)}")
+        
+        if isinstance(events_df, dict):
+            # Multiple years
+            total_events = sum(len(df) for df in events_df.values())
+            mapped_events = sum(df['f1db_race_id'].notna().sum() for df in events_df.values())
+            print(f"Events extracted: {total_events}")
+            print(f"Events mapped to races: {mapped_events}/{total_events}")
+            for year, df in events_df.items():
+                print(f"  - {year}: {len(df)} events ({df['f1db_race_id'].notna().sum()} mapped)")
+        else:
+            print(f"Events extracted: {len(events_df)}")
+            print(f"Events mapped to races: {events_df['f1db_race_id'].notna().sum()}/{len(events_df)}")
+        
+        if not constructor_df.empty:
+            print(f"Constructor averages: {len(constructor_df)}")
+        
         print(f"Driver pit stops: {len(driver_df)}")
         
         if not driver_df.empty:
@@ -410,30 +479,106 @@ class DHLIntegratedExtractor:
             print(f"\nPit stop statistics:")
             print(f"  - Fastest pit stop: {driver_df['time'].min():.2f}s")
             print(f"  - Average pit stop: {driver_df['time'].mean():.2f}s")
-            print(f"  - Pit stops per event: ~{len(driver_df) / len(events_df):.1f}")
+            
+            if 'event_date' in driver_df.columns:
+                years = pd.to_datetime(driver_df['event_date'], errors='coerce').dt.year.dropna().unique()
+                print(f"  - Years covered: {sorted(years)}")
+    
+    def extract_all_years(self, years=None):
+        """Extract data for multiple years"""
+        if years is None:
+            years = [2023, 2024, 2025]
+        
+        all_events = {}
+        all_driver_data = []
+        
+        for year in years:
+            logger.info(f"\n🏎️ Processing year {year}...")
+            
+            # 1. Extract events
+            events_df, events_data = self.extract_events(year)
+            
+            if events_df.empty:
+                logger.warning(f"No events found for {year}")
+                continue
+            
+            all_events[year] = events_df
+            
+            # 2. Extract driver data
+            driver_df = self.extract_all_driver_data(events_df, year)
+            
+            if not driver_df.empty:
+                all_driver_data.append(driver_df)
+        
+        # Combine all driver data
+        if all_driver_data:
+            combined_df = pd.concat(all_driver_data, ignore_index=True)
+            
+            # Save combined data
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            output_file = self.output_dir / f'dhl_pitstops_integrated_{timestamp}.csv'
+            combined_df.to_csv(output_file, index=False)
+            logger.info(f"✅ Saved {len(combined_df)} total pit stops to {output_file}")
+            
+            # Show summary
+            self.show_summary(all_events, pd.DataFrame(), combined_df)
+            
+            return combined_df
+        else:
+            logger.error("No data extracted")
+            return pd.DataFrame()
 
 def main():
     """Main extraction function"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='DHL F1 Pit Stop Integrated Data Extractor')
+    parser.add_argument('--years', nargs='+', type=int, 
+                       help='Years to extract (default: 2023 2024 2025)')
+    parser.add_argument('--year', type=int, 
+                       help='Single year to extract (for backward compatibility)')
+    
+    args = parser.parse_args()
+    
     print("🏎️  DHL F1 Pit Stop Integrated Data Extractor")
     print("=" * 70)
     
     extractor = DHLIntegratedExtractor()
     
-    # 1. Extract events with race mapping
-    events_df, events_data = extractor.extract_events()
-    
-    if events_df.empty:
-        logger.error("No events found, aborting.")
-        return
-    
-    # 2. Extract constructor averages
-    constructor_df = extractor.extract_constructor_averages(events_data)
-    
-    # 3. Extract all driver data with full mapping
-    driver_df = extractor.extract_all_driver_data(events_df)
-    
-    # Show summary
-    extractor.show_summary(events_df, constructor_df, driver_df)
+    # Determine which years to extract
+    if args.year:
+        # Single year mode (backward compatibility)
+        year = args.year
+        logger.info(f"Extracting data for single year: {year}")
+        
+        # 1. Extract events with race mapping
+        events_df, events_data = extractor.extract_events(year)
+        
+        if events_df.empty:
+            logger.error(f"No events found for {year}, aborting.")
+            return
+        
+        # 2. Extract constructor averages
+        constructor_df = extractor.extract_constructor_averages(events_data)
+        
+        # 3. Extract all driver data with full mapping
+        driver_df = extractor.extract_all_driver_data(events_df, year)
+        
+        # Save the data
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_file = extractor.output_dir / f'dhl_pitstops_integrated_{timestamp}.csv'
+        driver_df.to_csv(output_file, index=False)
+        logger.info(f"✅ Saved {len(driver_df)} pit stops to {output_file}")
+        
+        # Show summary
+        extractor.show_summary(events_df, constructor_df, driver_df)
+    else:
+        # Multiple years mode
+        years = args.years if args.years else [2023, 2024, 2025]
+        logger.info(f"Extracting data for years: {years}")
+        
+        # Extract all years
+        combined_df = extractor.extract_all_years(years)
     
     print("\n✅ Extraction complete! All data includes F1DB IDs for easy integration.")
 

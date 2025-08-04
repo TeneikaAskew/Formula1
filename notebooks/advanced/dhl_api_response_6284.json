@@ -1,0 +1,2532 @@
+{
+  "data": {
+    "chart": {
+      "events": [
+        {
+          "id": 837,
+          "title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+          "short_title": "Bahrain International Circuit",
+          "abbr": "BRN",
+          "date": {
+            "date": "2023-03-05 03:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 838,
+          "title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+          "short_title": "Jeddah Corniche Circuit",
+          "abbr": "KSA",
+          "date": {
+            "date": "2023-03-19 03:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 839,
+          "title": "Formula 1 Rolex Australian Grand Prix 2023",
+          "short_title": "Melbourne Grand Prix Circuit",
+          "abbr": "AUS",
+          "date": {
+            "date": "2023-04-02 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 841,
+          "title": "Formula 1 Azerbaijan Grand Prix 2023",
+          "short_title": "Baku City Circuit",
+          "abbr": "AZE",
+          "date": {
+            "date": "2023-04-30 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 842,
+          "title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+          "short_title": "Miami International Autodrome",
+          "abbr": "MIA",
+          "date": {
+            "date": "2023-05-07 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 844,
+          "title": "Formula 1 Grand Prix de Monaco 2023",
+          "short_title": "Circuit de Monaco",
+          "abbr": "MCO",
+          "date": {
+            "date": "2023-05-28 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 845,
+          "title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+          "short_title": "Circuit de Barcelona-Catalunya",
+          "abbr": "ESP",
+          "date": {
+            "date": "2023-06-04 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 847,
+          "title": "Formula 1 Grand Prix Du Canada 2023",
+          "short_title": "Circuit Gilles-Villeneuve",
+          "abbr": "CAN",
+          "date": {
+            "date": "2023-06-18 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 848,
+          "title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+          "short_title": "Red Bull Ring",
+          "abbr": "AUT",
+          "date": {
+            "date": "2023-07-02 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 846,
+          "title": "Formula 1 Aramco British Grand Prix 2023",
+          "short_title": "Silverstone Circuit",
+          "abbr": "GBR",
+          "date": {
+            "date": "2023-07-09 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 849,
+          "title": "Formula 1 Hungarian Grand Prix 2023",
+          "short_title": "Hungaroring",
+          "abbr": "HUN",
+          "date": {
+            "date": "2023-07-23 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 850,
+          "title": "Formula 1 Belgian Grand Prix 2023",
+          "short_title": "Circuit de Spa-Francorchamps",
+          "abbr": "BEL",
+          "date": {
+            "date": "2023-07-30 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 851,
+          "title": "Formula 1 Heineken Dutch Grand Prix 2023",
+          "short_title": "Circuit Zandvoort",
+          "abbr": "NED",
+          "date": {
+            "date": "2023-08-27 00:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 852,
+          "title": "Formula 1 Gran Premio D\u2019italia 2023",
+          "short_title": "Autodromo Nazionale Monza",
+          "abbr": "ITA",
+          "date": {
+            "date": "2023-09-03 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 853,
+          "title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+          "short_title": "Marina Bay Street Circuit",
+          "abbr": "SGP",
+          "date": {
+            "date": "2023-09-17 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 854,
+          "title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+          "short_title": "Suzuka International Racing Course",
+          "abbr": "JPN",
+          "date": {
+            "date": "2023-09-24 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 855,
+          "title": "Formula 1 Qatar Grand Prix 2023",
+          "short_title": "Lusail International Circuit",
+          "abbr": "QAT",
+          "date": {
+            "date": "2023-10-08 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 856,
+          "title": "Formula 1 Lenovo United States Grand Prix 2023",
+          "short_title": "Circuit of The Americas",
+          "abbr": "USA",
+          "date": {
+            "date": "2023-10-22 02:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 857,
+          "title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+          "short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+          "abbr": "MEX",
+          "date": {
+            "date": "2023-10-29 03:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 858,
+          "title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+          "short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+          "abbr": "BRA",
+          "date": {
+            "date": "2023-11-05 03:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 859,
+          "title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+          "short_title": "Las Vegas Grand Prix Circuit",
+          "abbr": "LVG",
+          "date": {
+            "date": "2023-11-18 00:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        },
+        {
+          "id": 860,
+          "title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+          "short_title": "Yas Marina Circuit",
+          "abbr": "UAE",
+          "date": {
+            "date": "2023-11-25 23:00:00.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+          }
+        }
+      ],
+      "values": [
+        {
+          "duration": {
+            "837": 4.348000000000001,
+            "838": 3.678,
+            "839": 4.557499999999999,
+            "841": 3.4050000000000002,
+            "842": 2.955,
+            "844": 5.136666666666667,
+            "845": 3.96,
+            "847": 4.023333333333333,
+            "848": 3.723333333333334,
+            "846": 3.0533333333333332,
+            "849": 3.5233333333333334,
+            "850": 3.4074999999999998,
+            "851": 3.2342857142857144,
+            "852": 3.263333333333333,
+            "853": 3.28,
+            "854": 3.13,
+            "855": 3.0050000000000003,
+            "856": 3.4749999999999996,
+            "857": 3.27,
+            "858": 2.785,
+            "859": 2.855,
+            "860": 3.08
+          },
+          "count": 3,
+          "team_name": "Alfa Romeo",
+          "data_sorted": [
+            {
+              "event_id": 837,
+              "event_title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+              "event_short_title": "Bahrain International Circuit",
+              "event_date": "2023-03-05",
+              "event_season": 2023,
+              "average_duration": 4.348,
+              "count": 3
+            },
+            {
+              "event_id": 838,
+              "event_title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+              "event_short_title": "Jeddah Corniche Circuit",
+              "event_date": "2023-03-19",
+              "event_season": 2023,
+              "average_duration": 3.678,
+              "count": 3
+            },
+            {
+              "event_id": 839,
+              "event_title": "Formula 1 Rolex Australian Grand Prix 2023",
+              "event_short_title": "Melbourne Grand Prix Circuit",
+              "event_date": "2023-04-02",
+              "event_season": 2023,
+              "average_duration": 4.558,
+              "count": 3
+            },
+            {
+              "event_id": 841,
+              "event_title": "Formula 1 Azerbaijan Grand Prix 2023",
+              "event_short_title": "Baku City Circuit",
+              "event_date": "2023-04-30",
+              "event_season": 2023,
+              "average_duration": 3.405,
+              "count": 3
+            },
+            {
+              "event_id": 842,
+              "event_title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+              "event_short_title": "Miami International Autodrome",
+              "event_date": "2023-05-07",
+              "event_season": 2023,
+              "average_duration": 2.955,
+              "count": 3
+            },
+            {
+              "event_id": 844,
+              "event_title": "Formula 1 Grand Prix de Monaco 2023",
+              "event_short_title": "Circuit de Monaco",
+              "event_date": "2023-05-28",
+              "event_season": 2023,
+              "average_duration": 5.137,
+              "count": 3
+            },
+            {
+              "event_id": 845,
+              "event_title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+              "event_short_title": "Circuit de Barcelona-Catalunya",
+              "event_date": "2023-06-04",
+              "event_season": 2023,
+              "average_duration": 3.96,
+              "count": 3
+            },
+            {
+              "event_id": 847,
+              "event_title": "Formula 1 Grand Prix Du Canada 2023",
+              "event_short_title": "Circuit Gilles-Villeneuve",
+              "event_date": "2023-06-18",
+              "event_season": 2023,
+              "average_duration": 4.023,
+              "count": 3
+            },
+            {
+              "event_id": 848,
+              "event_title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+              "event_short_title": "Red Bull Ring",
+              "event_date": "2023-07-02",
+              "event_season": 2023,
+              "average_duration": 3.723,
+              "count": 3
+            },
+            {
+              "event_id": 846,
+              "event_title": "Formula 1 Aramco British Grand Prix 2023",
+              "event_short_title": "Silverstone Circuit",
+              "event_date": "2023-07-09",
+              "event_season": 2023,
+              "average_duration": 3.053,
+              "count": 3
+            },
+            {
+              "event_id": 849,
+              "event_title": "Formula 1 Hungarian Grand Prix 2023",
+              "event_short_title": "Hungaroring",
+              "event_date": "2023-07-23",
+              "event_season": 2023,
+              "average_duration": 3.523,
+              "count": 3
+            },
+            {
+              "event_id": 850,
+              "event_title": "Formula 1 Belgian Grand Prix 2023",
+              "event_short_title": "Circuit de Spa-Francorchamps",
+              "event_date": "2023-07-30",
+              "event_season": 2023,
+              "average_duration": 3.408,
+              "count": 3
+            },
+            {
+              "event_id": 851,
+              "event_title": "Formula 1 Heineken Dutch Grand Prix 2023",
+              "event_short_title": "Circuit Zandvoort",
+              "event_date": "2023-08-27",
+              "event_season": 2023,
+              "average_duration": 3.234,
+              "count": 3
+            },
+            {
+              "event_id": 852,
+              "event_title": "Formula 1 Gran Premio D\u2019italia 2023",
+              "event_short_title": "Autodromo Nazionale Monza",
+              "event_date": "2023-09-03",
+              "event_season": 2023,
+              "average_duration": 3.263,
+              "count": 3
+            },
+            {
+              "event_id": 853,
+              "event_title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+              "event_short_title": "Marina Bay Street Circuit",
+              "event_date": "2023-09-17",
+              "event_season": 2023,
+              "average_duration": 3.28,
+              "count": 3
+            },
+            {
+              "event_id": 854,
+              "event_title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+              "event_short_title": "Suzuka International Racing Course",
+              "event_date": "2023-09-24",
+              "event_season": 2023,
+              "average_duration": 3.13,
+              "count": 3
+            },
+            {
+              "event_id": 855,
+              "event_title": "Formula 1 Qatar Grand Prix 2023",
+              "event_short_title": "Lusail International Circuit",
+              "event_date": "2023-10-08",
+              "event_season": 2023,
+              "average_duration": 3.005,
+              "count": 3
+            },
+            {
+              "event_id": 856,
+              "event_title": "Formula 1 Lenovo United States Grand Prix 2023",
+              "event_short_title": "Circuit of The Americas",
+              "event_date": "2023-10-22",
+              "event_season": 2023,
+              "average_duration": 3.475,
+              "count": 3
+            },
+            {
+              "event_id": 857,
+              "event_title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+              "event_short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+              "event_date": "2023-10-29",
+              "event_season": 2023,
+              "average_duration": 3.27,
+              "count": 3
+            },
+            {
+              "event_id": 858,
+              "event_title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+              "event_short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+              "event_date": "2023-11-05",
+              "event_season": 2023,
+              "average_duration": 2.785,
+              "count": 3
+            },
+            {
+              "event_id": 859,
+              "event_title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+              "event_short_title": "Las Vegas Grand Prix Circuit",
+              "event_date": "2023-11-18",
+              "event_season": 2023,
+              "average_duration": 2.855,
+              "count": 3
+            },
+            {
+              "event_id": 860,
+              "event_title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+              "event_short_title": "Yas Marina Circuit",
+              "event_date": "2023-11-25",
+              "event_season": 2023,
+              "average_duration": 3.08,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "duration": {
+            "837": 3.2479999999999998,
+            "838": 2.9400000000000004,
+            "839": 2.965,
+            "841": 2.55,
+            "842": 3.445,
+            "844": 2.6,
+            "845": 2.7924999999999995,
+            "847": 3.9325,
+            "848": 2.3966666666666665,
+            "846": 2.6624999999999996,
+            "849": 3.7975000000000003,
+            "850": 2.4225000000000003,
+            "851": 5.255714285714285,
+            "852": 2.5199999999999996,
+            "853": 5.19,
+            "854": 2.6875,
+            "855": 2.6333333333333333,
+            "856": 3.1439999999999997,
+            "857": 6.26,
+            "858": 2.53,
+            "859": 2.6166666666666667,
+            "860": 2.493333333333333
+          },
+          "count": 3,
+          "team_name": "AlphaTauri",
+          "data_sorted": [
+            {
+              "event_id": 837,
+              "event_title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+              "event_short_title": "Bahrain International Circuit",
+              "event_date": "2023-03-05",
+              "event_season": 2023,
+              "average_duration": 3.248,
+              "count": 3
+            },
+            {
+              "event_id": 838,
+              "event_title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+              "event_short_title": "Jeddah Corniche Circuit",
+              "event_date": "2023-03-19",
+              "event_season": 2023,
+              "average_duration": 2.94,
+              "count": 3
+            },
+            {
+              "event_id": 839,
+              "event_title": "Formula 1 Rolex Australian Grand Prix 2023",
+              "event_short_title": "Melbourne Grand Prix Circuit",
+              "event_date": "2023-04-02",
+              "event_season": 2023,
+              "average_duration": 2.965,
+              "count": 3
+            },
+            {
+              "event_id": 841,
+              "event_title": "Formula 1 Azerbaijan Grand Prix 2023",
+              "event_short_title": "Baku City Circuit",
+              "event_date": "2023-04-30",
+              "event_season": 2023,
+              "average_duration": 2.55,
+              "count": 3
+            },
+            {
+              "event_id": 842,
+              "event_title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+              "event_short_title": "Miami International Autodrome",
+              "event_date": "2023-05-07",
+              "event_season": 2023,
+              "average_duration": 3.445,
+              "count": 3
+            },
+            {
+              "event_id": 844,
+              "event_title": "Formula 1 Grand Prix de Monaco 2023",
+              "event_short_title": "Circuit de Monaco",
+              "event_date": "2023-05-28",
+              "event_season": 2023,
+              "average_duration": 2.6,
+              "count": 3
+            },
+            {
+              "event_id": 845,
+              "event_title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+              "event_short_title": "Circuit de Barcelona-Catalunya",
+              "event_date": "2023-06-04",
+              "event_season": 2023,
+              "average_duration": 2.793,
+              "count": 3
+            },
+            {
+              "event_id": 847,
+              "event_title": "Formula 1 Grand Prix Du Canada 2023",
+              "event_short_title": "Circuit Gilles-Villeneuve",
+              "event_date": "2023-06-18",
+              "event_season": 2023,
+              "average_duration": 3.933,
+              "count": 3
+            },
+            {
+              "event_id": 848,
+              "event_title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+              "event_short_title": "Red Bull Ring",
+              "event_date": "2023-07-02",
+              "event_season": 2023,
+              "average_duration": 2.397,
+              "count": 3
+            },
+            {
+              "event_id": 846,
+              "event_title": "Formula 1 Aramco British Grand Prix 2023",
+              "event_short_title": "Silverstone Circuit",
+              "event_date": "2023-07-09",
+              "event_season": 2023,
+              "average_duration": 2.663,
+              "count": 3
+            },
+            {
+              "event_id": 849,
+              "event_title": "Formula 1 Hungarian Grand Prix 2023",
+              "event_short_title": "Hungaroring",
+              "event_date": "2023-07-23",
+              "event_season": 2023,
+              "average_duration": 3.798,
+              "count": 3
+            },
+            {
+              "event_id": 850,
+              "event_title": "Formula 1 Belgian Grand Prix 2023",
+              "event_short_title": "Circuit de Spa-Francorchamps",
+              "event_date": "2023-07-30",
+              "event_season": 2023,
+              "average_duration": 2.423,
+              "count": 3
+            },
+            {
+              "event_id": 851,
+              "event_title": "Formula 1 Heineken Dutch Grand Prix 2023",
+              "event_short_title": "Circuit Zandvoort",
+              "event_date": "2023-08-27",
+              "event_season": 2023,
+              "average_duration": 5.256,
+              "count": 3
+            },
+            {
+              "event_id": 852,
+              "event_title": "Formula 1 Gran Premio D\u2019italia 2023",
+              "event_short_title": "Autodromo Nazionale Monza",
+              "event_date": "2023-09-03",
+              "event_season": 2023,
+              "average_duration": 2.52,
+              "count": 3
+            },
+            {
+              "event_id": 853,
+              "event_title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+              "event_short_title": "Marina Bay Street Circuit",
+              "event_date": "2023-09-17",
+              "event_season": 2023,
+              "average_duration": 5.19,
+              "count": 3
+            },
+            {
+              "event_id": 854,
+              "event_title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+              "event_short_title": "Suzuka International Racing Course",
+              "event_date": "2023-09-24",
+              "event_season": 2023,
+              "average_duration": 2.688,
+              "count": 3
+            },
+            {
+              "event_id": 855,
+              "event_title": "Formula 1 Qatar Grand Prix 2023",
+              "event_short_title": "Lusail International Circuit",
+              "event_date": "2023-10-08",
+              "event_season": 2023,
+              "average_duration": 2.633,
+              "count": 3
+            },
+            {
+              "event_id": 856,
+              "event_title": "Formula 1 Lenovo United States Grand Prix 2023",
+              "event_short_title": "Circuit of The Americas",
+              "event_date": "2023-10-22",
+              "event_season": 2023,
+              "average_duration": 3.144,
+              "count": 3
+            },
+            {
+              "event_id": 857,
+              "event_title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+              "event_short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+              "event_date": "2023-10-29",
+              "event_season": 2023,
+              "average_duration": 6.26,
+              "count": 3
+            },
+            {
+              "event_id": 858,
+              "event_title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+              "event_short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+              "event_date": "2023-11-05",
+              "event_season": 2023,
+              "average_duration": 2.53,
+              "count": 3
+            },
+            {
+              "event_id": 859,
+              "event_title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+              "event_short_title": "Las Vegas Grand Prix Circuit",
+              "event_date": "2023-11-18",
+              "event_season": 2023,
+              "average_duration": 2.617,
+              "count": 3
+            },
+            {
+              "event_id": 860,
+              "event_title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+              "event_short_title": "Yas Marina Circuit",
+              "event_date": "2023-11-25",
+              "event_season": 2023,
+              "average_duration": 2.493,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "duration": {
+            "837": 3.0575,
+            "838": 2.545,
+            "839": 2.65,
+            "841": 2.9000000000000004,
+            "842": 2.5949999999999998,
+            "844": 4.3,
+            "845": 3.8999999999999995,
+            "847": 3.78,
+            "848": 2.575,
+            "846": 2.37,
+            "850": 3.4066666666666663,
+            "851": 3.0566666666666666,
+            "852": 3.9066666666666667,
+            "853": 3.67,
+            "854": 3.6925,
+            "855": 3.198,
+            "856": 2.8,
+            "857": 2.81,
+            "858": 3.1980000000000004,
+            "859": 3.1,
+            "860": 3.4599999999999995
+          },
+          "count": 3,
+          "team_name": "Alpine",
+          "data_sorted": [
+            {
+              "event_id": 837,
+              "event_title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+              "event_short_title": "Bahrain International Circuit",
+              "event_date": "2023-03-05",
+              "event_season": 2023,
+              "average_duration": 3.058,
+              "count": 3
+            },
+            {
+              "event_id": 838,
+              "event_title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+              "event_short_title": "Jeddah Corniche Circuit",
+              "event_date": "2023-03-19",
+              "event_season": 2023,
+              "average_duration": 2.545,
+              "count": 3
+            },
+            {
+              "event_id": 839,
+              "event_title": "Formula 1 Rolex Australian Grand Prix 2023",
+              "event_short_title": "Melbourne Grand Prix Circuit",
+              "event_date": "2023-04-02",
+              "event_season": 2023,
+              "average_duration": 2.65,
+              "count": 3
+            },
+            {
+              "event_id": 841,
+              "event_title": "Formula 1 Azerbaijan Grand Prix 2023",
+              "event_short_title": "Baku City Circuit",
+              "event_date": "2023-04-30",
+              "event_season": 2023,
+              "average_duration": 2.9,
+              "count": 3
+            },
+            {
+              "event_id": 842,
+              "event_title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+              "event_short_title": "Miami International Autodrome",
+              "event_date": "2023-05-07",
+              "event_season": 2023,
+              "average_duration": 2.595,
+              "count": 3
+            },
+            {
+              "event_id": 844,
+              "event_title": "Formula 1 Grand Prix de Monaco 2023",
+              "event_short_title": "Circuit de Monaco",
+              "event_date": "2023-05-28",
+              "event_season": 2023,
+              "average_duration": 4.3,
+              "count": 3
+            },
+            {
+              "event_id": 845,
+              "event_title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+              "event_short_title": "Circuit de Barcelona-Catalunya",
+              "event_date": "2023-06-04",
+              "event_season": 2023,
+              "average_duration": 3.9,
+              "count": 3
+            },
+            {
+              "event_id": 847,
+              "event_title": "Formula 1 Grand Prix Du Canada 2023",
+              "event_short_title": "Circuit Gilles-Villeneuve",
+              "event_date": "2023-06-18",
+              "event_season": 2023,
+              "average_duration": 3.78,
+              "count": 3
+            },
+            {
+              "event_id": 848,
+              "event_title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+              "event_short_title": "Red Bull Ring",
+              "event_date": "2023-07-02",
+              "event_season": 2023,
+              "average_duration": 2.575,
+              "count": 3
+            },
+            {
+              "event_id": 846,
+              "event_title": "Formula 1 Aramco British Grand Prix 2023",
+              "event_short_title": "Silverstone Circuit",
+              "event_date": "2023-07-09",
+              "event_season": 2023,
+              "average_duration": 2.37,
+              "count": 3
+            },
+            {
+              "event_id": 849,
+              "event_title": "Formula 1 Hungarian Grand Prix 2023",
+              "event_short_title": "Hungaroring",
+              "event_date": "2023-07-23",
+              "event_season": 2023,
+              "average_duration": null,
+              "count": 3
+            },
+            {
+              "event_id": 850,
+              "event_title": "Formula 1 Belgian Grand Prix 2023",
+              "event_short_title": "Circuit de Spa-Francorchamps",
+              "event_date": "2023-07-30",
+              "event_season": 2023,
+              "average_duration": 3.407,
+              "count": 3
+            },
+            {
+              "event_id": 851,
+              "event_title": "Formula 1 Heineken Dutch Grand Prix 2023",
+              "event_short_title": "Circuit Zandvoort",
+              "event_date": "2023-08-27",
+              "event_season": 2023,
+              "average_duration": 3.057,
+              "count": 3
+            },
+            {
+              "event_id": 852,
+              "event_title": "Formula 1 Gran Premio D\u2019italia 2023",
+              "event_short_title": "Autodromo Nazionale Monza",
+              "event_date": "2023-09-03",
+              "event_season": 2023,
+              "average_duration": 3.907,
+              "count": 3
+            },
+            {
+              "event_id": 853,
+              "event_title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+              "event_short_title": "Marina Bay Street Circuit",
+              "event_date": "2023-09-17",
+              "event_season": 2023,
+              "average_duration": 3.67,
+              "count": 3
+            },
+            {
+              "event_id": 854,
+              "event_title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+              "event_short_title": "Suzuka International Racing Course",
+              "event_date": "2023-09-24",
+              "event_season": 2023,
+              "average_duration": 3.693,
+              "count": 3
+            },
+            {
+              "event_id": 855,
+              "event_title": "Formula 1 Qatar Grand Prix 2023",
+              "event_short_title": "Lusail International Circuit",
+              "event_date": "2023-10-08",
+              "event_season": 2023,
+              "average_duration": 3.198,
+              "count": 3
+            },
+            {
+              "event_id": 856,
+              "event_title": "Formula 1 Lenovo United States Grand Prix 2023",
+              "event_short_title": "Circuit of The Americas",
+              "event_date": "2023-10-22",
+              "event_season": 2023,
+              "average_duration": 2.8,
+              "count": 3
+            },
+            {
+              "event_id": 857,
+              "event_title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+              "event_short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+              "event_date": "2023-10-29",
+              "event_season": 2023,
+              "average_duration": 2.81,
+              "count": 3
+            },
+            {
+              "event_id": 858,
+              "event_title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+              "event_short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+              "event_date": "2023-11-05",
+              "event_season": 2023,
+              "average_duration": 3.198,
+              "count": 3
+            },
+            {
+              "event_id": 859,
+              "event_title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+              "event_short_title": "Las Vegas Grand Prix Circuit",
+              "event_date": "2023-11-18",
+              "event_season": 2023,
+              "average_duration": 3.1,
+              "count": 3
+            },
+            {
+              "event_id": 860,
+              "event_title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+              "event_short_title": "Yas Marina Circuit",
+              "event_date": "2023-11-25",
+              "event_season": 2023,
+              "average_duration": 3.46,
+              "count": 3
+            }
+          ]
+        },
+        {
+          "duration": {
+            "837": 2.95,
+            "838": 2.9,
+            "841": 4.155,
+            "842": 2.91,
+            "844": 2.716666666666667,
+            "845": 2.8775,
+            "847": 2.52,
+            "848": 2.7180000000000004,
+            "846": 2.51,
+            "849": 3.5,
+            "850": 3.3699999999999997,
+            "851": 3.6066666666666674,
+            "852": 3.5700000000000003,
+            "853": 3.66,
+            "854": 2.97,
+            "855": 2.651666666666667,
+            "856": 2.9099999999999997,
+            "857": 2.69,
+            "858": 3.055,
+            "859": 3.6733333333333333,
+            "860": 2.86
+          },
+          "count": 4,
+          "team_name": "Aston Martin",
+          "data_sorted": [
+            {
+              "event_id": 837,
+              "event_title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+              "event_short_title": "Bahrain International Circuit",
+              "event_date": "2023-03-05",
+              "event_season": 2023,
+              "average_duration": 2.95,
+              "count": 4
+            },
+            {
+              "event_id": 838,
+              "event_title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+              "event_short_title": "Jeddah Corniche Circuit",
+              "event_date": "2023-03-19",
+              "event_season": 2023,
+              "average_duration": 2.9,
+              "count": 4
+            },
+            {
+              "event_id": 839,
+              "event_title": "Formula 1 Rolex Australian Grand Prix 2023",
+              "event_short_title": "Melbourne Grand Prix Circuit",
+              "event_date": "2023-04-02",
+              "event_season": 2023,
+              "average_duration": null,
+              "count": 4
+            },
+            {
+              "event_id": 841,
+              "event_title": "Formula 1 Azerbaijan Grand Prix 2023",
+              "event_short_title": "Baku City Circuit",
+              "event_date": "2023-04-30",
+              "event_season": 2023,
+              "average_duration": 4.155,
+              "count": 4
+            },
+            {
+              "event_id": 842,
+              "event_title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+              "event_short_title": "Miami International Autodrome",
+              "event_date": "2023-05-07",
+              "event_season": 2023,
+              "average_duration": 2.91,
+              "count": 4
+            },
+            {
+              "event_id": 844,
+              "event_title": "Formula 1 Grand Prix de Monaco 2023",
+              "event_short_title": "Circuit de Monaco",
+              "event_date": "2023-05-28",
+              "event_season": 2023,
+              "average_duration": 2.717,
+              "count": 4
+            },
+            {
+              "event_id": 845,
+              "event_title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+              "event_short_title": "Circuit de Barcelona-Catalunya",
+              "event_date": "2023-06-04",
+              "event_season": 2023,
+              "average_duration": 2.878,
+              "count": 4
+            },
+            {
+              "event_id": 847,
+              "event_title": "Formula 1 Grand Prix Du Canada 2023",
+              "event_short_title": "Circuit Gilles-Villeneuve",
+              "event_date": "2023-06-18",
+              "event_season": 2023,
+              "average_duration": 2.52,
+              "count": 4
+            },
+            {
+              "event_id": 848,
+              "event_title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+              "event_short_title": "Red Bull Ring",
+              "event_date": "2023-07-02",
+              "event_season": 2023,
+              "average_duration": 2.718,
+              "count": 4
+            },
+            {
+              "event_id": 846,
+              "event_title": "Formula 1 Aramco British Grand Prix 2023",
+              "event_short_title": "Silverstone Circuit",
+              "event_date": "2023-07-09",
+              "event_season": 2023,
+              "average_duration": 2.51,
+              "count": 4
+            },
+            {
+              "event_id": 849,
+              "event_title": "Formula 1 Hungarian Grand Prix 2023",
+              "event_short_title": "Hungaroring",
+              "event_date": "2023-07-23",
+              "event_season": 2023,
+              "average_duration": 3.5,
+              "count": 4
+            },
+            {
+              "event_id": 850,
+              "event_title": "Formula 1 Belgian Grand Prix 2023",
+              "event_short_title": "Circuit de Spa-Francorchamps",
+              "event_date": "2023-07-30",
+              "event_season": 2023,
+              "average_duration": 3.37,
+              "count": 4
+            },
+            {
+              "event_id": 851,
+              "event_title": "Formula 1 Heineken Dutch Grand Prix 2023",
+              "event_short_title": "Circuit Zandvoort",
+              "event_date": "2023-08-27",
+              "event_season": 2023,
+              "average_duration": 3.607,
+              "count": 4
+            },
+            {
+              "event_id": 852,
+              "event_title": "Formula 1 Gran Premio D\u2019italia 2023",
+              "event_short_title": "Autodromo Nazionale Monza",
+              "event_date": "2023-09-03",
+              "event_season": 2023,
+              "average_duration": 3.57,
+              "count": 4
+            },
+            {
+              "event_id": 853,
+              "event_title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+              "event_short_title": "Marina Bay Street Circuit",
+              "event_date": "2023-09-17",
+              "event_season": 2023,
+              "average_duration": 3.66,
+              "count": 4
+            },
+            {
+              "event_id": 854,
+              "event_title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+              "event_short_title": "Suzuka International Racing Course",
+              "event_date": "2023-09-24",
+              "event_season": 2023,
+              "average_duration": 2.97,
+              "count": 4
+            },
+            {
+              "event_id": 855,
+              "event_title": "Formula 1 Qatar Grand Prix 2023",
+              "event_short_title": "Lusail International Circuit",
+              "event_date": "2023-10-08",
+              "event_season": 2023,
+              "average_duration": 2.652,
+              "count": 4
+            },
+            {
+              "event_id": 856,
+              "event_title": "Formula 1 Lenovo United States Grand Prix 2023",
+              "event_short_title": "Circuit of The Americas",
+              "event_date": "2023-10-22",
+              "event_season": 2023,
+              "average_duration": 2.91,
+              "count": 4
+            },
+            {
+              "event_id": 857,
+              "event_title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+              "event_short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+              "event_date": "2023-10-29",
+              "event_season": 2023,
+              "average_duration": 2.69,
+              "count": 4
+            },
+            {
+              "event_id": 858,
+              "event_title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+              "event_short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+              "event_date": "2023-11-05",
+              "event_season": 2023,
+              "average_duration": 3.055,
+              "count": 4
+            },
+            {
+              "event_id": 859,
+              "event_title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+              "event_short_title": "Las Vegas Grand Prix Circuit",
+              "event_date": "2023-11-18",
+              "event_season": 2023,
+              "average_duration": 3.673,
+              "count": 4
+            },
+            {
+              "event_id": 860,
+              "event_title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+              "event_short_title": "Yas Marina Circuit",
+              "event_date": "2023-11-25",
+              "event_season": 2023,
+              "average_duration": 2.86,
+              "count": 4
+            }
+          ]
+        },
+        {
+          "duration": {
+            "837": 2.4625000000000004,
+            "838": 2.415,
+            "839": 2.71,
+            "841": 2.725,
+            "842": 2.41,
+            "844": 2.5250000000000004,
+            "845": 2.9825,
+            "847": 2.93,
+            "848": 3.806666666666666,
+            "846": 2.4333333333333336,
+            "849": 4.1450000000000005,
+            "850": 2.526666666666667,
+            "851": 5.046,
+            "852": 2.835,
+            "853": 4.105,
+            "854": 2.4375,
+            "855": 2.223333333333333,
+            "856": 2.6199999999999997,
+            "857": 2.42,
+            "858": 2.615,
+            "859": 3.11,
+            "860": 2.3875
+          },
+          "count": 4,
+          "team_name": "Ferrari",
+          "data_sorted": [
+            {
+              "event_id": 837,
+              "event_title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+              "event_short_title": "Bahrain International Circuit",
+              "event_date": "2023-03-05",
+              "event_season": 2023,
+              "average_duration": 2.463,
+              "count": 4
+            },
+            {
+              "event_id": 838,
+              "event_title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+              "event_short_title": "Jeddah Corniche Circuit",
+              "event_date": "2023-03-19",
+              "event_season": 2023,
+              "average_duration": 2.415,
+              "count": 4
+            },
+            {
+              "event_id": 839,
+              "event_title": "Formula 1 Rolex Australian Grand Prix 2023",
+              "event_short_title": "Melbourne Grand Prix Circuit",
+              "event_date": "2023-04-02",
+              "event_season": 2023,
+              "average_duration": 2.71,
+              "count": 4
+            },
+            {
+              "event_id": 841,
+              "event_title": "Formula 1 Azerbaijan Grand Prix 2023",
+              "event_short_title": "Baku City Circuit",
+              "event_date": "2023-04-30",
+              "event_season": 2023,
+              "average_duration": 2.725,
+              "count": 4
+            },
+            {
+              "event_id": 842,
+              "event_title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+              "event_short_title": "Miami International Autodrome",
+              "event_date": "2023-05-07",
+              "event_season": 2023,
+              "average_duration": 2.41,
+              "count": 4
+            },
+            {
+              "event_id": 844,
+              "event_title": "Formula 1 Grand Prix de Monaco 2023",
+              "event_short_title": "Circuit de Monaco",
+              "event_date": "2023-05-28",
+              "event_season": 2023,
+              "average_duration": 2.525,
+              "count": 4
+            },
+            {
+              "event_id": 845,
+              "event_title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+              "event_short_title": "Circuit de Barcelona-Catalunya",
+              "event_date": "2023-06-04",
+              "event_season": 2023,
+              "average_duration": 2.983,
+              "count": 4
+            },
+            {
+              "event_id": 847,
+              "event_title": "Formula 1 Grand Prix Du Canada 2023",
+              "event_short_title": "Circuit Gilles-Villeneuve",
+              "event_date": "2023-06-18",
+              "event_season": 2023,
+              "average_duration": 2.93,
+              "count": 4
+            },
+            {
+              "event_id": 848,
+              "event_title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+              "event_short_title": "Red Bull Ring",
+              "event_date": "2023-07-02",
+              "event_season": 2023,
+              "average_duration": 3.807,
+              "count": 4
+            },
+            {
+              "event_id": 846,
+              "event_title": "Formula 1 Aramco British Grand Prix 2023",
+              "event_short_title": "Silverstone Circuit",
+              "event_date": "2023-07-09",
+              "event_season": 2023,
+              "average_duration": 2.433,
+              "count": 4
+            },
+            {
+              "event_id": 849,
+              "event_title": "Formula 1 Hungarian Grand Prix 2023",
+              "event_short_title": "Hungaroring",
+              "event_date": "2023-07-23",
+              "event_season": 2023,
+              "average_duration": 4.145,
+              "count": 4
+            },
+            {
+              "event_id": 850,
+              "event_title": "Formula 1 Belgian Grand Prix 2023",
+              "event_short_title": "Circuit de Spa-Francorchamps",
+              "event_date": "2023-07-30",
+              "event_season": 2023,
+              "average_duration": 2.527,
+              "count": 4
+            },
+            {
+              "event_id": 851,
+              "event_title": "Formula 1 Heineken Dutch Grand Prix 2023",
+              "event_short_title": "Circuit Zandvoort",
+              "event_date": "2023-08-27",
+              "event_season": 2023,
+              "average_duration": 5.046,
+              "count": 4
+            },
+            {
+              "event_id": 852,
+              "event_title": "Formula 1 Gran Premio D\u2019italia 2023",
+              "event_short_title": "Autodromo Nazionale Monza",
+              "event_date": "2023-09-03",
+              "event_season": 2023,
+              "average_duration": 2.835,
+              "count": 4
+            },
+            {
+              "event_id": 853,
+              "event_title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+              "event_short_title": "Marina Bay Street Circuit",
+              "event_date": "2023-09-17",
+              "event_season": 2023,
+              "average_duration": 4.105,
+              "count": 4
+            },
+            {
+              "event_id": 854,
+              "event_title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+              "event_short_title": "Suzuka International Racing Course",
+              "event_date": "2023-09-24",
+              "event_season": 2023,
+              "average_duration": 2.438,
+              "count": 4
+            },
+            {
+              "event_id": 855,
+              "event_title": "Formula 1 Qatar Grand Prix 2023",
+              "event_short_title": "Lusail International Circuit",
+              "event_date": "2023-10-08",
+              "event_season": 2023,
+              "average_duration": 2.223,
+              "count": 4
+            },
+            {
+              "event_id": 856,
+              "event_title": "Formula 1 Lenovo United States Grand Prix 2023",
+              "event_short_title": "Circuit of The Americas",
+              "event_date": "2023-10-22",
+              "event_season": 2023,
+              "average_duration": 2.62,
+              "count": 4
+            },
+            {
+              "event_id": 857,
+              "event_title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+              "event_short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+              "event_date": "2023-10-29",
+              "event_season": 2023,
+              "average_duration": 2.42,
+              "count": 4
+            },
+            {
+              "event_id": 858,
+              "event_title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+              "event_short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+              "event_date": "2023-11-05",
+              "event_season": 2023,
+              "average_duration": 2.615,
+              "count": 4
+            },
+            {
+              "event_id": 859,
+              "event_title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+              "event_short_title": "Las Vegas Grand Prix Circuit",
+              "event_date": "2023-11-18",
+              "event_season": 2023,
+              "average_duration": 3.11,
+              "count": 4
+            },
+            {
+              "event_id": 860,
+              "event_title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+              "event_short_title": "Yas Marina Circuit",
+              "event_date": "2023-11-25",
+              "event_season": 2023,
+              "average_duration": 2.388,
+              "count": 4
+            }
+          ]
+        },
+        {
+          "duration": {
+            "837": 3.278,
+            "838": 3.1399999999999997,
+            "839": 5.48,
+            "841": 9.795,
+            "842": 2.89,
+            "844": 7.035,
+            "845": 3.7583333333333333,
+            "847": 3.1375,
+            "848": 4.9475,
+            "846": 4.09,
+            "849": 3.3425000000000002,
+            "850": 3.8075,
+            "851": 5.001428571428572,
+            "852": 3.4525,
+            "853": 5.010000000000001,
+            "854": 2.996,
+            "855": 3.314,
+            "856": 3.5775,
+            "857": 3.395,
+            "858": 5.206666666666666,
+            "859": 3.2275,
+            "860": 3.0975
+          },
+          "count": 4,
+          "team_name": "Haas",
+          "data_sorted": [
+            {
+              "event_id": 837,
+              "event_title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+              "event_short_title": "Bahrain International Circuit",
+              "event_date": "2023-03-05",
+              "event_season": 2023,
+              "average_duration": 3.278,
+              "count": 4
+            },
+            {
+              "event_id": 838,
+              "event_title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+              "event_short_title": "Jeddah Corniche Circuit",
+              "event_date": "2023-03-19",
+              "event_season": 2023,
+              "average_duration": 3.14,
+              "count": 4
+            },
+            {
+              "event_id": 839,
+              "event_title": "Formula 1 Rolex Australian Grand Prix 2023",
+              "event_short_title": "Melbourne Grand Prix Circuit",
+              "event_date": "2023-04-02",
+              "event_season": 2023,
+              "average_duration": 5.48,
+              "count": 4
+            },
+            {
+              "event_id": 841,
+              "event_title": "Formula 1 Azerbaijan Grand Prix 2023",
+              "event_short_title": "Baku City Circuit",
+              "event_date": "2023-04-30",
+              "event_season": 2023,
+              "average_duration": 9.795,
+              "count": 4
+            },
+            {
+              "event_id": 842,
+              "event_title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+              "event_short_title": "Miami International Autodrome",
+              "event_date": "2023-05-07",
+              "event_season": 2023,
+              "average_duration": 2.89,
+              "count": 4
+            },
+            {
+              "event_id": 844,
+              "event_title": "Formula 1 Grand Prix de Monaco 2023",
+              "event_short_title": "Circuit de Monaco",
+              "event_date": "2023-05-28",
+              "event_season": 2023,
+              "average_duration": 7.035,
+              "count": 4
+            },
+            {
+              "event_id": 845,
+              "event_title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+              "event_short_title": "Circuit de Barcelona-Catalunya",
+              "event_date": "2023-06-04",
+              "event_season": 2023,
+              "average_duration": 3.758,
+              "count": 4
+            },
+            {
+              "event_id": 847,
+              "event_title": "Formula 1 Grand Prix Du Canada 2023",
+              "event_short_title": "Circuit Gilles-Villeneuve",
+              "event_date": "2023-06-18",
+              "event_season": 2023,
+              "average_duration": 3.138,
+              "count": 4
+            },
+            {
+              "event_id": 848,
+              "event_title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+              "event_short_title": "Red Bull Ring",
+              "event_date": "2023-07-02",
+              "event_season": 2023,
+              "average_duration": 4.948,
+              "count": 4
+            },
+            {
+              "event_id": 846,
+              "event_title": "Formula 1 Aramco British Grand Prix 2023",
+              "event_short_title": "Silverstone Circuit",
+              "event_date": "2023-07-09",
+              "event_season": 2023,
+              "average_duration": 4.09,
+              "count": 4
+            },
+            {
+              "event_id": 849,
+              "event_title": "Formula 1 Hungarian Grand Prix 2023",
+              "event_short_title": "Hungaroring",
+              "event_date": "2023-07-23",
+              "event_season": 2023,
+              "average_duration": 3.343,
+              "count": 4
+            },
+            {
+              "event_id": 850,
+              "event_title": "Formula 1 Belgian Grand Prix 2023",
+              "event_short_title": "Circuit de Spa-Francorchamps",
+              "event_date": "2023-07-30",
+              "event_season": 2023,
+              "average_duration": 3.808,
+              "count": 4
+            },
+            {
+              "event_id": 851,
+              "event_title": "Formula 1 Heineken Dutch Grand Prix 2023",
+              "event_short_title": "Circuit Zandvoort",
+              "event_date": "2023-08-27",
+              "event_season": 2023,
+              "average_duration": 5.001,
+              "count": 4
+            },
+            {
+              "event_id": 852,
+              "event_title": "Formula 1 Gran Premio D\u2019italia 2023",
+              "event_short_title": "Autodromo Nazionale Monza",
+              "event_date": "2023-09-03",
+              "event_season": 2023,
+              "average_duration": 3.453,
+              "count": 4
+            },
+            {
+              "event_id": 853,
+              "event_title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+              "event_short_title": "Marina Bay Street Circuit",
+              "event_date": "2023-09-17",
+              "event_season": 2023,
+              "average_duration": 5.01,
+              "count": 4
+            },
+            {
+              "event_id": 854,
+              "event_title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+              "event_short_title": "Suzuka International Racing Course",
+              "event_date": "2023-09-24",
+              "event_season": 2023,
+              "average_duration": 2.996,
+              "count": 4
+            },
+            {
+              "event_id": 855,
+              "event_title": "Formula 1 Qatar Grand Prix 2023",
+              "event_short_title": "Lusail International Circuit",
+              "event_date": "2023-10-08",
+              "event_season": 2023,
+              "average_duration": 3.314,
+              "count": 4
+            },
+            {
+              "event_id": 856,
+              "event_title": "Formula 1 Lenovo United States Grand Prix 2023",
+              "event_short_title": "Circuit of The Americas",
+              "event_date": "2023-10-22",
+              "event_season": 2023,
+              "average_duration": 3.578,
+              "count": 4
+            },
+            {
+              "event_id": 857,
+              "event_title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+              "event_short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+              "event_date": "2023-10-29",
+              "event_season": 2023,
+              "average_duration": 3.395,
+              "count": 4
+            },
+            {
+              "event_id": 858,
+              "event_title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+              "event_short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+              "event_date": "2023-11-05",
+              "event_season": 2023,
+              "average_duration": 5.207,
+              "count": 4
+            },
+            {
+              "event_id": 859,
+              "event_title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+              "event_short_title": "Las Vegas Grand Prix Circuit",
+              "event_date": "2023-11-18",
+              "event_season": 2023,
+              "average_duration": 3.228,
+              "count": 4
+            },
+            {
+              "event_id": 860,
+              "event_title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+              "event_short_title": "Yas Marina Circuit",
+              "event_date": "2023-11-25",
+              "event_season": 2023,
+              "average_duration": 3.098,
+              "count": 4
+            }
+          ]
+        },
+        {
+          "duration": {
+            "838": 2.88,
+            "839": 3.96,
+            "841": 2.685,
+            "842": 3.33,
+            "844": 3.9666666666666663,
+            "845": 2.8175,
+            "847": 3.0999999999999996,
+            "848": 2.8600000000000003,
+            "846": 2.325,
+            "849": 2.3425000000000002,
+            "850": 3.855,
+            "851": 2.7785714285714285,
+            "852": 2.45,
+            "853": 2.5,
+            "854": 2.8674999999999997,
+            "855": 2.3000000000000003,
+            "856": 2.45,
+            "857": 2.94,
+            "858": 2.4924999999999997,
+            "859": 3.2,
+            "860": 3.06
+          },
+          "count": 4,
+          "team_name": "McLaren",
+          "data_sorted": [
+            {
+              "event_id": 837,
+              "event_title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+              "event_short_title": "Bahrain International Circuit",
+              "event_date": "2023-03-05",
+              "event_season": 2023,
+              "average_duration": null,
+              "count": 4
+            },
+            {
+              "event_id": 838,
+              "event_title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+              "event_short_title": "Jeddah Corniche Circuit",
+              "event_date": "2023-03-19",
+              "event_season": 2023,
+              "average_duration": 2.88,
+              "count": 4
+            },
+            {
+              "event_id": 839,
+              "event_title": "Formula 1 Rolex Australian Grand Prix 2023",
+              "event_short_title": "Melbourne Grand Prix Circuit",
+              "event_date": "2023-04-02",
+              "event_season": 2023,
+              "average_duration": 3.96,
+              "count": 4
+            },
+            {
+              "event_id": 841,
+              "event_title": "Formula 1 Azerbaijan Grand Prix 2023",
+              "event_short_title": "Baku City Circuit",
+              "event_date": "2023-04-30",
+              "event_season": 2023,
+              "average_duration": 2.685,
+              "count": 4
+            },
+            {
+              "event_id": 842,
+              "event_title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+              "event_short_title": "Miami International Autodrome",
+              "event_date": "2023-05-07",
+              "event_season": 2023,
+              "average_duration": 3.33,
+              "count": 4
+            },
+            {
+              "event_id": 844,
+              "event_title": "Formula 1 Grand Prix de Monaco 2023",
+              "event_short_title": "Circuit de Monaco",
+              "event_date": "2023-05-28",
+              "event_season": 2023,
+              "average_duration": 3.967,
+              "count": 4
+            },
+            {
+              "event_id": 845,
+              "event_title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+              "event_short_title": "Circuit de Barcelona-Catalunya",
+              "event_date": "2023-06-04",
+              "event_season": 2023,
+              "average_duration": 2.818,
+              "count": 4
+            },
+            {
+              "event_id": 847,
+              "event_title": "Formula 1 Grand Prix Du Canada 2023",
+              "event_short_title": "Circuit Gilles-Villeneuve",
+              "event_date": "2023-06-18",
+              "event_season": 2023,
+              "average_duration": 3.1,
+              "count": 4
+            },
+            {
+              "event_id": 848,
+              "event_title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+              "event_short_title": "Red Bull Ring",
+              "event_date": "2023-07-02",
+              "event_season": 2023,
+              "average_duration": 2.86,
+              "count": 4
+            },
+            {
+              "event_id": 846,
+              "event_title": "Formula 1 Aramco British Grand Prix 2023",
+              "event_short_title": "Silverstone Circuit",
+              "event_date": "2023-07-09",
+              "event_season": 2023,
+              "average_duration": 2.325,
+              "count": 4
+            },
+            {
+              "event_id": 849,
+              "event_title": "Formula 1 Hungarian Grand Prix 2023",
+              "event_short_title": "Hungaroring",
+              "event_date": "2023-07-23",
+              "event_season": 2023,
+              "average_duration": 2.343,
+              "count": 4
+            },
+            {
+              "event_id": 850,
+              "event_title": "Formula 1 Belgian Grand Prix 2023",
+              "event_short_title": "Circuit de Spa-Francorchamps",
+              "event_date": "2023-07-30",
+              "event_season": 2023,
+              "average_duration": 3.855,
+              "count": 4
+            },
+            {
+              "event_id": 851,
+              "event_title": "Formula 1 Heineken Dutch Grand Prix 2023",
+              "event_short_title": "Circuit Zandvoort",
+              "event_date": "2023-08-27",
+              "event_season": 2023,
+              "average_duration": 2.779,
+              "count": 4
+            },
+            {
+              "event_id": 852,
+              "event_title": "Formula 1 Gran Premio D\u2019italia 2023",
+              "event_short_title": "Autodromo Nazionale Monza",
+              "event_date": "2023-09-03",
+              "event_season": 2023,
+              "average_duration": 2.45,
+              "count": 4
+            },
+            {
+              "event_id": 853,
+              "event_title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+              "event_short_title": "Marina Bay Street Circuit",
+              "event_date": "2023-09-17",
+              "event_season": 2023,
+              "average_duration": 2.5,
+              "count": 4
+            },
+            {
+              "event_id": 854,
+              "event_title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+              "event_short_title": "Suzuka International Racing Course",
+              "event_date": "2023-09-24",
+              "event_season": 2023,
+              "average_duration": 2.868,
+              "count": 4
+            },
+            {
+              "event_id": 855,
+              "event_title": "Formula 1 Qatar Grand Prix 2023",
+              "event_short_title": "Lusail International Circuit",
+              "event_date": "2023-10-08",
+              "event_season": 2023,
+              "average_duration": 2.3,
+              "count": 4
+            },
+            {
+              "event_id": 856,
+              "event_title": "Formula 1 Lenovo United States Grand Prix 2023",
+              "event_short_title": "Circuit of The Americas",
+              "event_date": "2023-10-22",
+              "event_season": 2023,
+              "average_duration": 2.45,
+              "count": 4
+            },
+            {
+              "event_id": 857,
+              "event_title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+              "event_short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+              "event_date": "2023-10-29",
+              "event_season": 2023,
+              "average_duration": 2.94,
+              "count": 4
+            },
+            {
+              "event_id": 858,
+              "event_title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+              "event_short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+              "event_date": "2023-11-05",
+              "event_season": 2023,
+              "average_duration": 2.493,
+              "count": 4
+            },
+            {
+              "event_id": 859,
+              "event_title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+              "event_short_title": "Las Vegas Grand Prix Circuit",
+              "event_date": "2023-11-18",
+              "event_season": 2023,
+              "average_duration": 3.2,
+              "count": 4
+            },
+            {
+              "event_id": 860,
+              "event_title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+              "event_short_title": "Yas Marina Circuit",
+              "event_date": "2023-11-25",
+              "event_season": 2023,
+              "average_duration": 3.06,
+              "count": 4
+            }
+          ]
+        },
+        {
+          "duration": {
+            "837": 3.13,
+            "838": 2.8049999999999997,
+            "839": 3.69,
+            "841": 3.066666666666667,
+            "842": 2.615,
+            "844": 5.363333333333333,
+            "845": 2.9450000000000003,
+            "847": 3.0149999999999997,
+            "848": 3.0233333333333334,
+            "846": 3.585,
+            "849": 2.8375,
+            "850": 2.8674999999999997,
+            "851": 3.3400000000000003,
+            "852": 2.745,
+            "853": 3.2325,
+            "854": 3.3433333333333337,
+            "855": 2.6333333333333333,
+            "856": 3.1125000000000003,
+            "857": 2.59,
+            "858": 2.9574999999999996,
+            "859": 3.925,
+            "860": 3.1725000000000003
+          },
+          "count": 4,
+          "team_name": "Mercedes",
+          "data_sorted": [
+            {
+              "event_id": 837,
+              "event_title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+              "event_short_title": "Bahrain International Circuit",
+              "event_date": "2023-03-05",
+              "event_season": 2023,
+              "average_duration": 3.13,
+              "count": 4
+            },
+            {
+              "event_id": 838,
+              "event_title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+              "event_short_title": "Jeddah Corniche Circuit",
+              "event_date": "2023-03-19",
+              "event_season": 2023,
+              "average_duration": 2.805,
+              "count": 4
+            },
+            {
+              "event_id": 839,
+              "event_title": "Formula 1 Rolex Australian Grand Prix 2023",
+              "event_short_title": "Melbourne Grand Prix Circuit",
+              "event_date": "2023-04-02",
+              "event_season": 2023,
+              "average_duration": 3.69,
+              "count": 4
+            },
+            {
+              "event_id": 841,
+              "event_title": "Formula 1 Azerbaijan Grand Prix 2023",
+              "event_short_title": "Baku City Circuit",
+              "event_date": "2023-04-30",
+              "event_season": 2023,
+              "average_duration": 3.067,
+              "count": 4
+            },
+            {
+              "event_id": 842,
+              "event_title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+              "event_short_title": "Miami International Autodrome",
+              "event_date": "2023-05-07",
+              "event_season": 2023,
+              "average_duration": 2.615,
+              "count": 4
+            },
+            {
+              "event_id": 844,
+              "event_title": "Formula 1 Grand Prix de Monaco 2023",
+              "event_short_title": "Circuit de Monaco",
+              "event_date": "2023-05-28",
+              "event_season": 2023,
+              "average_duration": 5.363,
+              "count": 4
+            },
+            {
+              "event_id": 845,
+              "event_title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+              "event_short_title": "Circuit de Barcelona-Catalunya",
+              "event_date": "2023-06-04",
+              "event_season": 2023,
+              "average_duration": 2.945,
+              "count": 4
+            },
+            {
+              "event_id": 847,
+              "event_title": "Formula 1 Grand Prix Du Canada 2023",
+              "event_short_title": "Circuit Gilles-Villeneuve",
+              "event_date": "2023-06-18",
+              "event_season": 2023,
+              "average_duration": 3.015,
+              "count": 4
+            },
+            {
+              "event_id": 848,
+              "event_title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+              "event_short_title": "Red Bull Ring",
+              "event_date": "2023-07-02",
+              "event_season": 2023,
+              "average_duration": 3.023,
+              "count": 4
+            },
+            {
+              "event_id": 846,
+              "event_title": "Formula 1 Aramco British Grand Prix 2023",
+              "event_short_title": "Silverstone Circuit",
+              "event_date": "2023-07-09",
+              "event_season": 2023,
+              "average_duration": 3.585,
+              "count": 4
+            },
+            {
+              "event_id": 849,
+              "event_title": "Formula 1 Hungarian Grand Prix 2023",
+              "event_short_title": "Hungaroring",
+              "event_date": "2023-07-23",
+              "event_season": 2023,
+              "average_duration": 2.838,
+              "count": 4
+            },
+            {
+              "event_id": 850,
+              "event_title": "Formula 1 Belgian Grand Prix 2023",
+              "event_short_title": "Circuit de Spa-Francorchamps",
+              "event_date": "2023-07-30",
+              "event_season": 2023,
+              "average_duration": 2.868,
+              "count": 4
+            },
+            {
+              "event_id": 851,
+              "event_title": "Formula 1 Heineken Dutch Grand Prix 2023",
+              "event_short_title": "Circuit Zandvoort",
+              "event_date": "2023-08-27",
+              "event_season": 2023,
+              "average_duration": 3.34,
+              "count": 4
+            },
+            {
+              "event_id": 852,
+              "event_title": "Formula 1 Gran Premio D\u2019italia 2023",
+              "event_short_title": "Autodromo Nazionale Monza",
+              "event_date": "2023-09-03",
+              "event_season": 2023,
+              "average_duration": 2.745,
+              "count": 4
+            },
+            {
+              "event_id": 853,
+              "event_title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+              "event_short_title": "Marina Bay Street Circuit",
+              "event_date": "2023-09-17",
+              "event_season": 2023,
+              "average_duration": 3.233,
+              "count": 4
+            },
+            {
+              "event_id": 854,
+              "event_title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+              "event_short_title": "Suzuka International Racing Course",
+              "event_date": "2023-09-24",
+              "event_season": 2023,
+              "average_duration": 3.343,
+              "count": 4
+            },
+            {
+              "event_id": 855,
+              "event_title": "Formula 1 Qatar Grand Prix 2023",
+              "event_short_title": "Lusail International Circuit",
+              "event_date": "2023-10-08",
+              "event_season": 2023,
+              "average_duration": 2.633,
+              "count": 4
+            },
+            {
+              "event_id": 856,
+              "event_title": "Formula 1 Lenovo United States Grand Prix 2023",
+              "event_short_title": "Circuit of The Americas",
+              "event_date": "2023-10-22",
+              "event_season": 2023,
+              "average_duration": 3.113,
+              "count": 4
+            },
+            {
+              "event_id": 857,
+              "event_title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+              "event_short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+              "event_date": "2023-10-29",
+              "event_season": 2023,
+              "average_duration": 2.59,
+              "count": 4
+            },
+            {
+              "event_id": 858,
+              "event_title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+              "event_short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+              "event_date": "2023-11-05",
+              "event_season": 2023,
+              "average_duration": 2.958,
+              "count": 4
+            },
+            {
+              "event_id": 859,
+              "event_title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+              "event_short_title": "Las Vegas Grand Prix Circuit",
+              "event_date": "2023-11-18",
+              "event_season": 2023,
+              "average_duration": 3.925,
+              "count": 4
+            },
+            {
+              "event_id": 860,
+              "event_title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+              "event_short_title": "Yas Marina Circuit",
+              "event_date": "2023-11-25",
+              "event_season": 2023,
+              "average_duration": 3.173,
+              "count": 4
+            }
+          ]
+        },
+        {
+          "duration": {
+            "837": 2.48,
+            "838": 2.62,
+            "839": 2.365,
+            "841": 2.61,
+            "842": 2.7,
+            "844": 3.378,
+            "845": 2.315,
+            "847": 2.4074999999999998,
+            "848": 2.43,
+            "846": 2.59,
+            "849": 2.45,
+            "850": 2.5875,
+            "851": 3.4869999999999997,
+            "852": 2.4450000000000003,
+            "853": 2.67,
+            "854": 2.9699999999999998,
+            "855": 2.84,
+            "856": 2.8125,
+            "857": 2.44,
+            "858": 2.3475,
+            "859": 2.58,
+            "860": 2.49
+          },
+          "count": 4,
+          "team_name": "Red Bull",
+          "data_sorted": [
+            {
+              "event_id": 837,
+              "event_title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+              "event_short_title": "Bahrain International Circuit",
+              "event_date": "2023-03-05",
+              "event_season": 2023,
+              "average_duration": 2.48,
+              "count": 4
+            },
+            {
+              "event_id": 838,
+              "event_title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+              "event_short_title": "Jeddah Corniche Circuit",
+              "event_date": "2023-03-19",
+              "event_season": 2023,
+              "average_duration": 2.62,
+              "count": 4
+            },
+            {
+              "event_id": 839,
+              "event_title": "Formula 1 Rolex Australian Grand Prix 2023",
+              "event_short_title": "Melbourne Grand Prix Circuit",
+              "event_date": "2023-04-02",
+              "event_season": 2023,
+              "average_duration": 2.365,
+              "count": 4
+            },
+            {
+              "event_id": 841,
+              "event_title": "Formula 1 Azerbaijan Grand Prix 2023",
+              "event_short_title": "Baku City Circuit",
+              "event_date": "2023-04-30",
+              "event_season": 2023,
+              "average_duration": 2.61,
+              "count": 4
+            },
+            {
+              "event_id": 842,
+              "event_title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+              "event_short_title": "Miami International Autodrome",
+              "event_date": "2023-05-07",
+              "event_season": 2023,
+              "average_duration": 2.7,
+              "count": 4
+            },
+            {
+              "event_id": 844,
+              "event_title": "Formula 1 Grand Prix de Monaco 2023",
+              "event_short_title": "Circuit de Monaco",
+              "event_date": "2023-05-28",
+              "event_season": 2023,
+              "average_duration": 3.378,
+              "count": 4
+            },
+            {
+              "event_id": 845,
+              "event_title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+              "event_short_title": "Circuit de Barcelona-Catalunya",
+              "event_date": "2023-06-04",
+              "event_season": 2023,
+              "average_duration": 2.315,
+              "count": 4
+            },
+            {
+              "event_id": 847,
+              "event_title": "Formula 1 Grand Prix Du Canada 2023",
+              "event_short_title": "Circuit Gilles-Villeneuve",
+              "event_date": "2023-06-18",
+              "event_season": 2023,
+              "average_duration": 2.408,
+              "count": 4
+            },
+            {
+              "event_id": 848,
+              "event_title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+              "event_short_title": "Red Bull Ring",
+              "event_date": "2023-07-02",
+              "event_season": 2023,
+              "average_duration": 2.43,
+              "count": 4
+            },
+            {
+              "event_id": 846,
+              "event_title": "Formula 1 Aramco British Grand Prix 2023",
+              "event_short_title": "Silverstone Circuit",
+              "event_date": "2023-07-09",
+              "event_season": 2023,
+              "average_duration": 2.59,
+              "count": 4
+            },
+            {
+              "event_id": 849,
+              "event_title": "Formula 1 Hungarian Grand Prix 2023",
+              "event_short_title": "Hungaroring",
+              "event_date": "2023-07-23",
+              "event_season": 2023,
+              "average_duration": 2.45,
+              "count": 4
+            },
+            {
+              "event_id": 850,
+              "event_title": "Formula 1 Belgian Grand Prix 2023",
+              "event_short_title": "Circuit de Spa-Francorchamps",
+              "event_date": "2023-07-30",
+              "event_season": 2023,
+              "average_duration": 2.588,
+              "count": 4
+            },
+            {
+              "event_id": 851,
+              "event_title": "Formula 1 Heineken Dutch Grand Prix 2023",
+              "event_short_title": "Circuit Zandvoort",
+              "event_date": "2023-08-27",
+              "event_season": 2023,
+              "average_duration": 3.487,
+              "count": 4
+            },
+            {
+              "event_id": 852,
+              "event_title": "Formula 1 Gran Premio D\u2019italia 2023",
+              "event_short_title": "Autodromo Nazionale Monza",
+              "event_date": "2023-09-03",
+              "event_season": 2023,
+              "average_duration": 2.445,
+              "count": 4
+            },
+            {
+              "event_id": 853,
+              "event_title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+              "event_short_title": "Marina Bay Street Circuit",
+              "event_date": "2023-09-17",
+              "event_season": 2023,
+              "average_duration": 2.67,
+              "count": 4
+            },
+            {
+              "event_id": 854,
+              "event_title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+              "event_short_title": "Suzuka International Racing Course",
+              "event_date": "2023-09-24",
+              "event_season": 2023,
+              "average_duration": 2.97,
+              "count": 4
+            },
+            {
+              "event_id": 855,
+              "event_title": "Formula 1 Qatar Grand Prix 2023",
+              "event_short_title": "Lusail International Circuit",
+              "event_date": "2023-10-08",
+              "event_season": 2023,
+              "average_duration": 2.84,
+              "count": 4
+            },
+            {
+              "event_id": 856,
+              "event_title": "Formula 1 Lenovo United States Grand Prix 2023",
+              "event_short_title": "Circuit of The Americas",
+              "event_date": "2023-10-22",
+              "event_season": 2023,
+              "average_duration": 2.813,
+              "count": 4
+            },
+            {
+              "event_id": 857,
+              "event_title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+              "event_short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+              "event_date": "2023-10-29",
+              "event_season": 2023,
+              "average_duration": 2.44,
+              "count": 4
+            },
+            {
+              "event_id": 858,
+              "event_title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+              "event_short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+              "event_date": "2023-11-05",
+              "event_season": 2023,
+              "average_duration": 2.348,
+              "count": 4
+            },
+            {
+              "event_id": 859,
+              "event_title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+              "event_short_title": "Las Vegas Grand Prix Circuit",
+              "event_date": "2023-11-18",
+              "event_season": 2023,
+              "average_duration": 2.58,
+              "count": 4
+            },
+            {
+              "event_id": 860,
+              "event_title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+              "event_short_title": "Yas Marina Circuit",
+              "event_date": "2023-11-25",
+              "event_season": 2023,
+              "average_duration": 2.49,
+              "count": 4
+            }
+          ]
+        },
+        {
+          "duration": {
+            "837": 3.158333333333333,
+            "838": 3.035,
+            "839": 3.1799999999999997,
+            "841": 2.9299999999999997,
+            "842": 2.64,
+            "844": 4.156000000000001,
+            "845": 3.53,
+            "847": 3.69,
+            "848": 2.8033333333333332,
+            "846": 3.115,
+            "849": 3.3249999999999997,
+            "850": 3.2983333333333333,
+            "851": 3.5549999999999997,
+            "852": 3.145,
+            "853": 3.4599999999999995,
+            "855": 3.2840000000000003,
+            "856": 3.6725,
+            "857": 3.9050000000000002,
+            "858": 3.5,
+            "859": 2.605,
+            "860": 2.995
+          },
+          "count": 4,
+          "team_name": "Williams",
+          "data_sorted": [
+            {
+              "event_id": 837,
+              "event_title": "Formula 1 Gulf Air Bahrain Grand Prix 2023",
+              "event_short_title": "Bahrain International Circuit",
+              "event_date": "2023-03-05",
+              "event_season": 2023,
+              "average_duration": 3.158,
+              "count": 4
+            },
+            {
+              "event_id": 838,
+              "event_title": "Formula 1 stc Saudi Arabian Grand Prix 2023",
+              "event_short_title": "Jeddah Corniche Circuit",
+              "event_date": "2023-03-19",
+              "event_season": 2023,
+              "average_duration": 3.035,
+              "count": 4
+            },
+            {
+              "event_id": 839,
+              "event_title": "Formula 1 Rolex Australian Grand Prix 2023",
+              "event_short_title": "Melbourne Grand Prix Circuit",
+              "event_date": "2023-04-02",
+              "event_season": 2023,
+              "average_duration": 3.18,
+              "count": 4
+            },
+            {
+              "event_id": 841,
+              "event_title": "Formula 1 Azerbaijan Grand Prix 2023",
+              "event_short_title": "Baku City Circuit",
+              "event_date": "2023-04-30",
+              "event_season": 2023,
+              "average_duration": 2.93,
+              "count": 4
+            },
+            {
+              "event_id": 842,
+              "event_title": "Formula 1 Crypto.com Miami Grand Prix 2023",
+              "event_short_title": "Miami International Autodrome",
+              "event_date": "2023-05-07",
+              "event_season": 2023,
+              "average_duration": 2.64,
+              "count": 4
+            },
+            {
+              "event_id": 844,
+              "event_title": "Formula 1 Grand Prix de Monaco 2023",
+              "event_short_title": "Circuit de Monaco",
+              "event_date": "2023-05-28",
+              "event_season": 2023,
+              "average_duration": 4.156,
+              "count": 4
+            },
+            {
+              "event_id": 845,
+              "event_title": "Formula 1 Pirelli Gran Premio De Espa\u00f1a 2023",
+              "event_short_title": "Circuit de Barcelona-Catalunya",
+              "event_date": "2023-06-04",
+              "event_season": 2023,
+              "average_duration": 3.53,
+              "count": 4
+            },
+            {
+              "event_id": 847,
+              "event_title": "Formula 1 Grand Prix Du Canada 2023",
+              "event_short_title": "Circuit Gilles-Villeneuve",
+              "event_date": "2023-06-18",
+              "event_season": 2023,
+              "average_duration": 3.69,
+              "count": 4
+            },
+            {
+              "event_id": 848,
+              "event_title": "Formula 1 Grosser Preis von \u00d6sterreich 2023",
+              "event_short_title": "Red Bull Ring",
+              "event_date": "2023-07-02",
+              "event_season": 2023,
+              "average_duration": 2.803,
+              "count": 4
+            },
+            {
+              "event_id": 846,
+              "event_title": "Formula 1 Aramco British Grand Prix 2023",
+              "event_short_title": "Silverstone Circuit",
+              "event_date": "2023-07-09",
+              "event_season": 2023,
+              "average_duration": 3.115,
+              "count": 4
+            },
+            {
+              "event_id": 849,
+              "event_title": "Formula 1 Hungarian Grand Prix 2023",
+              "event_short_title": "Hungaroring",
+              "event_date": "2023-07-23",
+              "event_season": 2023,
+              "average_duration": 3.325,
+              "count": 4
+            },
+            {
+              "event_id": 850,
+              "event_title": "Formula 1 Belgian Grand Prix 2023",
+              "event_short_title": "Circuit de Spa-Francorchamps",
+              "event_date": "2023-07-30",
+              "event_season": 2023,
+              "average_duration": 3.298,
+              "count": 4
+            },
+            {
+              "event_id": 851,
+              "event_title": "Formula 1 Heineken Dutch Grand Prix 2023",
+              "event_short_title": "Circuit Zandvoort",
+              "event_date": "2023-08-27",
+              "event_season": 2023,
+              "average_duration": 3.555,
+              "count": 4
+            },
+            {
+              "event_id": 852,
+              "event_title": "Formula 1 Gran Premio D\u2019italia 2023",
+              "event_short_title": "Autodromo Nazionale Monza",
+              "event_date": "2023-09-03",
+              "event_season": 2023,
+              "average_duration": 3.145,
+              "count": 4
+            },
+            {
+              "event_id": 853,
+              "event_title": "Formula 1 Singapore Airlines Singapore Grand Prix 2023",
+              "event_short_title": "Marina Bay Street Circuit",
+              "event_date": "2023-09-17",
+              "event_season": 2023,
+              "average_duration": 3.46,
+              "count": 4
+            },
+            {
+              "event_id": 854,
+              "event_title": "Formula 1 Lenovo Japanese Grand Prix 2023",
+              "event_short_title": "Suzuka International Racing Course",
+              "event_date": "2023-09-24",
+              "event_season": 2023,
+              "average_duration": null,
+              "count": 4
+            },
+            {
+              "event_id": 855,
+              "event_title": "Formula 1 Qatar Grand Prix 2023",
+              "event_short_title": "Lusail International Circuit",
+              "event_date": "2023-10-08",
+              "event_season": 2023,
+              "average_duration": 3.284,
+              "count": 4
+            },
+            {
+              "event_id": 856,
+              "event_title": "Formula 1 Lenovo United States Grand Prix 2023",
+              "event_short_title": "Circuit of The Americas",
+              "event_date": "2023-10-22",
+              "event_season": 2023,
+              "average_duration": 3.673,
+              "count": 4
+            },
+            {
+              "event_id": 857,
+              "event_title": "Formula 1 Gran Premio De La Ciudad De M\u00e9xico 2023",
+              "event_short_title": "Aut\u00f3dromo Hermanos Rodr\u00edguez",
+              "event_date": "2023-10-29",
+              "event_season": 2023,
+              "average_duration": 3.905,
+              "count": 4
+            },
+            {
+              "event_id": 858,
+              "event_title": "Formula 1 Rolex Grande Pr\u00eamio De S\u00e3o Paulo 2023",
+              "event_short_title": "Aut\u00f3dromo Jos\u00e9 Carlos Pace",
+              "event_date": "2023-11-05",
+              "event_season": 2023,
+              "average_duration": 3.5,
+              "count": 4
+            },
+            {
+              "event_id": 859,
+              "event_title": "Formula 1 Heineken Silver Las Vegas Grand Prix 2023",
+              "event_short_title": "Las Vegas Grand Prix Circuit",
+              "event_date": "2023-11-18",
+              "event_season": 2023,
+              "average_duration": 2.605,
+              "count": 4
+            },
+            {
+              "event_id": 860,
+              "event_title": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2023",
+              "event_short_title": "Yas Marina Circuit",
+              "event_date": "2023-11-25",
+              "event_season": 2023,
+              "average_duration": 2.995,
+              "count": 4
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "htmlList": {
+    "content": "",
+    "video": "<div class='f1-award-video'><div class=\"video-background video-not-found\" style=\"padding-bottom: 56.25%\"><div class=\"wrapper align-center\"><div class=\"icon inmotion-icons warning\"></div><p>Coming soon...</p></div></div></div>"
+  }
+}
