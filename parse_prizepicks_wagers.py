@@ -16,12 +16,14 @@ def parse_wager_data(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
-    wagers = []
+    prediction_rows = []  # Changed from wagers to prediction_rows
     predictions = []
     projections = []
     players = []
+    scores = []
+    teams = []
     
-    # Extract included data (predictions, projections, players)
+    # Extract included data (predictions, projections, players, scores, teams)
     if 'included' in data:
         for item in data['included']:
             if item['type'] == 'prediction':
@@ -30,13 +32,19 @@ def parse_wager_data(file_path):
                 projections.append(item)
             elif item['type'] == 'new_player':
                 players.append(item)
+            elif item['type'] == 'score':
+                scores.append(item)
+            elif item['type'] == 'team':
+                teams.append(item)
     
     # Create lookup dictionaries
     prediction_map = {p['id']: p for p in predictions}
     projection_map = {p['id']: p for p in projections}
     player_map = {p['id']: p for p in players}
+    score_map = {s['id']: s for s in scores}
+    team_map = {t['id']: t for t in teams}
     
-    # Process wagers
+    # Process wagers - create one row per prediction
     for wager in data['data']:
         if wager['type'] != 'new_wager':
             continue
@@ -44,131 +52,181 @@ def parse_wager_data(file_path):
         w = wager['attributes']
         wager_id = wager['id']
         
-        # Calculate actual win/loss
-        is_win = w['result'] in ['won', 'partial_win']
+        # Calculate wager-level data
+        is_wager_win = w['result'] in ['won', 'partial_win']
         actual_payout = w['amount_won_cents'] / 100.0
         bet_amount = w['amount_bet_cents'] / 100.0
         potential_payout = w['amount_to_win_cents'] / 100.0
         profit_loss = actual_payout - bet_amount
-        
-        # Get prediction details
-        player_names = []
-        player_results = []
-        projection_details = []
-        
-        if 'predictions' in wager['relationships'] and wager['relationships']['predictions']['data']:
-            for pred_ref in wager['relationships']['predictions']['data']:
-                pred_id = pred_ref['id']
-                if pred_id in prediction_map:
-                    pred = prediction_map[pred_id]
-                    pred_attrs = pred['attributes']
-                    
-                    # Get projection details
-                    if 'projection' in pred['relationships'] and pred['relationships']['projection']['data']:
-                        proj_id = pred['relationships']['projection']['data']['id']
-                        if proj_id in projection_map:
-                            proj = projection_map[proj_id]
-                            proj_attrs = proj['attributes']
-                            
-                            # Get player name
-                            player_name = 'Unknown'
-                            if 'new_player' in proj['relationships'] and proj['relationships']['new_player']['data']:
-                                player_id = proj['relationships']['new_player']['data']['id']
-                                if player_id in player_map:
-                                    player_name = player_map[player_id]['attributes']['display_name']
-                            
-                            player_names.append(player_name)
-                            
-                            # Determine if player won/lost
-                            is_over = pred_attrs.get('is_over', None)
-                            outcome = pred_attrs.get('outcome', 'unknown')
-                            hit_outcome = outcome == 'hit'
-                            player_result = 'Won' if hit_outcome else 'Lost'
-                            if outcome == 'push':
-                                player_result = 'Push'
-                            elif outcome == 'unknown':
-                                player_result = 'Unknown'
-                            player_results.append(f"{player_name}:{player_result}")
-                            
-                            # Store projection details
-                            projection_details.append({
-                                'player': player_name,
-                                'stat_type': proj_attrs.get('stat_type', ''),
-                                'line_score': proj_attrs.get('line_score', ''),
-                                'is_over': is_over,
-                                'outcome': outcome
-                            })
-        
-        # Create lineup entry
         pick_type = f"{w['parlay_count']}-Pick"
         play_type = 'Power Play' if not w.get('pick_protection', True) else 'Flex Play'
         
-        wager_data = {
-            'lineup_id': wager_id,
-            'date': datetime.fromisoformat(w['created_at'].replace('-04:00', '-04:00')).strftime('%B %d, %Y'),
-            'pick_type': pick_type,
-            'entry_fee': f"${bet_amount:.2f}",
-            'play_type': play_type,
-            'payout': f"${potential_payout:.2f}",
-            'result': 'Win' if is_win else 'Loss',
-            'players': ', '.join(player_names),
-            'player_results': '; '.join(player_results),
-            'sport': w.get('sport', 'Unknown'),
-            'actual_payout': actual_payout,
-            'profit_loss': profit_loss,
-            'created_at': w['created_at'],
-            'updated_at': w['updated_at']
-        }
-        
-        wagers.append(wager_data)
+        # Process each prediction in this wager
+        if 'predictions' in wager['relationships'] and wager['relationships']['predictions']['data']:
+            for pred_ref in wager['relationships']['predictions']['data']:
+                pred_id = pred_ref['id']
+                if pred_id not in prediction_map:
+                    continue
+                    
+                pred = prediction_map[pred_id]
+                pred_attrs = pred['attributes']
+                
+                # Initialize prediction row with wager data
+                prediction_row = {
+                    'wager_id': wager_id,
+                    'prediction_id': pred_id,
+                    'date': datetime.fromisoformat(w['created_at'].replace('-04:00', '-04:00')).strftime('%B %d, %Y'),
+                    'sport': w.get('sport', 'Unknown'),
+                    'pick_type': pick_type,
+                    'play_type': play_type,
+                    'entry_fee': f"${bet_amount:.2f}",
+                    'potential_payout': f"${potential_payout:.2f}",
+                    'actual_payout': actual_payout,
+                    'wager_result': 'Win' if is_wager_win else 'Loss',
+                    'wager_profit_loss': profit_loss,
+                    'created_at': w['created_at'],
+                    'updated_at': w['updated_at']
+                }
+                
+                # Add prediction-level data
+                prediction_row.update({
+                    'line_score': pred_attrs.get('line_score', ''),
+                    'wager_type': pred_attrs.get('wager_type', ''),  # over/under
+                    'odds_type': pred_attrs.get('odds_type', ''),
+                    'is_promo': pred_attrs.get('is_promo', False)
+                })
+                
+                # Get projection details
+                if 'projection' in pred['relationships'] and pred['relationships']['projection']['data']:
+                    proj_id = pred['relationships']['projection']['data']['id']
+                    if proj_id in projection_map:
+                        proj = projection_map[proj_id]
+                        proj_attrs = proj['attributes']
+                        
+                        prediction_row.update({
+                            'projection_id': proj_id,
+                            'stat_type': proj_attrs.get('stat_type', ''),
+                            'description': proj_attrs.get('description', ''),
+                            'start_time': proj_attrs.get('start_time', ''),
+                            'board_time': proj_attrs.get('board_time', ''),
+                            'is_flex': proj_attrs.get('is_flex', False)
+                        })
+                
+                # Get player details
+                player_name = 'Unknown'
+                if 'new_player' in pred['relationships'] and pred['relationships']['new_player']['data']:
+                    player_id = pred['relationships']['new_player']['data']['id']
+                    if player_id in player_map:
+                        player_attrs = player_map[player_id]['attributes']
+                        player_name = player_attrs.get('display_name', 'Unknown')
+                        prediction_row.update({
+                            'player_id': player_id,
+                            'player_name': player_name,
+                            'position': player_attrs.get('position', ''),
+                            'team_id': player_attrs.get('team_id', '')
+                        })
+                
+                # Get actual score/result
+                actual_score = None
+                is_final = False
+                if 'score' in pred['relationships'] and pred['relationships']['score']['data']:
+                    score_id = pred['relationships']['score']['data']['id']
+                    if score_id in score_map:
+                        score_attrs = score_map[score_id]['attributes']
+                        actual_score = score_attrs.get('score', None)
+                        is_final = score_attrs.get('is_final', False)
+                        prediction_row.update({
+                            'score_id': score_id,
+                            'actual_score': actual_score,
+                            'is_final': is_final,
+                            'is_off_the_board': score_attrs.get('is_off_the_board', False)
+                        })
+                
+                # Calculate prediction result
+                line_score = pred_attrs.get('line_score', 0)
+                wager_type = pred_attrs.get('wager_type', '').lower()
+                
+                if actual_score is not None and line_score is not None:
+                    if wager_type == 'over':
+                        prediction_result = 'Won' if actual_score > line_score else 'Lost'
+                        if actual_score == line_score:
+                            prediction_result = 'Push'
+                    elif wager_type == 'under':
+                        prediction_result = 'Won' if actual_score < line_score else 'Lost'
+                        if actual_score == line_score:
+                            prediction_result = 'Push'
+                    else:
+                        prediction_result = 'Unknown'
+                else:
+                    prediction_result = 'Unknown'
+                
+                prediction_row['prediction_result'] = prediction_result
+                
+                # Add to results
+                prediction_rows.append(prediction_row)
     
-    return pd.DataFrame(wagers)
+    return pd.DataFrame(prediction_rows)
 
 def generate_summary(df):
     """Generate summary statistics"""
     
     # Clean up numeric columns
     df['entry_fee_amount'] = df['entry_fee'].str.replace('$', '').astype(float)
-    df['payout_amount'] = df['payout'].str.replace('$', '').astype(float)
+    df['potential_payout_amount'] = df['potential_payout'].str.replace('$', '').astype(float)
     
-    total_invested = df['entry_fee_amount'].sum()
-    total_payout = df['actual_payout'].sum()
-    net_profit = df['profit_loss'].sum()
+    # Summary stats at wager level (aggregate predictions per wager)
+    wager_summary = df.groupby('wager_id').agg({
+        'entry_fee_amount': 'first',
+        'actual_payout': 'first', 
+        'wager_profit_loss': 'first',
+        'wager_result': 'first',
+        'sport': 'first',
+        'pick_type': 'first'
+    }).reset_index()
+    
+    total_invested = wager_summary['entry_fee_amount'].sum()
+    total_payout = wager_summary['actual_payout'].sum()
+    net_profit = wager_summary['wager_profit_loss'].sum()
     
     summary = {
-        'total_lineups': len(df),
-        'total_wins': len(df[df['result'] == 'Win']),
-        'total_losses': len(df[df['result'] == 'Loss']),
-        'win_rate': (len(df[df['result'] == 'Win']) / len(df) * 100) if len(df) > 0 else 0,
+        'total_wagers': len(wager_summary),
+        'total_predictions': len(df),
+        'wager_wins': len(wager_summary[wager_summary['wager_result'] == 'Win']),
+        'wager_losses': len(wager_summary[wager_summary['wager_result'] == 'Loss']),
+        'wager_win_rate': (len(wager_summary[wager_summary['wager_result'] == 'Win']) / len(wager_summary) * 100) if len(wager_summary) > 0 else 0,
+        'prediction_wins': len(df[df['prediction_result'] == 'Won']),
+        'prediction_losses': len(df[df['prediction_result'] == 'Lost']),
+        'prediction_win_rate': (len(df[df['prediction_result'] == 'Won']) / len(df) * 100) if len(df) > 0 else 0,
         'total_invested': total_invested,
         'total_payout': total_payout,
         'net_profit_loss': net_profit,
         'roi': (net_profit / total_invested * 100) if total_invested > 0 else 0
     }
     
-    # By sport
-    by_sport = df.groupby('sport').agg({
-        'lineup_id': 'count',
-        'result': lambda x: (x == 'Win').sum(),
-        'profit_loss': 'sum',
+    # By sport (wager level)
+    by_sport = wager_summary.groupby('sport').agg({
+        'wager_id': 'count',
+        'wager_result': lambda x: (x == 'Win').sum(),
+        'wager_profit_loss': 'sum',
         'entry_fee_amount': 'sum'
     }).rename(columns={
-        'lineup_id': 'total_lineups',
-        'result': 'wins',
-        'profit_loss': 'net_profit',
+        'wager_id': 'total_wagers',
+        'wager_result': 'wins',
+        'wager_profit_loss': 'net_profit',
         'entry_fee_amount': 'invested'
     })
-    by_sport['win_rate'] = (by_sport['wins'] / by_sport['total_lineups'] * 100).round(1)
+    by_sport['win_rate'] = (by_sport['wins'] / by_sport['total_wagers'] * 100).round(1)
     by_sport['roi'] = (by_sport['net_profit'] / by_sport['invested'] * 100).round(1)
     
-    # By pick type
-    by_pick_type = df.groupby('pick_type').agg({
-        'lineup_id': 'count',
-        'result': lambda x: (x == 'Win').sum(),
-        'profit_loss': 'sum'
+    # By pick type (wager level)
+    by_pick_type = wager_summary.groupby('pick_type').agg({
+        'wager_id': 'count',
+        'wager_result': lambda x: (x == 'Win').sum(),
+        'wager_profit_loss': 'sum'
     }).rename(columns={
-        'lineup_id': 'total',
-        'result': 'wins'
+        'wager_id': 'total',
+        'wager_result': 'wins',
+        'wager_profit_loss': 'net_profit'
     })
     by_pick_type['win_rate'] = (by_pick_type['wins'] / by_pick_type['total'] * 100).round(1)
     
@@ -186,7 +244,7 @@ def main():
     try:
         # Parse data
         df = parse_wager_data(file_path)
-        print(f"\n✓ Parsed {len(df)} wagers")
+        print(f"\n✓ Parsed {len(df)} predictions from {df['wager_id'].nunique()} wagers")
         
         # Sort by date
         df['created_datetime'] = pd.to_datetime(df['created_at'])
@@ -199,13 +257,19 @@ def main():
         print("\n" + "="*50)
         print("OVERALL SUMMARY")
         print("="*50)
-        print(f"Total Lineups: {summary['total_lineups']}")
-        print(f"Wins: {summary['total_wins']} ({summary['win_rate']:.1f}%)")
-        print(f"Losses: {summary['total_losses']}")
-        print(f"\nTotal Invested: ${summary['total_invested']:,.2f}")
-        print(f"Total Payout: ${summary['total_payout']:,.2f}")
-        print(f"Net Profit/Loss: ${summary['net_profit_loss']:,.2f}")
-        print(f"ROI: {summary['roi']:.1f}%")
+        print(f"Total Wagers: {summary['total_wagers']}")
+        print(f"Total Predictions: {summary['total_predictions']}")
+        print(f"\nWager Performance:")
+        print(f"  Wins: {summary['wager_wins']} ({summary['wager_win_rate']:.1f}%)")
+        print(f"  Losses: {summary['wager_losses']}")
+        print(f"\nPrediction Performance:")
+        print(f"  Wins: {summary['prediction_wins']} ({summary['prediction_win_rate']:.1f}%)")
+        print(f"  Losses: {summary['prediction_losses']}")
+        print(f"\nFinancial Summary:")
+        print(f"  Total Invested: ${summary['total_invested']:,.2f}")
+        print(f"  Total Payout: ${summary['total_payout']:,.2f}")
+        print(f"  Net Profit/Loss: ${summary['net_profit_loss']:,.2f}")
+        print(f"  ROI: {summary['roi']:.1f}%")
         
         print("\n" + "="*50)
         print("BY SPORT")
@@ -222,18 +286,60 @@ def main():
         os.makedirs(output_dir, exist_ok=True)
         
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        csv_path = os.path.join(output_dir, f"prizepicks_wagers_{timestamp}.csv")
         
-        # Select columns for CSV
-        csv_columns = ['lineup_id', 'date', 'sport', 'pick_type', 'entry_fee', 'play_type', 
-                      'payout', 'result', 'actual_payout', 'profit_loss', 'players', 'player_results']
-        df[csv_columns].to_csv(csv_path, index=False)
+        # 1. Save predictions/lineups CSV (one row per prediction)
+        predictions_csv_path = os.path.join(output_dir, f"prizepicks_lineups_{timestamp}.csv")
         
-        print(f"\n✓ Saved to: {csv_path}")
+        # Select key columns for predictions CSV
+        prediction_columns = ['wager_id', 'prediction_id', 'date', 'sport', 'pick_type', 'play_type', 
+                            'player_name', 'position', 'team_id', 'stat_type', 'description',
+                            'line_score', 'wager_type', 'actual_score', 'prediction_result', 
+                            'is_final', 'start_time', 'created_at']
         
-        # Also save latest
-        latest_path = os.path.join(output_dir, "prizepicks_wagers_latest.csv")
-        df[csv_columns].to_csv(latest_path, index=False)
+        # Only include columns that exist
+        available_prediction_cols = [col for col in prediction_columns if col in df.columns]
+        df[available_prediction_cols].to_csv(predictions_csv_path, index=False)
+        
+        print(f"\n✓ Saved lineups to: {predictions_csv_path}")
+        
+        # Also save latest lineups
+        latest_predictions_path = os.path.join(output_dir, "prizepicks_lineups_latest.csv")
+        df[available_prediction_cols].to_csv(latest_predictions_path, index=False)
+        
+        # 2. Save wagers CSV (one row per wager)
+        # Aggregate to wager level
+        wager_df = df.groupby('wager_id').agg({
+            'date': 'first',
+            'sport': 'first',
+            'pick_type': 'first',
+            'play_type': 'first',
+            'entry_fee': 'first',
+            'potential_payout': 'first',
+            'actual_payout': 'first',
+            'wager_result': 'first',
+            'wager_profit_loss': 'first',
+            'created_at': 'first',
+            'updated_at': 'first',
+            'prediction_id': 'count',  # count of predictions
+            'player_name': lambda x: ', '.join(x.dropna().unique()),  # list of players
+            'prediction_result': lambda x: f"{(x == 'Won').sum()}/{len(x)}"  # wins/total
+        }).reset_index()
+        
+        # Rename columns
+        wager_df = wager_df.rename(columns={
+            'prediction_id': 'num_predictions',
+            'player_name': 'players',
+            'prediction_result': 'predictions_won'
+        })
+        
+        wagers_csv_path = os.path.join(output_dir, f"prizepicks_wagers_{timestamp}.csv")
+        wager_df.to_csv(wagers_csv_path, index=False)
+        
+        print(f"✓ Saved wagers to: {wagers_csv_path}")
+        
+        # Also save latest wagers
+        latest_wagers_path = os.path.join(output_dir, "prizepicks_wagers_latest.csv")
+        wager_df.to_csv(latest_wagers_path, index=False)
         
         # Save detailed summary
         summary_path = os.path.join(output_dir, f"prizepicks_summary_{timestamp}.txt")
@@ -260,11 +366,12 @@ def main():
             f.write("-"*30 + "\n")
             f.write(by_pick_type.to_string())
             
-            f.write("\n\nRECENT LINEUPS\n")
+            f.write("\n\nRECENT PREDICTIONS\n")
             f.write("-"*30 + "\n")
             for _, row in df.head(10).iterrows():
-                f.write(f"{row['date']} - {row['sport']} - {row['pick_type']} - ")
-                f.write(f"{row['entry_fee']} - {row['result']} - P/L: ${row['profit_loss']:.2f}\n")
+                f.write(f"{row['date']} - {row['sport']} - {row.get('player_name', 'Unknown')} - ")
+                f.write(f"{row.get('stat_type', 'Unknown')} {row.get('wager_type', '')} {row.get('line_score', '')} - ")
+                f.write(f"Result: {row.get('prediction_result', 'Unknown')}\n")
         
         print(f"✓ Summary saved to: {summary_path}")
         

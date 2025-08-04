@@ -1,6 +1,6 @@
 # PrizePicks Manual Data Export Guide
 
-This guide explains how to manually export your PrizePicks data using browser developer tools.
+This guide explains how to manually export your PrizePicks data using browser developer tools. https://api.prizepicks.com/v1/entries?filter=settled
 
 ## Quick Steps
 
@@ -26,14 +26,14 @@ This guide explains how to manually export your PrizePicks data using browser de
    - `projections`
    - `lineups`
    - `entries`
-   - API endpoints (usually JSON responses)
+   - API endpoints (usually JSON responses) - https://api.prizepicks.com/v1/entries?filter=settled
 
 ### Step 2: Save API Response
 
 1. Click on the API request
 2. Go to **Response** tab
 3. Right-click and select **Copy Response**
-4. Save to a file named `apioutput.txt`
+4. Save to a file named `lineup.json`
 
 ### Step 3: Parse the Data
 
