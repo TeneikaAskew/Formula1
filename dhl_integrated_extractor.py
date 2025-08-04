@@ -11,13 +11,14 @@ All in one integrated process
 import requests
 import json
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 import logging
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 import re
 from difflib import SequenceMatcher
+import sys
 
 # Configure logging
 logging.basicConfig(
@@ -70,6 +71,101 @@ class DHLIntegratedExtractor:
         
         # Initialize mappings
         self._init_mappings()
+        
+    def check_data_freshness(self):
+        """Check if we need to update data based on race dates"""
+        logger.info("Checking data freshness...")
+        
+        # Check latest integrated data
+        integrated_files = list(self.output_dir.glob('dhl_pitstops_integrated_*.csv'))
+        if not integrated_files:
+            logger.info("No existing integrated data found. Update needed.")
+            return True
+            
+        # Get latest file
+        latest_integrated = sorted(integrated_files)[-1]
+        df = pd.read_csv(latest_integrated)
+        
+        if df.empty or 'event_date' not in df.columns:
+            logger.info("Existing data is invalid. Update needed.")
+            return True
+            
+        # Get latest event date from integrated data
+        df['event_date'] = pd.to_datetime(df['event_date'], errors='coerce')
+        latest_event_date = df['event_date'].max()
+        
+        logger.info(f"Latest event in integrated data: {latest_event_date.date()}")
+        
+        # Check all events to find next race
+        all_events_df = self.merge_event_files()
+        if all_events_df.empty:
+            logger.info("No event files found. Update needed.")
+            return True
+            
+        # Convert dates and sort
+        if 'date_parsed' in all_events_df.columns:
+            all_events_df['event_date'] = pd.to_datetime(all_events_df['date_parsed'], errors='coerce')
+        elif 'event_date' not in all_events_df.columns:
+            logger.error("No date column found in event files")
+            return True
+            
+        all_events_df = all_events_df.sort_values('event_date')
+        
+        # Find future events
+        today = datetime.now()
+        future_events = all_events_df[all_events_df['event_date'] > latest_event_date]
+        
+        if future_events.empty:
+            logger.info("No future events found after latest data.")
+            # Check if we're missing current year data
+            current_year = today.year
+            if current_year not in df['event_date'].dt.year.unique():
+                logger.info(f"Missing data for current year {current_year}. Update needed.")
+                return True
+            return False
+            
+        # Get next event
+        next_event = future_events.iloc[0]
+        next_event_date = next_event['event_date']
+        
+        # Get event name from title or short_title
+        event_name = next_event.get('title', next_event.get('short_title', 'Unknown Event'))
+        
+        logger.info(f"Next event: {event_name} on {next_event_date.date()}")
+        logger.info(f"Today's date: {today.date()}")
+        
+        # Check if next event has passed (with 1 day buffer for processing)
+        if today > next_event_date + timedelta(days=1):
+            logger.info("Next event has passed. Update needed.")
+            return True
+        else:
+            days_until = (next_event_date - today).days
+            logger.info(f"Next event is in {days_until} days. No update needed.")
+            return False
+    
+    def merge_event_files(self):
+        """Merge all yearly event files into one DataFrame"""
+        event_files = list(self.output_dir.glob('dhl_events_mapped_*.csv'))
+        
+        if not event_files:
+            return pd.DataFrame()
+            
+        all_events = []
+        for file in sorted(event_files):
+            df = pd.read_csv(file)
+            all_events.append(df)
+            
+        if all_events:
+            merged_df = pd.concat(all_events, ignore_index=True)
+            
+            # Save merged file
+            merged_file = self.output_dir / 'dhl_events_all_years.csv'
+            merged_df.to_csv(merged_file, index=False)
+            logger.info(f"Saved merged events file: {merged_file}")
+            
+            return merged_df
+        
+        return pd.DataFrame()
         
     def _init_mappings(self):
         """Initialize all mapping dictionaries"""
@@ -537,6 +633,10 @@ def main():
                        help='Years to extract (default: 2023 2024 2025)')
     parser.add_argument('--year', type=int, 
                        help='Single year to extract (for backward compatibility)')
+    parser.add_argument('--force', action='store_true',
+                       help='Force update even if data is fresh')
+    parser.add_argument('--check-only', action='store_true',
+                       help='Only check if update is needed, do not extract')
     
     args = parser.parse_args()
     
@@ -544,6 +644,18 @@ def main():
     print("=" * 70)
     
     extractor = DHLIntegratedExtractor()
+    
+    # Check data freshness first
+    if not args.force:
+        needs_update = extractor.check_data_freshness()
+        
+        if args.check_only:
+            # Exit with appropriate code for scripts
+            sys.exit(0 if needs_update else 1)
+        
+        if not needs_update:
+            print("\n✅ Data is already up to date. Use --force to update anyway.")
+            return
     
     # Determine which years to extract
     if args.year:
