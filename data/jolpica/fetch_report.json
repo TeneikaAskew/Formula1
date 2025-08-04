@@ -1,13 +1,33 @@
 {
   "fetch_summary": {
-    "last_fetch": "2025-08-03T21:12:00.786783",
-    "total_races_fetched": 8,
+    "last_fetch": "2025-08-03T21:35:27.901253",
+    "total_races_fetched": 121,
     "errors_encountered": 55
   },
   "season_breakdown": {
     "2020": {
-      "races_fetched": 8,
-      "total_laps": 479
+      "races_fetched": 17,
+      "total_laps": 1037
+    },
+    "2025": {
+      "races_fetched": 14,
+      "total_laps": 843
+    },
+    "2024": {
+      "races_fetched": 24,
+      "total_laps": 1444
+    },
+    "2023": {
+      "races_fetched": 22,
+      "total_laps": 1325
+    },
+    "2022": {
+      "races_fetched": 22,
+      "total_laps": 1294
+    },
+    "2021": {
+      "races_fetched": 22,
+      "total_laps": 1297
     }
   },
   "missing_races": []
