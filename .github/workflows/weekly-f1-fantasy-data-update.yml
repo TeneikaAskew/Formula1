@@ -1,4 +1,4 @@
-name: Fetch F1 Fantasy Data
+name: Weekly F1 Fantasy Data Update
 
 on:
   schedule:
@@ -214,7 +214,7 @@ except:
 ")
           
           git commit -m "chore: Update F1 Fantasy data - $(date +'%Y-%m-%d')" \
-            -m "Fetched data for $DRIVER_COUNT drivers across $RACE_COUNT races" \
+            -m "Weekly update: Fetched data for $DRIVER_COUNT drivers across $RACE_COUNT races" \
             -m "Source: F1 Fantasy API"
           
           # Push changes

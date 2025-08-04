@@ -1,9 +1,9 @@
-name: Fetch F1 Weather Data
+name: Weekly F1 Weather Data Update
 
 on:
   schedule:
-    # Run at 8:00 AM UTC every day
-    - cron: '0 8 * * *'
+    # Run at 7:00 AM UTC every Tuesday (same as F1DB update)
+    - cron: '0 7 * * 2'
   workflow_dispatch:
     inputs:
       year:
@@ -195,7 +195,7 @@ jobs:
         if [ -n "$(git status --porcelain data/weather_cache/)" ]; then
           git add data/weather_cache/
           git commit -m "chore: Update F1 weather data - $(date +'%Y-%m-%d')" \
-            -m "Automated weather data update from Visual Crossing API" \
+            -m "Automated weekly weather data update from Visual Crossing API" \
             -m "API calls remaining: ${{ steps.api_check.outputs.calls_remaining }}"
           
           # Push changes
