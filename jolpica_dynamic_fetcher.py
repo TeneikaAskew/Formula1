@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 """
-Jolpica F1 API Laps Data Fetcher
+Enhanced Jolpica F1 API Laps Data Fetcher
 
 This script fetches lap-by-lap timing data from the Jolpica F1 API
-for the past 5 years (2020-2024) to enhance overtake analysis.
+with dynamic year range support and improved error handling.
+
+Features:
+- Configurable year range (can fetch data from 1950 onwards)
+- Command-line interface for easy configuration
+- Improved rate limiting and error recovery
+- Support for specific race fetching
+- Resume capability for interrupted fetches
+- Validation and consistency checks
 
 API Documentation: https://github.com/jolpica/jolpica-f1/blob/main/docs/endpoints/laps.md
 """
@@ -13,13 +21,15 @@ import json
 import time
 import requests
 import pandas as pd
+import argparse
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Tuple
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 from collections import deque
+import sys
 
 # Configure logging
 logging.basicConfig(
@@ -28,8 +38,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-class JolpicaLapsFetcher:
-    """Fetch lap timing data from Jolpica F1 API with rate limiting"""
+class EnhancedJolpicaLapsFetcher:
+    """Enhanced fetcher with dynamic year range and improved features"""
     
     BASE_URL = "http://api.jolpi.ca/ergast/f1"
     
@@ -42,11 +52,15 @@ class JolpicaLapsFetcher:
     MAX_BACKOFF = 300.0  # Maximum backoff (5 minutes)
     BACKOFF_MULTIPLIER = 2.5  # Exponential multiplier (4s -> 10s -> 25s -> 62.5s -> 156.25s -> 300s)
     
-    def __init__(self, data_dir: str = "data/jolpica"):
-        """Initialize the fetcher with data directory"""
+    # F1 historical data availability
+    MIN_YEAR = 1950  # First F1 season
+    
+    def __init__(self, data_dir: str = "data/jolpica", config_file: Optional[str] = None):
+        """Initialize the fetcher with data directory and optional config"""
         self.data_dir = Path(data_dir)
         self.laps_dir = self.data_dir / "laps"
         self.metadata_file = self.data_dir / "fetch_metadata.json"
+        self.config_file = config_file
         
         # Create directories
         self.laps_dir.mkdir(parents=True, exist_ok=True)
@@ -54,11 +68,24 @@ class JolpicaLapsFetcher:
         # Load metadata if exists
         self.metadata = self._load_metadata()
         
+        # Load config if provided
+        self.config = self._load_config() if config_file else {}
+        
         # Rate limiting tracking
         self.request_times = deque(maxlen=self.SUSTAINED_LIMIT)
         self.last_request_time = 0
         self.current_backoff = self.INITIAL_BACKOFF
         self.consecutive_429s = 0
+        
+        # Statistics tracking
+        self.stats = {
+            'total_requests': 0,
+            'successful_requests': 0,
+            'rate_limit_hits': 0,
+            'errors': 0,
+            'races_fetched': 0,
+            'laps_fetched': 0
+        }
         
     def _load_metadata(self) -> Dict:
         """Load metadata about previous fetches"""
@@ -68,13 +95,22 @@ class JolpicaLapsFetcher:
         return {
             "last_fetch": None,
             "fetched_races": {},
-            "errors": []
+            "errors": [],
+            "statistics": {}
         }
     
     def _save_metadata(self):
         """Save metadata about fetches"""
+        self.metadata['statistics'] = self.stats
         with open(self.metadata_file, 'w') as f:
             json.dump(self.metadata, f, indent=2)
+    
+    def _load_config(self) -> Dict:
+        """Load configuration from file"""
+        if self.config_file and Path(self.config_file).exists():
+            with open(self.config_file, 'r') as f:
+                return json.load(f)
+        return {}
     
     def _wait_for_rate_limit(self):
         """Enforce rate limits before making a request"""
@@ -103,6 +139,7 @@ class JolpicaLapsFetcher:
     def _handle_rate_limit_error(self):
         """Handle 429 error with exponential backoff"""
         self.consecutive_429s += 1
+        self.stats['rate_limit_hits'] += 1
         
         # Calculate backoff time
         backoff_time = min(
@@ -123,9 +160,10 @@ class JolpicaLapsFetcher:
         self.consecutive_429s = 0
         self.current_backoff = self.INITIAL_BACKOFF
     
-    def _make_request(self, url: str, timeout: int = 60) -> requests.Response:
+    def _make_request(self, url: str, timeout: int = 60) -> Optional[requests.Response]:
         """Make a request with rate limiting and retry logic"""
         max_attempts = 5
+        self.stats['total_requests'] += 1
         
         for attempt in range(max_attempts):
             # Wait for rate limit
@@ -152,31 +190,57 @@ class JolpicaLapsFetcher:
                 # Success - reset backoff
                 self._reset_backoff()
                 
+                # Handle 404 (not found)
+                if response.status_code == 404:
+                    logger.debug(f"404 Not Found: {url}")
+                    return None
+                
                 # Raise for other HTTP errors
                 response.raise_for_status()
                 
+                self.stats['successful_requests'] += 1
                 return response
                 
             except requests.exceptions.Timeout:
                 logger.error(f"Request timeout on attempt {attempt + 1}")
                 if attempt == max_attempts - 1:
+                    self.stats['errors'] += 1
                     raise
                 time.sleep(2 ** attempt)  # Simple exponential backoff for timeouts
                 
             except requests.exceptions.RequestException as e:
                 if attempt == max_attempts - 1:
+                    self.stats['errors'] += 1
                     raise
                 logger.warning(f"Request error on attempt {attempt + 1}: {e}")
                 time.sleep(2 ** attempt)
         
+        self.stats['errors'] += 1
         raise Exception(f"Failed after {max_attempts} attempts")
+    
+    def validate_year(self, year: int) -> bool:
+        """Validate if a year is within valid F1 range"""
+        current_year = datetime.now().year
+        if year < self.MIN_YEAR:
+            logger.warning(f"Year {year} is before first F1 season ({self.MIN_YEAR})")
+            return False
+        elif year > current_year:
+            logger.warning(f"Year {year} is in the future")
+            return False
+        return True
     
     def get_season_info(self, year: int) -> Optional[Dict]:
         """Get information about races in a season"""
+        if not self.validate_year(year):
+            return None
+            
         url = f"{self.BASE_URL}/{year}.json"
         
         try:
             response = self._make_request(url, timeout=30)
+            if not response:
+                return None
+                
             data = response.json()
             
             races = data.get('MRData', {}).get('RaceTable', {}).get('Races', [])
@@ -213,6 +277,9 @@ class JolpicaLapsFetcher:
                 url = f"{self.BASE_URL}/{year}/{round_num}/laps.json?limit={limit}&offset={offset}"
                 
                 response = self._make_request(url, timeout=60)
+                if not response:
+                    return None
+                    
                 data = response.json()
                 
                 mrdata = data.get('MRData', {})
@@ -275,6 +342,9 @@ class JolpicaLapsFetcher:
             
             logger.info(f"Fetched {len(unique_laps)} laps for {year} Round {round_num} - {race_info.get('raceName', 'Unknown')}")
             
+            self.stats['laps_fetched'] += len(unique_laps)
+            self.stats['races_fetched'] += 1
+            
             race_info['laps'] = sorted(unique_laps, key=lambda x: int(x['number']))
             return race_info
             
@@ -307,30 +377,8 @@ class JolpicaLapsFetcher:
         logger.info(f"Saved laps data to {filepath}")
         return str(filepath)
     
-    def convert_laps_to_dataframe(self, race_data: Dict) -> pd.DataFrame:
-        """Convert race laps data to a pandas DataFrame for analysis"""
-        rows = []
-        
-        for lap in race_data['laps']:
-            lap_number = int(lap['number'])
-            
-            for timing in lap['Timings']:
-                rows.append({
-                    'season': race_data['season'],
-                    'round': race_data['round'],
-                    'raceName': race_data['raceName'],
-                    'circuitId': race_data['circuitId'],
-                    'date': race_data['date'],
-                    'lap': lap_number,
-                    'driverId': timing['driverId'],
-                    'position': int(timing['position']),
-                    'time': timing.get('time', None)
-                })
-        
-        return pd.DataFrame(rows)
-    
-    def fetch_season_laps(self, year: int, force: bool = False) -> List[str]:
-        """Fetch all laps for a complete season"""
+    def fetch_season_laps(self, year: int, force: bool = False, rounds: Optional[List[int]] = None) -> List[str]:
+        """Fetch all laps for a complete season or specific rounds"""
         logger.info(f"\nFetching laps data for {year} season...")
         
         # Get season info
@@ -340,8 +388,14 @@ class JolpicaLapsFetcher:
         
         saved_files = []
         
+        # Filter rounds if specified
+        races_to_fetch = season_info['races']
+        if rounds:
+            races_to_fetch = [r for r in races_to_fetch if r['round'] in rounds]
+            logger.info(f"Fetching specific rounds: {rounds}")
+        
         # Create progress bar with rate limit info
-        pbar = tqdm(season_info['races'], desc=f"{year} races")
+        pbar = tqdm(races_to_fetch, desc=f"{year} races")
         
         for race in pbar:
             round_num = race['round']
@@ -377,13 +431,41 @@ class JolpicaLapsFetcher:
         
         return saved_files
     
-    def fetch_multiple_seasons(self, start_year: int = 2018, end_year: int = 2024, force: bool = False):
-        """Fetch laps data for multiple seasons"""
+    def fetch_multiple_seasons(self, start_year: int, end_year: int, force: bool = False, 
+                              reverse: bool = True, skip_existing: bool = True):
+        """
+        Fetch laps data for multiple seasons
+        
+        Args:
+            start_year: First year to fetch
+            end_year: Last year to fetch
+            force: Force re-fetch even if data exists
+            reverse: Fetch in reverse chronological order (newest first)
+            skip_existing: Skip seasons that are completely fetched
+        """
         logger.info(f"Fetching laps data from {start_year} to {end_year}")
         
         all_files = []
         
-        for year in range(start_year, end_year + 1):
+        # Determine year order
+        years = range(start_year, end_year + 1)
+        if reverse:
+            years = reversed(list(years))
+        
+        for year in years:
+            if not self.validate_year(year):
+                continue
+                
+            # Check if season is complete
+            if skip_existing and not force:
+                season_info = self.get_season_info(year)
+                if season_info:
+                    total_races = len(season_info['races'])
+                    existing_races = [k for k in self.metadata['fetched_races'].keys() if k.startswith(f"{year}_")]
+                    if len(existing_races) == total_races:
+                        logger.info(f"Skipping {year} - all {total_races} races already fetched")
+                        continue
+            
             files = self.fetch_season_laps(year, force=force)
             all_files.extend(files)
             
@@ -394,14 +476,26 @@ class JolpicaLapsFetcher:
         logger.info(f"\nCompleted fetching {len(all_files)} race files")
         return all_files
     
-    def create_consolidated_dataset(self) -> pd.DataFrame:
-        """Create a consolidated DataFrame from all fetched laps data"""
+    def create_consolidated_dataset(self, years: Optional[List[int]] = None, 
+                                   output_format: str = 'both') -> pd.DataFrame:
+        """
+        Create a consolidated DataFrame from fetched laps data
+        
+        Args:
+            years: Specific years to include (None for all)
+            output_format: 'parquet', 'csv', or 'both'
+        """
         logger.info("Creating consolidated laps dataset...")
         
         all_laps = []
         
+        # Determine which years to process
+        year_dirs = sorted(self.laps_dir.iterdir()) if not years else [
+            self.laps_dir / str(year) for year in years if (self.laps_dir / str(year)).exists()
+        ]
+        
         # Read all JSON files
-        for year_dir in sorted(self.laps_dir.iterdir()):
+        for year_dir in year_dirs:
             if year_dir.is_dir():
                 for json_file in sorted(year_dir.glob("*.json")):
                     with open(json_file, 'r') as f:
@@ -413,21 +507,51 @@ class JolpicaLapsFetcher:
         if all_laps:
             consolidated_df = pd.concat(all_laps, ignore_index=True)
             
+            # Determine filename based on years
+            if years:
+                year_range = f"{min(years)}_{max(years)}"
+            else:
+                year_range = "all_years"
+            
             # Save consolidated dataset
-            output_file = self.data_dir / "all_laps_2020_2024.parquet"
-            consolidated_df.to_parquet(output_file, index=False)
+            if output_format in ['parquet', 'both']:
+                output_file = self.data_dir / f"laps_{year_range}.parquet"
+                consolidated_df.to_parquet(output_file, index=False)
+                logger.info(f"Saved Parquet: {output_file}")
             
-            csv_file = self.data_dir / "all_laps_2020_2024.csv"
-            consolidated_df.to_csv(csv_file, index=False)
+            if output_format in ['csv', 'both']:
+                csv_file = self.data_dir / f"laps_{year_range}.csv"
+                consolidated_df.to_csv(csv_file, index=False)
+                logger.info(f"Saved CSV: {csv_file}")
             
-            logger.info(f"Saved consolidated dataset with {len(consolidated_df)} lap records")
-            logger.info(f"Parquet: {output_file}")
-            logger.info(f"CSV: {csv_file}")
+            logger.info(f"Consolidated dataset with {len(consolidated_df)} lap records")
             
             return consolidated_df
         else:
             logger.warning("No laps data found to consolidate")
             return pd.DataFrame()
+    
+    def convert_laps_to_dataframe(self, race_data: Dict) -> pd.DataFrame:
+        """Convert race laps data to a pandas DataFrame for analysis"""
+        rows = []
+        
+        for lap in race_data['laps']:
+            lap_number = int(lap['number'])
+            
+            for timing in lap['Timings']:
+                rows.append({
+                    'season': race_data['season'],
+                    'round': race_data['round'],
+                    'raceName': race_data['raceName'],
+                    'circuitId': race_data['circuitId'],
+                    'date': race_data['date'],
+                    'lap': lap_number,
+                    'driverId': timing['driverId'],
+                    'position': int(timing['position']),
+                    'time': timing.get('time', None)
+                })
+        
+        return pd.DataFrame(rows)
     
     def generate_summary_report(self) -> Dict:
         """Generate a summary report of fetched data"""
@@ -435,7 +559,8 @@ class JolpicaLapsFetcher:
             'fetch_summary': {
                 'last_fetch': self.metadata.get('last_fetch'),
                 'total_races_fetched': len(self.metadata['fetched_races']),
-                'errors_encountered': len(self.metadata['errors'])
+                'errors_encountered': len(self.metadata['errors']),
+                'statistics': self.stats
             },
             'season_breakdown': {},
             'missing_races': []
@@ -487,63 +612,118 @@ class JolpicaLapsFetcher:
             'current_backoff': self.current_backoff,
             'consecutive_429s': self.consecutive_429s
         }
+    
+    def get_missing_races(self, start_year: int, end_year: int) -> List[Tuple[int, int]]:
+        """Get list of missing races in a year range"""
+        missing = []
+        
+        for year in range(start_year, end_year + 1):
+            if not self.validate_year(year):
+                continue
+                
+            season_info = self.get_season_info(year)
+            if not season_info:
+                continue
+            
+            for race in season_info['races']:
+                race_key = f"{year}_{race['round']}"
+                if race_key not in self.metadata['fetched_races']:
+                    missing.append((year, race['round']))
+        
+        return missing
 
 
 def main():
-    """Main execution function"""
-    # Initialize fetcher
-    fetcher = JolpicaLapsFetcher()
+    """Main execution function with CLI interface"""
+    parser = argparse.ArgumentParser(
+        description='Enhanced Jolpica F1 Laps Data Fetcher',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Fetch data for 2019-2020
+  python jolpica_dynamic_fetcher.py --start 2019 --end 2020
+  
+  # Fetch only 2018 data
+  python jolpica_dynamic_fetcher.py --year 2018
+  
+  # Fetch specific rounds from 2017
+  python jolpica_dynamic_fetcher.py --year 2017 --rounds 1 2 3
+  
+  # Show missing races for 2015-2020
+  python jolpica_dynamic_fetcher.py --check-missing --start 2015 --end 2020
+  
+  # Create consolidated dataset for specific years
+  python jolpica_dynamic_fetcher.py --consolidate --years 2018 2019 2020
+  
+  # Fetch historical data (1980s)
+  python jolpica_dynamic_fetcher.py --start 1980 --end 1989
+        """
+    )
     
-    print("Jolpica F1 Laps Data Fetcher with Exponential Backoff")
+    # Year selection arguments
+    parser.add_argument('--year', type=int, help='Fetch data for a specific year')
+    parser.add_argument('--start', type=int, help='Start year for range fetch')
+    parser.add_argument('--end', type=int, help='End year for range fetch')
+    parser.add_argument('--rounds', type=int, nargs='+', help='Specific rounds to fetch')
+    
+    # Options
+    parser.add_argument('--force', action='store_true', help='Force re-fetch existing data')
+    parser.add_argument('--chronological', action='store_true', help='Fetch in chronological order (default: reverse)')
+    parser.add_argument('--no-skip', action='store_true', help='Don\'t skip complete seasons')
+    
+    # Operations
+    parser.add_argument('--check-missing', action='store_true', help='Check for missing races in range')
+    parser.add_argument('--consolidate', action='store_true', help='Create consolidated dataset')
+    parser.add_argument('--years', type=int, nargs='+', help='Years to include in consolidation')
+    parser.add_argument('--format', choices=['csv', 'parquet', 'both'], default='both', 
+                       help='Output format for consolidated data')
+    
+    # Configuration
+    parser.add_argument('--data-dir', default='data/jolpica', help='Data directory')
+    parser.add_argument('--config', help='Configuration file path')
+    parser.add_argument('--verbose', action='store_true', help='Enable verbose logging')
+    
+    args = parser.parse_args()
+    
+    # Set logging level
+    if args.verbose:
+        logging.getLogger().setLevel(logging.DEBUG)
+    
+    # Initialize fetcher
+    fetcher = EnhancedJolpicaLapsFetcher(data_dir=args.data_dir, config_file=args.config)
+    
+    print("Enhanced Jolpica F1 Laps Data Fetcher")
     print("=" * 60)
     print(f"Data directory: {fetcher.data_dir}")
     print(f"Rate limits: {fetcher.BURST_LIMIT} req/sec, {fetcher.SUSTAINED_LIMIT} req/hour")
-    print(f"Fetching seasons: 2021-2025 (current year first, then back 5 years)")
     print()
     
-    # Check existing data
-    if fetcher.metadata['fetched_races']:
-        print(f"Found {len(fetcher.metadata['fetched_races'])} races already fetched")
-        response = input("Continue from where left off? (y/n): ")
-        if response.lower() != 'y':
-            return
+    # Determine operation mode
+    if args.check_missing:
+        # Check missing races mode
+        start_year = args.start or 2020
+        end_year = args.end or datetime.now().year
+        
+        print(f"Checking for missing races from {start_year} to {end_year}...")
+        missing = fetcher.get_missing_races(start_year, end_year)
+        
+        if missing:
+            print(f"\nFound {len(missing)} missing races:")
+            for year, round_num in missing:
+                print(f"  - {year} Round {round_num}")
+        else:
+            print("\nNo missing races found!")
+        
+        return
     
-    # Fetch data
-    start_time = time.time()
-    
-    try:
-        # Fetch all seasons - start with current year, then go back 5 years
-        current_year = 2025
-        start_year = current_year - 4  # 2021
-        print(f"Fetching from {current_year} back to {start_year}")
+    elif args.consolidate:
+        # Consolidation mode
+        years = args.years
+        print(f"Creating consolidated dataset...")
+        if years:
+            print(f"Including years: {years}")
         
-        # Fetch in reverse order (current year first)
-        for year in range(current_year, start_year - 1, -1):
-            print(f"\nFetching {year} season...")
-            
-            # Check existing data for this season first
-            season_info = fetcher.get_season_info(year)
-            if season_info:
-                total_races = len(season_info['races'])
-                existing_races = [k for k in fetcher.metadata['fetched_races'].keys() if k.startswith(f"{year}_")]
-                if len(existing_races) == total_races:
-                    print(f"  All {total_races} races for {year} already fetched - skipping")
-                    continue
-                elif existing_races:
-                    print(f"  Found {len(existing_races)}/{total_races} races already fetched for {year}")
-            
-            fetcher.fetch_season_laps(year, force=False)
-        
-        # Show final rate limit status
-        status = fetcher.get_rate_limit_status()
-        print(f"\nFinal rate limit status:")
-        print(f"- Requests in last hour: {status['requests_last_hour']}")
-        print(f"- Remaining hourly quota: {status['remaining_hourly']}")
-        print(f"- Total 429 errors: {len(fetcher.metadata['errors'])}")
-        
-        # Create consolidated dataset
-        print("\nCreating consolidated dataset...")
-        df = fetcher.create_consolidated_dataset()
+        df = fetcher.create_consolidated_dataset(years=years, output_format=args.format)
         
         if not df.empty:
             print(f"\nDataset Statistics:")
@@ -552,14 +732,49 @@ def main():
             print(f"- Unique races: {len(df.groupby(['season', 'round']))}")
             print(f"- Date range: {df['date'].min()} to {df['date'].max()}")
         
+        return
+    
+    # Fetch mode
+    start_time = time.time()
+    
+    try:
+        if args.year:
+            # Single year fetch
+            print(f"Fetching {args.year} season...")
+            fetcher.fetch_season_laps(args.year, force=args.force, rounds=args.rounds)
+            
+        else:
+            # Range fetch
+            start_year = args.start or 2020
+            end_year = args.end or datetime.now().year
+            
+            print(f"Fetching from {start_year} to {end_year}")
+            fetcher.fetch_multiple_seasons(
+                start_year, 
+                end_year, 
+                force=args.force,
+                reverse=not args.chronological,
+                skip_existing=not args.no_skip
+            )
+        
+        # Show final statistics
+        print(f"\nFetch Statistics:")
+        print(f"- Total requests: {fetcher.stats['total_requests']}")
+        print(f"- Successful requests: {fetcher.stats['successful_requests']}")
+        print(f"- Rate limit hits: {fetcher.stats['rate_limit_hits']}")
+        print(f"- Errors: {fetcher.stats['errors']}")
+        print(f"- Races fetched: {fetcher.stats['races_fetched']}")
+        print(f"- Laps fetched: {fetcher.stats['laps_fetched']:,}")
+        
         # Generate report
         report = fetcher.generate_summary_report()
         print(f"\nFetch report saved to: {fetcher.data_dir / 'fetch_report.json'}")
         
-        # Show summary
-        print(f"\nSummary by season:")
-        for year, info in sorted(report['season_breakdown'].items()):
-            print(f"  {year}: {info['races_fetched']} races, {info['total_laps']:,} laps")
+        # Show summary by season
+        if report['season_breakdown']:
+            print(f"\nSummary by season:")
+            for year, info in sorted(report['season_breakdown'].items()):
+                print(f"  {year}: {info['races_fetched']} races, {info['total_laps']:,} laps")
         
     except KeyboardInterrupt:
         print("\n\nFetch interrupted by user. Progress has been saved.")
@@ -567,6 +782,9 @@ def main():
     except Exception as e:
         logger.error(f"Error during fetch: {e}")
         raise
+    finally:
+        # Save final metadata
+        fetcher._save_metadata()
     
     elapsed_time = time.time() - start_time
     print(f"\nTotal execution time: {elapsed_time/60:.2f} minutes")
