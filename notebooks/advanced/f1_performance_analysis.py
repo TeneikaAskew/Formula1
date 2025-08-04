@@ -77,18 +77,40 @@ class F1PerformanceAnalyzer:
                 dhl_dir = Path("data/dhl")  # From workspace root
             
             if dhl_dir.exists():
-                # Find the most recent CSV file
-                csv_files = list(dhl_dir.glob("*.csv"))
-                if csv_files:
-                    latest_file = max(csv_files, key=lambda p: p.stat().st_mtime)
-                    print(f"Loading DHL pit stop data from: {latest_file}")
+                # Look specifically for integrated pit stops files first
+                integrated_files = list(dhl_dir.glob("dhl_pitstops_integrated_*.csv"))
+                if integrated_files:
+                    # Get the most recent integrated file
+                    latest_file = max(integrated_files, key=lambda p: p.stat().st_mtime)
+                    print(f"Loading DHL integrated pit stop data from: {latest_file}")
                     
                     df = pd.read_csv(latest_file)
+                    # Debug: print column names
+                    print(f"DHL data columns: {list(df.columns)}")
+                    
+                    # Check if circuit_id exists
+                    if 'circuit_id' in df.columns:
+                        print(f"Found circuit_id column with {df['circuit_id'].nunique()} unique circuits")
+                    
                     # Ensure consistent column names
                     if 'time' in df.columns:
                         df['time_seconds'] = df['time']
                     
                     return df
+                else:
+                    # Fallback to any CSV file
+                    csv_files = list(dhl_dir.glob("*.csv"))
+                    if csv_files:
+                        latest_file = max(csv_files, key=lambda p: p.stat().st_mtime)
+                        print(f"Loading DHL pit stop data from: {latest_file}")
+                        
+                        df = pd.read_csv(latest_file)
+                        
+                        # Ensure consistent column names
+                        if 'time' in df.columns:
+                            df['time_seconds'] = df['time']
+                        
+                        return df
             
             print("No DHL pit stop data found")
             return pd.DataFrame()
@@ -1347,7 +1369,19 @@ class F1PerformanceAnalyzer:
     
     def analyze_pit_stops(self):
         """Analyze pit stop times by driver"""
-        pit_stops = self.data.get('pit_stops', pd.DataFrame()).copy()
+        # Try multiple possible keys for pit stops data
+        pit_stops = pd.DataFrame()
+        for key in ['races_pit_stops', 'pit_stops', 'pitstops', 'pit_stop']:
+            if key in self.data and not self.data[key].empty:
+                pit_stops = self.data[key].copy()
+                print(f"Found pit stops data under key: {key}")
+                break
+        
+        if pit_stops.empty:
+            print("No pit stops data found in any expected keys")
+            print(f"Available keys in data: {list(self.data.keys())}")
+            return pd.DataFrame()
+            
         races = self.data.get('races', pd.DataFrame())
         
         if pit_stops.empty:
@@ -1406,8 +1440,112 @@ class F1PerformanceAnalyzer:
                     lambda x: circuit_times.get(x, pit_analysis.loc[x, 'avg_stop_time'] if x in pit_analysis.index else 0)
                 )
         
-        # Drop driver_id index since we already have driver_name
-        pit_analysis = pit_analysis.reset_index(drop=True)
+        # Add DHL comparison if available
+        if hasattr(self, 'dhl_data') and not self.dhl_data.empty:
+            # Get DHL data with circuit mapping
+            dhl_data = self.dhl_data.copy()
+            
+            # Map race_id to circuitId if needed
+            if 'race_id' in dhl_data.columns and not races.empty and 'circuitId' not in dhl_data.columns:
+                race_to_circuit = races.set_index('id')['circuitId'].to_dict()
+                dhl_data['circuitId'] = dhl_data['race_id'].map(race_to_circuit)
+            
+            # Merge F1DB pit stops with races to get circuitId
+            if 'circuitId' not in recent_stops.columns and not races.empty:
+                recent_stops = recent_stops.merge(
+                    races[['id', 'circuitId']], 
+                    left_on='raceId', 
+                    right_on='id', 
+                    how='left',
+                    suffixes=('', '_race')
+                )
+            
+            # Calculate pit lane delta (total time - service time)
+            pit_lane_deltas = []
+            
+            for driver_id in pit_analysis.index:
+                # Get F1DB pit stops for this driver
+                driver_f1db = recent_stops[recent_stops['driverId'] == driver_id]
+                
+                # Get DHL pit stops for this driver (using driver_id column)
+                driver_dhl = dhl_data[dhl_data['driver_id'] == driver_id] if 'driver_id' in dhl_data.columns else pd.DataFrame()
+                
+                if not driver_f1db.empty and not driver_dhl.empty:
+                    # Match by race and lap when possible
+                    for _, f1db_stop in driver_f1db.iterrows():
+                        race_id = f1db_stop.get('raceId')
+                        lap = f1db_stop.get('lap')
+                        
+                        # Find matching DHL stop
+                        dhl_match = driver_dhl[
+                            (driver_dhl['race_id'] == race_id) & 
+                            (driver_dhl['lap'] == lap)
+                        ] if 'race_id' in driver_dhl.columns and 'lap' in driver_dhl.columns else pd.DataFrame()
+                        
+                        if not dhl_match.empty:
+                            # Convert F1DB time from string to float
+                            f1db_time_str = f1db_stop.get('time', f1db_stop.get('time_seconds'))
+                            
+                            # Parse time - could be seconds or MM:SS.mmm format
+                            if pd.notna(f1db_time_str):
+                                if ':' in str(f1db_time_str):
+                                    # Format is MM:SS.mmm
+                                    parts = str(f1db_time_str).split(':')
+                                    minutes = float(parts[0])
+                                    seconds = float(parts[1])
+                                    f1db_time = minutes * 60 + seconds
+                                else:
+                                    # Already in seconds
+                                    f1db_time = float(f1db_time_str)
+                            else:
+                                f1db_time = None
+                                
+                            dhl_time = float(dhl_match.iloc[0]['time']) if 'time' in dhl_match.columns else None
+                            
+                            if pd.notna(f1db_time) and pd.notna(dhl_time):
+                                delta = f1db_time - dhl_time
+                                circuit_id = f1db_stop.get('circuitId', 'unknown')
+                                
+                                pit_lane_deltas.append({
+                                    'driverId': driver_id,
+                                    'delta': delta,
+                                    'circuitId': circuit_id,
+                                    'f1db_time': f1db_time,
+                                    'dhl_time': dhl_time
+                                })
+            
+            # Aggregate pit lane deltas
+            if pit_lane_deltas:
+                delta_df = pd.DataFrame(pit_lane_deltas)
+                
+                # Calculate average delta by driver
+                driver_deltas = delta_df.groupby('driverId')['delta'].agg(['mean', 'median', 'std', 'count']).round(3)
+                driver_deltas.columns = ['avg_pit_lane_time', 'median_pit_lane_time', 'std_pit_lane_time', 'delta_samples']
+                
+                # Join to main analysis
+                pit_analysis = pit_analysis.join(driver_deltas, how='left')
+                
+                # Calculate by circuit if next race circuit is known
+                if next_race is not None and 'circuitId' in next_race:
+                    next_circuit = next_race['circuitId']
+                    circuit_deltas = delta_df[delta_df['circuitId'] == next_circuit]
+                    
+                    if not circuit_deltas.empty:
+                        circuit_avg = circuit_deltas.groupby('driverId')['delta'].mean().round(3)
+                        pit_analysis['next_circuit_pit_lane_time'] = pit_analysis.index.map(circuit_avg)
+        
+        # Reset index and ensure driver_name is present
+        pit_analysis = pit_analysis.reset_index()
+        pit_analysis = pit_analysis.rename(columns={'index': 'driverId'})
+        
+        # Re-add driver names if they were lost
+        if 'driver_name' not in pit_analysis.columns and not drivers.empty:
+            driver_map = dict(zip(drivers['id'], drivers['name']))
+            pit_analysis['driver_name'] = pit_analysis['driverId'].map(driver_map)
+        
+        # Drop driverId column
+        if 'driverId' in pit_analysis.columns:
+            pit_analysis = pit_analysis.drop('driverId', axis=1)
         
         return pit_analysis
     
@@ -1432,6 +1570,18 @@ class F1PerformanceAnalyzer:
                 dhl_data['driverId'] = dhl_data['driver_id']
             else:
                 # Fall back to name-based mapping (old format)
+                # Find the driver name column - could be 'driver' or 'driver_name'
+                driver_col = None
+                for col in ['driver', 'driver_name', 'Driver', 'DRIVER']:
+                    if col in dhl_data.columns:
+                        driver_col = col
+                        print(f"Using '{col}' column for driver names")
+                        break
+                
+                if driver_col is None:
+                    print(f"Error: Could not find driver column in DHL data. Available columns: {list(dhl_data.columns)}")
+                    return pd.DataFrame()
+                
                 # Create mapping from various name formats to driverId
                 driver_mapping = {}
                 for _, driver in drivers.iterrows():
@@ -1450,15 +1600,33 @@ class F1PerformanceAnalyzer:
                 special_mappings = {
                     'hulkenberg': 'nico-hulkenberg',
                     'hülkenberg': 'nico-hulkenberg',
-                    'sainz': 'carlos-sainz-jr',
-                    'perez': 'sergio-perez',
+                    'sainz': 'carlos-sainz-jr',      # DHL uses just "Sainz"
+                    'perez': 'sergio-perez',          # DHL uses "Perez" without accent
                     'pérez': 'sergio-perez',
-                    'magnussen': 'kevin-magnussen',  # Disambiguate from jan-magnussen
-                    'leclerc': 'charles-leclerc',  # Disambiguate from arthur-leclerc
+                    'magnussen': 'kevin-magnussen',   # Disambiguate from jan-magnussen
+                    'leclerc': 'charles-leclerc',     # Disambiguate from arthur-leclerc
                     'zhou': 'guanyu-zhou',
                     'ricciardo': 'daniel-ricciardo',
                     'verstappen': 'max-verstappen',
-                    'bottas': 'valtteri-bottas'
+                    'bottas': 'valtteri-bottas',
+                    'bearman': 'oliver-bearman',
+                    'colapinto': 'franco-colapinto',
+                    'hamilton': 'lewis-hamilton',
+                    'russell': 'george-russell',
+                    'alonso': 'fernando-alonso',
+                    'stroll': 'lance-stroll',
+                    'norris': 'lando-norris',
+                    'piastri': 'oscar-piastri',
+                    'gasly': 'pierre-gasly',
+                    'ocon': 'esteban-ocon',
+                    'tsunoda': 'yuki-tsunoda',
+                    'lawson': 'liam-lawson',
+                    'albon': 'alexander-albon',
+                    'sargeant': 'logan-sargeant',
+                    'doohan': 'jack-doohan',
+                    'hadjar': 'isack-hadjar',
+                    'antonelli': 'kimi-antonelli',
+                    'bortoleto': 'gabriel-bortoleto'
                 }
                 
                 # Add driver IDs to DHL data
@@ -1470,43 +1638,63 @@ class F1PerformanceAnalyzer:
                     # Then check regular mapping
                     return driver_mapping.get(driver_lower)
                 
-                dhl_data['driverId'] = dhl_data['driver'].apply(map_driver)
+                dhl_data['driverId'] = dhl_data[driver_col].apply(map_driver)
             
-            # Log unmapped drivers for debugging
-            unmapped = dhl_data[dhl_data['driverId'].isna()]
-            if not unmapped.empty:
-                unmapped_drivers = unmapped['driver'].unique()
-                print(f"Warning: Could not map {len(unmapped_drivers)} DHL drivers: {', '.join(unmapped_drivers)}")
+            # Log unmapped drivers for debugging (only if we had to map from names)
+            if 'driver_id' not in dhl_data.columns or dhl_data['driver_id'].isna().all():
+                unmapped = dhl_data[dhl_data['driverId'].isna()]
+                if not unmapped.empty and 'driver_col' in locals():
+                    unmapped_drivers = unmapped[driver_col].unique()
+                    print(f"Warning: Could not map {len(unmapped_drivers)} DHL drivers: {', '.join(unmapped_drivers)}")
             
             dhl_data = dhl_data.dropna(subset=['driverId'])
         
-        # Map race names to circuit IDs
-        race_column = 'event_name' if 'event_name' in dhl_data.columns else 'race'
-        if not races.empty and not circuits.empty and race_column in dhl_data.columns:
-            # Create mapping from race names to circuit IDs
-            race_circuit_map = {}
-            circuit_name_map = {}
+        # Map race_id to circuit IDs using the races table
+        if 'race_id' in dhl_data.columns and not races.empty:
+            # Create mapping from race_id to circuitId
+            race_to_circuit = races.set_index('id')['circuitId'].to_dict()
             
-            for _, race in races.iterrows():
-                race_name = race.get('name', '')
-                circuit_id = race.get('circuitId')
-                if circuit_id:
-                    # Map various race name formats
-                    race_circuit_map[race_name.lower()] = circuit_id
-                    # Also try to match partial names
-                    for word in race_name.split():
-                        if len(word) > 4:  # Skip short words
-                            race_circuit_map[word.lower()] = circuit_id
+            # Map race_id to circuitId
+            dhl_data['circuitId'] = dhl_data['race_id'].map(race_to_circuit)
             
-            # Create circuit ID to name mapping
-            for _, circuit in circuits.iterrows():
-                circuit_name_map[circuit['id']] = circuit['name']
+            # Debug output
+            mapped_circuits = dhl_data['circuitId'].notna().sum()
+            total_rows = len(dhl_data)
+            print(f"Mapped {mapped_circuits}/{total_rows} DHL pit stops to circuits using race_id")
             
-            # Add circuit IDs to DHL data
-            dhl_data['circuitId'] = dhl_data[race_column].str.lower().map(
-                lambda x: next((cid for race_name, cid in race_circuit_map.items() 
-                              if race_name in x or x in race_name), None)
-            )
+            # Additional debug - check if mapping is working
+            if mapped_circuits == 0:
+                print("Warning: No circuits mapped. Checking data...")
+                print(f"Sample race_ids from DHL: {dhl_data['race_id'].dropna().head().tolist()}")
+                print(f"Sample race ids from races.csv: {list(race_to_circuit.keys())[:5]}")
+                
+                # Check data types
+                print(f"DHL race_id dtype: {dhl_data['race_id'].dtype}")
+                print(f"Races id dtype: {races['id'].dtype}")
+        
+        # Fallback: Map race names to circuit IDs if race_id mapping didn't work
+        elif 'event_name' in dhl_data.columns or 'race' in dhl_data.columns:
+            race_column = 'event_name' if 'event_name' in dhl_data.columns else 'race'
+            if not races.empty and not circuits.empty:
+                # Create mapping from race names to circuit IDs
+                race_circuit_map = {}
+                
+                for _, race in races.iterrows():
+                    race_name = race.get('name', '')
+                    circuit_id = race.get('circuitId')
+                    if circuit_id:
+                        # Map various race name formats
+                        race_circuit_map[race_name.lower()] = circuit_id
+                        # Also try to match partial names
+                        for word in race_name.split():
+                            if len(word) > 4:  # Skip short words
+                                race_circuit_map[word.lower()] = circuit_id
+                
+                # Add circuit IDs to DHL data
+                dhl_data['circuitId'] = dhl_data[race_column].str.lower().map(
+                    lambda x: next((cid for race_name, cid in race_circuit_map.items() 
+                                  if race_name in x or x in race_name), None)
+                )
         
         # Group by driver and calculate metrics
         dhl_analysis = dhl_data.groupby('driverId').agg({
@@ -1620,10 +1808,82 @@ class F1PerformanceAnalyzer:
             if not circuit.empty:
                 circuit_name = circuit.iloc[0]['name']
         
-        # Map race names to circuit IDs (similar to main method)
-        if 'circuit_id' in dhl_data.columns and dhl_data['circuit_id'].notna().any():
+        # Map driver IDs first (similar to main analyze_dhl_pit_stops method)
+        if not drivers.empty:
+            if 'driver_id' in dhl_data.columns and dhl_data['driver_id'].notna().any():
+                dhl_data['driverId'] = dhl_data['driver_id']
+            else:
+                # Find driver column and map names
+                driver_col = None
+                for col in ['driver', 'driver_name', 'Driver', 'DRIVER']:
+                    if col in dhl_data.columns:
+                        driver_col = col
+                        break
+                
+                if driver_col:
+                    # Apply same mapping logic as main method
+                    driver_mapping = {}
+                    for _, driver in drivers.iterrows():
+                        full_name = f"{driver.get('forename', '')} {driver.get('surname', '')}".strip()
+                        last_name = driver.get('surname', '')
+                        driver_id = driver.get('id')
+                        driver_mapping[full_name.lower()] = driver_id
+                        driver_mapping[last_name.lower()] = driver_id
+                    
+                    # Special mappings
+                    special_mappings = {
+                        'hulkenberg': 'nico-hulkenberg', 'hülkenberg': 'nico-hulkenberg',
+                        'sainz': 'carlos-sainz-jr', 'perez': 'sergio-perez', 'pérez': 'sergio-perez',
+                        'magnussen': 'kevin-magnussen', 'leclerc': 'charles-leclerc',
+                        'zhou': 'guanyu-zhou', 'ricciardo': 'daniel-ricciardo',
+                        'verstappen': 'max-verstappen', 'bottas': 'valtteri-bottas',
+                        'bearman': 'oliver-bearman', 'colapinto': 'franco-colapinto'
+                    }
+                    
+                    def map_driver(name):
+                        name_lower = name.lower()
+                        if name_lower in special_mappings:
+                            return special_mappings[name_lower]
+                        return driver_mapping.get(name_lower)
+                    
+                    dhl_data['driverId'] = dhl_data[driver_col].apply(map_driver)
+                    dhl_data = dhl_data.dropna(subset=['driverId'])
+        
+        # Map race_id to circuit IDs using the races table (same as main method)
+        if 'race_id' in dhl_data.columns and not races.empty:
+            # Create mapping from race_id to circuitId
+            race_to_circuit = races.set_index('id')['circuitId'].to_dict()
+            
+            # Map race_id to circuitId
+            dhl_data['circuitId'] = dhl_data['race_id'].map(race_to_circuit)
+            
+            # Debug output
+            mapped_circuits = dhl_data['circuitId'].notna().sum()
+            total_rows = len(dhl_data)
+            print(f"Mapped {mapped_circuits}/{total_rows} DHL pit stops to circuits using race_id")
+            
+            if 'circuitId' in next_race:
+                target_circuit = next_race['circuitId']
+                matches = (dhl_data['circuitId'] == target_circuit).sum()
+                print(f"Found {matches} pit stops at {circuit_name} (circuit ID: {target_circuit})")
+                
+                # If no matches, debug further
+                if matches == 0 and mapped_circuits > 0:
+                    unique_circuits = dhl_data['circuitId'].dropna().unique()
+                    print(f"DHL data contains circuits: {list(unique_circuits)[:10]}...")
+                    
+                    # Check if Hungary is in the data with different ID
+                    hungary_races = races[races['circuitId'] == target_circuit]
+                    if not hungary_races.empty:
+                        hungary_race_ids = hungary_races['id'].tolist()
+                        hungary_in_dhl = dhl_data['race_id'].isin(hungary_race_ids).sum()
+                        print(f"Found {hungary_in_dhl} pit stops with Hungary race IDs: {hungary_race_ids[:5]}...")
+        
+        # Fallback: Use circuit_id column if it exists
+        elif 'circuit_id' in dhl_data.columns and dhl_data['circuit_id'].notna().any():
             # Use existing circuit_id mapping from new format
             dhl_data['circuitId'] = dhl_data['circuit_id']
+            print(f"Using circuit_id column from DHL data")
         elif not races.empty and 'race' in dhl_data.columns:
             race_circuit_map = {}
             for _, race in races.iterrows():
@@ -1650,8 +1910,19 @@ class F1PerformanceAnalyzer:
         if circuit_data.empty:
             return {'circuit_name': circuit_name, 'year_by_year': pd.DataFrame(), 'overall_stats': pd.DataFrame()}
         
+        # Add year information from races data if not present
+        if 'year' not in circuit_data.columns and 'race_id' in circuit_data.columns and not races.empty:
+            race_year_map = races.set_index('id')['year'].to_dict()
+            circuit_data['year'] = circuit_data['race_id'].map(race_year_map)
+        
         # Get first stops only for this circuit
-        circuit_first_stops = circuit_data.sort_values(['driverId', 'year', 'lap']).groupby(['driverId', 'year', 'race']).first().reset_index()
+        group_cols = ['driverId', 'race_id'] if 'race_id' in circuit_data.columns else ['driverId', 'event_id']
+        sort_cols = ['driverId', 'lap']
+        if 'year' in circuit_data.columns:
+            sort_cols.insert(1, 'year')
+            group_cols.insert(1, 'year')
+        
+        circuit_first_stops = circuit_data.sort_values(sort_cols).groupby(group_cols).first().reset_index()
         
         # Year-by-year analysis
         year_stats = []
@@ -1678,11 +1949,12 @@ class F1PerformanceAnalyzer:
         
         # Add driver names
         if not drivers.empty and not year_by_year_df.empty:
-            driver_names = drivers.set_index('id')['surname'].to_dict()
+            # Use 'name' column which contains full driver names
+            driver_names = drivers.set_index('id')['name'].to_dict()
             year_by_year_df['driver_name'] = year_by_year_df['driverId'].map(driver_names)
             
         if not drivers.empty and not overall_stats.empty:
-            driver_names = drivers.set_index('id')['surname'].to_dict()
+            driver_names = drivers.set_index('id')['name'].to_dict()
             overall_stats['driver_name'] = overall_stats.index.map(driver_names)
         
         # Filter to current season drivers
@@ -2501,6 +2773,17 @@ class F1PerformanceAnalyzer:
             if 'driver_id' in dhl_data.columns and dhl_data['driver_id'].notna().any():
                 dhl_data['driverId'] = dhl_data['driver_id']
             else:
+                # Find the driver name column - could be 'driver' or 'driver_name'
+                driver_col = None
+                for col in ['driver', 'driver_name', 'Driver', 'DRIVER']:
+                    if col in dhl_data.columns:
+                        driver_col = col
+                        break
+                
+                if driver_col is None:
+                    print(f"Error: Could not find driver column in DHL data. Available columns: {list(dhl_data.columns)}")
+                    return pd.DataFrame()
+                
                 # Create driver mapping
                 driver_mapping = {}
                 for _, driver in drivers.iterrows():
@@ -2510,13 +2793,37 @@ class F1PerformanceAnalyzer:
                     driver_mapping[full_name.lower()] = driver_id
                     driver_mapping[last_name.lower()] = driver_id
                 
-                # Special mappings
+                # Special mappings - handle DHL name variations
                 special_mappings = {
-                    'hulkenberg': 'nico-hulkenberg', 'hülkenberg': 'nico-hulkenberg',
-                    'sainz': 'carlos-sainz-jr', 'perez': 'sergio-perez', 'pérez': 'sergio-perez',
-                    'magnussen': 'kevin-magnussen', 'leclerc': 'charles-leclerc',
-                    'zhou': 'guanyu-zhou', 'ricciardo': 'daniel-ricciardo',
-                    'verstappen': 'max-verstappen', 'bottas': 'valtteri-bottas'
+                    'hulkenberg': 'nico-hulkenberg', 
+                    'hülkenberg': 'nico-hulkenberg',
+                    'sainz': 'carlos-sainz-jr',  # DHL uses just "Sainz"
+                    'perez': 'sergio-perez',      # DHL uses "Perez" without accent
+                    'pérez': 'sergio-perez',
+                    'magnussen': 'kevin-magnussen',
+                    'leclerc': 'charles-leclerc',
+                    'zhou': 'guanyu-zhou',
+                    'ricciardo': 'daniel-ricciardo',
+                    'verstappen': 'max-verstappen',
+                    'bottas': 'valtteri-bottas',
+                    'bearman': 'oliver-bearman',
+                    'colapinto': 'franco-colapinto',
+                    'hamilton': 'lewis-hamilton',
+                    'russell': 'george-russell',
+                    'alonso': 'fernando-alonso',
+                    'stroll': 'lance-stroll',
+                    'norris': 'lando-norris',
+                    'piastri': 'oscar-piastri',
+                    'gasly': 'pierre-gasly',
+                    'ocon': 'esteban-ocon',
+                    'tsunoda': 'yuki-tsunoda',
+                    'lawson': 'liam-lawson',
+                    'albon': 'alexander-albon',
+                    'sargeant': 'logan-sargeant',
+                    'doohan': 'jack-doohan',
+                    'hadjar': 'isack-hadjar',
+                    'antonelli': 'kimi-antonelli',
+                    'bortoleto': 'gabriel-bortoleto'
                 }
                 
                 def map_driver(driver_name):
@@ -2525,7 +2832,7 @@ class F1PerformanceAnalyzer:
                         return special_mappings[driver_lower]
                     return driver_mapping.get(driver_lower)
                 
-                dhl_data['driverId'] = dhl_data['driver'].apply(map_driver)
+                dhl_data['driverId'] = dhl_data[driver_col].apply(map_driver)
             
             dhl_data = dhl_data.dropna(subset=['driverId'])
         
@@ -3301,10 +3608,20 @@ class F1PerformanceAnalyzer:
         print("="*80)
         pit_stops = self.analyze_pit_stops()
         if not pit_stops.empty:
+            # Basic columns
             display_cols = ['driver_name', 'avg_stop_time', 'median_stop_time', 'best_stop_time', 'total_stops']
+            
+            # Add pit lane delta columns if available
+            if 'avg_pit_lane_time' in pit_stops.columns:
+                display_cols.extend(['avg_pit_lane_time', 'median_pit_lane_time', 'delta_samples'])
+            
+            # Add circuit-specific columns
             if 'next_circuit_avg' in pit_stops.columns:
                 display_cols.append('next_circuit_avg')
-            # Remove driver_name if it doesn't exist
+            if 'next_circuit_pit_lane_time' in pit_stops.columns:
+                display_cols.append('next_circuit_pit_lane_time')
+                
+            # Remove non-existent columns
             display_cols = [col for col in display_cols if col in pit_stops.columns]
             
             # Filter out rows where all numeric columns are NaN
@@ -3313,7 +3630,22 @@ class F1PerformanceAnalyzer:
             pit_stops_filtered = pit_stops.dropna(subset=numeric_cols, how='all')
             
             if not pit_stops_filtered.empty:
+                print("F1DB Pit Stop Times (Total time from pit entry to exit):")
                 print(pit_stops_filtered[display_cols].to_string(index=False))
+                
+                # Add explanations for new columns
+                if 'avg_pit_lane_time' in display_cols:
+                    print("\nPit Lane Delta Analysis (F1DB total time - DHL service time):")
+                    print("- avg_pit_lane_time: Average time spent entering/exiting pit lane (seconds)")
+                    print("- median_pit_lane_time: Median pit lane entry/exit time")
+                    print("- delta_samples: Number of matched pit stops between F1DB and DHL data")
+                    print("- next_circuit_pit_lane_time: Historical pit lane time at next race circuit")
+                    
+                    # Show insights
+                    if 'avg_pit_lane_time' in pit_stops_filtered.columns:
+                        avg_delta = pit_stops_filtered['avg_pit_lane_time'].mean()
+                        if pd.notna(avg_delta):
+                            print(f"\nAverage pit lane entry/exit time across all drivers: {avg_delta:.1f} seconds")
             else:
                 print("No valid pit stop data available")
             
@@ -3442,6 +3774,26 @@ class F1PerformanceAnalyzer:
         if isinstance(track_dhl, dict) and 'year_by_year' in track_dhl:
             circuit_name = track_dhl.get('circuit_name', 'Unknown Circuit')
             print(f"\nFirst Pit Stop Analysis for: {circuit_name}")
+            
+            # Debug: check if we have data
+            year_data = track_dhl.get('year_by_year', pd.DataFrame())
+            overall_stats = track_dhl.get('overall_stats', pd.DataFrame())
+            if year_data.empty and overall_stats.empty:
+                print("No historical DHL pit stop data available for this circuit")
+                print("This could be due to circuit name mapping issues or lack of data")
+                
+                # Additional debug info
+                next_race = self.get_next_race()
+                if next_race is not None:
+                    print(f"Debug: Looking for circuit ID: {next_race.get('circuitId', 'Unknown')}")
+                    
+                # Check if DHL data has circuit mapping at all
+                if hasattr(self, 'dhl_data') and not self.dhl_data.empty:
+                    if 'circuitId' in self.dhl_data.columns:
+                        unique_circuits = self.dhl_data['circuitId'].dropna().unique()
+                        print(f"Debug: DHL data contains {len(unique_circuits)} unique circuits")
+                    else:
+                        print("Debug: DHL data does not have circuitId column mapped")
             
             # Show year-by-year first stop data
             year_data = track_dhl['year_by_year']

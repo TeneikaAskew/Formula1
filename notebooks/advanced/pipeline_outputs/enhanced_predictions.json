@@ -10,76 +10,34 @@
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
       "form_avg_position": 7.0,
-      "form_avg_points": 4.0,
+      "form_avg_points": 6.0,
       "form_position_trend": -1.9999999999999996,
-      "form_points_momentum": 4.0,
-      "form_recent_dnf_rate": 0.3333333333333333,
-      "form_races_analyzed": 3,
+      "form_points_momentum": 2.0,
+      "form_recent_dnf_rate": 0.0,
+      "form_races_analyzed": 2,
       "form_last_race_position": 6.0,
       "form_consistency": 1.4142135623730951,
-      "team_team_momentum": 1.9000000000000001,
-      "team_reliability_trend": 0.6,
-      "team_avg_team_points": 2.6,
+      "team_team_momentum": 2.5,
+      "team_reliability_trend": 0.625,
+      "team_avg_team_points": 3.25,
       "team_last_race_points": 8.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 14.0,
-      "circuit_avg_points_at_circuit": 0.0,
-      "circuit_best_position_at_circuit": 11.0,
+      "circuit_avg_position_at_circuit": 11.333333333333334,
+      "circuit_avg_points_at_circuit": 1.3333333333333333,
+      "circuit_best_position_at_circuit": 8.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 1.6666666666666667,
-      "circuit_circuit_affinity": 0.30000000000000004,
+      "circuit_avg_overtakes_at_circuit": 2.6666666666666665,
+      "circuit_circuit_affinity": 0.43333333333333335,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.5814,
-      "risk_score": 0.62,
-      "overtaking_potential": 1.1666666666666667
+      "momentum_score": 0.625,
+      "risk_score": 0.5125,
+      "overtaking_potential": 1.2666666666666666
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.81,
-        "base_predicted": 1.35,
-        "confidence_interval": [
-          0.45,
-          2.25
-        ],
-        "confidence": 0.431,
-        "line": 2.5,
-        "over_prob": 0.321,
-        "under_prob": 0.679,
-        "historical_avg": 1.54,
-        "historical_data": [
-          0.0,
-          0.0,
-          0.0,
-          5.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 6.0,
-        "median": 6.0,
-        "confidence_interval": [
-          3.23,
-          8.77
-        ],
-        "confidence": 1.202,
-        "line": 6.0,
-        "over_prob": 0.408,
-        "under_prob": 0.592,
-        "points_finish_rate": 0.45,
-        "historical_data": [
-          10.0,
-          10.0,
-          2.0,
-          4.0,
-          8.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 10.2,
         "confidence_interval": [
@@ -125,11 +83,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.194,
+        "probability": 0.179,
         "base_probability": 0.35,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.62
+        "risk_score": 0.51
       },
       "teammate_overtakes": {
         "predicted": 1.0,
@@ -153,6 +111,52 @@
       }
     }
   },
+  "alexander-dunne": {
+    "driver_id": "alexander-dunne",
+    "driver_name": "Alexander Dunne",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
   "andrea-kimi-antonelli": {
     "driver_id": "andrea-kimi-antonelli",
     "driver_name": "Andrea Kimi Antonelli",
@@ -167,13 +171,13 @@
       "form_avg_points": 0.0,
       "form_position_trend": 0.0,
       "form_points_momentum": 0.0,
-      "form_recent_dnf_rate": 0.6666666666666666,
-      "form_races_analyzed": 3,
+      "form_recent_dnf_rate": 0.5,
+      "form_races_analyzed": 2,
       "form_last_race_position": 16.0,
       "form_consistency": 5.0,
-      "team_team_momentum": -4.3000000000000025,
-      "team_reliability_trend": 0.7,
-      "team_avg_team_points": 14.6,
+      "team_team_momentum": -9.900000000000006,
+      "team_reliability_trend": 0.75,
+      "team_avg_team_points": 15.25,
       "team_last_race_points": 10.0,
       "circuit_circuit_races": 0,
       "circuit_avg_position_at_circuit": 15.0,
@@ -187,53 +191,11 @@
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.5242,
-      "risk_score": 0.69,
+      "momentum_score": 0.49060000000000004,
+      "risk_score": 0.625,
       "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 0.81,
-        "base_predicted": 1.15,
-        "confidence_interval": [
-          -0.85,
-          3.16
-        ],
-        "confidence": 0.919,
-        "line": 2.5,
-        "over_prob": 0.287,
-        "under_prob": 0.713,
-        "historical_avg": 1.15,
-        "historical_data": [
-          0.0,
-          1.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 9.83,
-        "median": 8.0,
-        "confidence_interval": [
-          6.69,
-          12.98
-        ],
-        "confidence": 1.222,
-        "line": 6.0,
-        "over_prob": 0.564,
-        "under_prob": 0.436,
-        "points_finish_rate": 0.46153846153846156,
-        "historical_data": [
-          8.0,
-          8.0,
-          8.0,
-          8.0,
-          15.0
-        ],
-        "recommendation": "OVER"
-      },
       "starting_position": {
         "predicted": 8.4,
         "confidence_interval": [
@@ -279,11 +241,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.255,
+        "probability": 0.249,
         "base_probability": 0.308,
         "confidence": 0.825,
-        "recommendation": "YES",
-        "risk_score": 0.69
+        "recommendation": "NO",
+        "risk_score": 0.62
       },
       "teammate_overtakes": {
         "predicted": -1.5,
@@ -307,6 +269,144 @@
       }
     }
   },
+  "arthur-leclerc": {
+    "driver_id": "arthur-leclerc",
+    "driver_name": "Arthur Leclerc",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
+  "arvid-lindblad": {
+    "driver_id": "arvid-lindblad",
+    "driver_name": "Arvid Lindblad",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
+  "ayumu-iwasa": {
+    "driver_id": "ayumu-iwasa",
+    "driver_name": "Ayumu Iwasa",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
   "carlos-sainz-jr": {
     "driver_id": "carlos-sainz-jr",
     "driver_name": "Carlos Sainz Jr.",
@@ -321,73 +421,31 @@
       "form_avg_points": 0.0,
       "form_position_trend": 5.999999999999998,
       "form_points_momentum": 0.0,
-      "form_recent_dnf_rate": 0.3333333333333333,
-      "form_races_analyzed": 3,
+      "form_recent_dnf_rate": 0.0,
+      "form_races_analyzed": 2,
       "form_last_race_position": 18.0,
       "form_consistency": 4.242640687119285,
-      "team_team_momentum": 1.9000000000000001,
-      "team_reliability_trend": 0.6,
-      "team_avg_team_points": 2.6,
+      "team_team_momentum": 2.5,
+      "team_reliability_trend": 0.625,
+      "team_avg_team_points": 3.25,
       "team_last_race_points": 8.0,
       "circuit_circuit_races": 3,
       "circuit_avg_position_at_circuit": 6.0,
       "circuit_avg_points_at_circuit": 8.0,
-      "circuit_best_position_at_circuit": 4.0,
+      "circuit_best_position_at_circuit": 5.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 1.0,
+      "circuit_avg_overtakes_at_circuit": 2.0,
       "circuit_circuit_affinity": 0.7,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.3814000000000001,
-      "risk_score": 0.62,
-      "overtaking_potential": 1.1
+      "momentum_score": 0.385,
+      "risk_score": 0.5125,
+      "overtaking_potential": 1.2
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 0.91,
-        "base_predicted": 1.1,
-        "confidence_interval": [
-          0.27,
-          1.93
-        ],
-        "confidence": 0.397,
-        "line": 2.5,
-        "over_prob": 0.251,
-        "under_prob": 0.749,
-        "historical_avg": 1.12,
-        "historical_data": [
-          3.0,
-          6.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 8.58,
-        "median": 5.0,
-        "confidence_interval": [
-          3.33,
-          13.84
-        ],
-        "confidence": 2.388,
-        "line": 6.0,
-        "over_prob": 0.564,
-        "under_prob": 0.436,
-        "points_finish_rate": 0.6,
-        "historical_data": [
-          4.0,
-          2.0,
-          4.0,
-          1.0,
-          1.0
-        ],
-        "recommendation": "OVER"
-      },
       "starting_position": {
         "predicted": 11.7,
         "confidence_interval": [
@@ -433,11 +491,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.141,
+        "probability": 0.136,
         "base_probability": 0.2,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.62
+        "risk_score": 0.51
       },
       "teammate_overtakes": {
         "predicted": -1.0,
@@ -471,77 +529,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 6.666666666666667,
-      "form_avg_points": 10.0,
-      "form_position_trend": 2.0280498724447315e-15,
-      "form_points_momentum": 5.0,
+      "form_avg_position": 8.5,
+      "form_avg_points": 7.5,
+      "form_position_trend": -11.0,
+      "form_points_momentum": 7.5,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 3.0,
-      "form_consistency": 6.350852961085883,
-      "team_team_momentum": -1.000000000000002,
+      "form_consistency": 7.7781745930520225,
+      "team_team_momentum": -0.6000000000000034,
       "team_reliability_trend": 1.0,
-      "team_avg_team_points": 20.2,
+      "team_avg_team_points": 19.5,
       "team_last_race_points": 21.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 5.666666666666667,
-      "circuit_avg_points_at_circuit": 8.666666666666666,
-      "circuit_best_position_at_circuit": 4.0,
-      "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 0.6666666666666666,
-      "circuit_circuit_affinity": 0.7166666666666667,
+      "circuit_avg_position_at_circuit": 3.0,
+      "circuit_avg_points_at_circuit": 10.0,
+      "circuit_best_position_at_circuit": 3.0,
+      "circuit_dnf_rate_at_circuit": 0.3333333333333333,
+      "circuit_avg_overtakes_at_circuit": 1.5,
+      "circuit_circuit_affinity": 0.85,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.6089999999999999,
+      "momentum_score": 1.0914000000000001,
       "risk_score": 0.4,
-      "overtaking_potential": 1.0666666666666667
+      "overtaking_potential": 1.15
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 2.61,
-        "base_predicted": 2.1,
-        "confidence_interval": [
-          0.38,
-          3.82
-        ],
-        "confidence": 0.82,
-        "line": 2.5,
-        "over_prob": 0.546,
-        "under_prob": 0.454,
-        "historical_avg": 1.3,
-        "historical_data": [
-          4.0,
-          3.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "recommendation": "PASS"
-      },
-      "points": {
-        "predicted": 13.11,
-        "median": 13.5,
-        "confidence_interval": [
-          10.68,
-          15.55
-        ],
-        "confidence": 1.154,
-        "line": 6.0,
-        "over_prob": 0.99,
-        "under_prob": 0.01,
-        "points_finish_rate": 0.9,
-        "historical_data": [
-          18.0,
-          15.0,
-          10.0,
-          15.0,
-          15.0
-        ],
-        "recommendation": "OVER"
-      },
       "starting_position": {
         "predicted": 5.4,
         "confidence_interval": [
@@ -587,7 +603,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.061,
+        "probability": 0.068,
         "base_probability": 0.05,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -635,44 +651,23 @@
       "form_consistency": 5.0,
       "team_team_momentum": 0.0,
       "team_reliability_trend": 1.0,
-      "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 13.333333333333334,
+      "circuit_circuit_races": 2,
+      "circuit_avg_position_at_circuit": 14.5,
       "circuit_avg_points_at_circuit": 0.0,
       "circuit_best_position_at_circuit": 12.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 0.0,
-      "circuit_circuit_affinity": 0.33333333333333326,
+      "circuit_avg_overtakes_at_circuit": 0.5,
+      "circuit_circuit_affinity": 0.275,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.5,
+      "momentum_score": 0.48250000000000004,
       "risk_score": 0.43600000000000005,
-      "overtaking_potential": 1.0
+      "overtaking_potential": 1.05
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.05,
-        "base_predicted": 1.4,
-        "confidence_interval": [
-          0.52,
-          2.28
-        ],
-        "confidence": 0.419,
-        "line": 2.5,
-        "over_prob": 0.328,
-        "under_prob": 0.672,
-        "historical_avg": 1.45,
-        "historical_data": [
-          3.0,
-          1.0,
-          0.0,
-          1.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 12.9,
         "confidence_interval": [
@@ -718,7 +713,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.08,
+        "probability": 0.087,
         "base_probability": 0.1,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -746,6 +741,52 @@
       }
     }
   },
+  "dino-beganovic": {
+    "driver_id": "dino-beganovic",
+    "driver_name": "Dino Beganovic",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
   "esteban-ocon": {
     "driver_id": "esteban-ocon",
     "driver_name": "Esteban Ocon",
@@ -756,77 +797,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 12.666666666666666,
-      "form_avg_points": 0.3333333333333333,
-      "form_position_trend": 2.4999999999999996,
-      "form_points_momentum": -0.3333333333333333,
+      "form_avg_position": 14.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 1.9999999999999976,
+      "form_points_momentum": 0.0,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 15.0,
-      "form_consistency": 2.5166114784235836,
-      "team_team_momentum": -0.20000000000000007,
+      "form_consistency": 1.4142135623730951,
+      "team_team_momentum": -0.7000000000000004,
       "team_reliability_trend": 1.0,
-      "team_avg_team_points": 0.6,
+      "team_avg_team_points": 0.75,
       "team_last_race_points": 0.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 13.5,
-      "circuit_avg_points_at_circuit": 0.6666666666666666,
+      "circuit_avg_position_at_circuit": 11.333333333333334,
+      "circuit_avg_points_at_circuit": 1.0,
       "circuit_best_position_at_circuit": 9.0,
-      "circuit_dnf_rate_at_circuit": 0.3333333333333333,
-      "circuit_avg_overtakes_at_circuit": 0.5,
-      "circuit_circuit_affinity": 0.32499999999999996,
+      "circuit_dnf_rate_at_circuit": 0.0,
+      "circuit_avg_overtakes_at_circuit": 3.0,
+      "circuit_circuit_affinity": 0.43333333333333335,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.39630000000000004,
+      "momentum_score": 0.44580000000000014,
       "risk_score": 0.4,
-      "overtaking_potential": 1.05
+      "overtaking_potential": 1.3
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.87,
-        "base_predicted": 2.05,
-        "confidence_interval": [
-          0.81,
-          3.29
-        ],
-        "confidence": 0.591,
-        "line": 2.5,
-        "over_prob": 0.516,
-        "under_prob": 0.484,
-        "historical_avg": 2.01,
-        "historical_data": [
-          0.0,
-          5.0,
-          7.0,
-          1.0,
-          0.0
-        ],
-        "recommendation": "PASS"
-      },
-      "points": {
-        "predicted": 6.83,
-        "median": 5.0,
-        "confidence_interval": [
-          0.18,
-          13.48
-        ],
-        "confidence": 2.587,
-        "line": 6.0,
-        "over_prob": 0.417,
-        "under_prob": 0.583,
-        "points_finish_rate": 0.3,
-        "historical_data": [
-          10.0,
-          4.0,
-          6.0,
-          2.0,
-          1.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 14.3,
         "confidence_interval": [
@@ -872,7 +871,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.074,
+        "probability": 0.081,
         "base_probability": 0.1,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -900,6 +899,52 @@
       }
     }
   },
+  "felipe-drugovich": {
+    "driver_id": "felipe-drugovich",
+    "driver_name": "Felipe Drugovich",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
   "fernando-alonso": {
     "driver_id": "fernando-alonso",
     "driver_name": "Fernando Alonso",
@@ -910,77 +955,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 11.0,
-      "form_avg_points": 2.6666666666666665,
-      "form_position_trend": 4.9999999999999964,
-      "form_points_momentum": -2.6666666666666665,
+      "form_avg_position": 13.0,
+      "form_avg_points": 1.0,
+      "form_position_trend": 7.9999999999999964,
+      "form_points_momentum": -1.0,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 17.0,
-      "form_consistency": 5.291502622129181,
-      "team_team_momentum": -0.20000000000000032,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 4.4,
+      "form_consistency": 5.656854249492381,
+      "team_team_momentum": -1.6000000000000012,
+      "team_reliability_trend": 1.0,
+      "team_avg_team_points": 5.0,
       "team_last_race_points": 0.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 9.333333333333334,
-      "circuit_avg_points_at_circuit": 2.0,
-      "circuit_best_position_at_circuit": 8.0,
+      "circuit_avg_position_at_circuit": 6.0,
+      "circuit_avg_points_at_circuit": 9.333333333333334,
+      "circuit_best_position_at_circuit": 2.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 0.0,
-      "circuit_circuit_affinity": 0.5333333333333333,
+      "circuit_avg_overtakes_at_circuit": 3.3333333333333335,
+      "circuit_circuit_affinity": 0.7,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.3588000000000001,
-      "risk_score": 0.43000000000000005,
-      "overtaking_potential": 1.0
+      "momentum_score": 0.28040000000000015,
+      "risk_score": 0.4,
+      "overtaking_potential": 1.3333333333333335
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 0.76,
-        "base_predicted": 0.8,
-        "confidence_interval": [
-          0.13,
-          1.47
-        ],
-        "confidence": 0.321,
-        "line": 2.5,
-        "over_prob": 0.135,
-        "under_prob": 0.865,
-        "historical_avg": 1.27,
-        "historical_data": [
-          1.0,
-          0.0,
-          4.0,
-          0.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 4.0,
-        "median": 4.0,
-        "confidence_interval": [
-          2.15,
-          5.85
-        ],
-        "confidence": 0.756,
-        "line": 6.0,
-        "over_prob": 0.227,
-        "under_prob": 0.773,
-        "points_finish_rate": 0.35,
-        "historical_data": [
-          2.0,
-          2.0,
-          6.0,
-          6.0,
-          2.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 11.0,
         "confidence_interval": [
@@ -1026,11 +1029,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.104,
+        "probability": 0.107,
         "base_probability": 0.2,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.43
+        "risk_score": 0.4
       },
       "teammate_overtakes": {
         "predicted": 0.75,
@@ -1064,17 +1067,17 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 17.0,
+      "form_avg_position": 19.0,
       "form_avg_points": 0.0,
-      "form_position_trend": 3.9999999999999987,
+      "form_position_trend": 0.0,
       "form_points_momentum": 0.0,
-      "form_recent_dnf_rate": 0.3333333333333333,
-      "form_races_analyzed": 3,
+      "form_recent_dnf_rate": 0.5,
+      "form_races_analyzed": 2,
       "form_last_race_position": 19.0,
-      "form_consistency": 2.8284271247461903,
-      "team_team_momentum": 0.19999999999999987,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 2.6,
+      "form_consistency": 5.0,
+      "team_team_momentum": 1.1000000000000003,
+      "team_reliability_trend": 0.875,
+      "team_avg_team_points": 2.25,
       "team_last_race_points": 1.0,
       "circuit_circuit_races": 0,
       "circuit_avg_position_at_circuit": 15.0,
@@ -1088,50 +1091,11 @@
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.39120000000000005,
-      "risk_score": 0.53,
+      "momentum_score": 0.5566,
+      "risk_score": 0.5875,
       "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.05,
-        "base_predicted": 1.5,
-        "confidence_interval": [
-          0.3,
-          2.7
-        ],
-        "confidence": 0.563,
-        "line": 2.5,
-        "over_prob": 0.279,
-        "under_prob": 0.721,
-        "historical_avg": 1.5,
-        "historical_data": [
-          3.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 2.5,
-        "median": 2.5,
-        "confidence_interval": [
-          -16.56,
-          21.56
-        ],
-        "confidence": 1.5,
-        "line": 6.0,
-        "over_prob": 0.059,
-        "under_prob": 0.941,
-        "points_finish_rate": 0.125,
-        "historical_data": [
-          4.0,
-          1.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 16.9,
         "confidence_interval": [
@@ -1177,11 +1141,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.195,
+        "probability": 0.215,
         "base_probability": 0.25,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.53
+        "risk_score": 0.59
       },
       "teammate_overtakes": {
         "predicted": -0.9,
@@ -1205,6 +1169,52 @@
       }
     }
   },
+  "frederik-vesti": {
+    "driver_id": "frederik-vesti",
+    "driver_name": "Frederik Vesti",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
   "gabriel-bortoleto": {
     "driver_id": "gabriel-bortoleto",
     "driver_name": "Gabriel Bortoleto",
@@ -1215,17 +1225,17 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 8.5,
-      "form_avg_points": 2.0,
-      "form_position_trend": 0.999999999999999,
-      "form_points_momentum": 0.0,
-      "form_recent_dnf_rate": 0.3333333333333333,
-      "form_races_analyzed": 3,
+      "form_avg_position": 9.0,
+      "form_avg_points": 1.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 1.0,
+      "form_recent_dnf_rate": 0.5,
+      "form_races_analyzed": 2,
       "form_last_race_position": 9.0,
-      "form_consistency": 0.7071067811865476,
-      "team_team_momentum": -0.5000000000000009,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 7.4,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.2999999999999996,
+      "team_reliability_trend": 0.875,
+      "team_avg_team_points": 6.75,
       "team_last_race_points": 2.0,
       "circuit_circuit_races": 0,
       "circuit_avg_position_at_circuit": 15.0,
@@ -1239,50 +1249,11 @@
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.5070000000000001,
-      "risk_score": 0.53,
+      "momentum_score": 0.5518000000000001,
+      "risk_score": 0.5875,
       "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 0.91,
-        "base_predicted": 0.85,
-        "confidence_interval": [
-          -0.04,
-          1.73
-        ],
-        "confidence": 0.406,
-        "line": 2.5,
-        "over_prob": 0.102,
-        "under_prob": 0.898,
-        "historical_avg": 0.85,
-        "historical_data": [
-          0.0,
-          1.0,
-          0.0,
-          0.0,
-          1.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 3.0,
-        "median": 3.0,
-        "confidence_interval": [
-          -9.71,
-          15.71
-        ],
-        "confidence": 1.0,
-        "line": 6.0,
-        "over_prob": 0.055,
-        "under_prob": 0.945,
-        "points_finish_rate": 0.15384615384615385,
-        "historical_data": [
-          4.0,
-          2.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 14.4,
         "confidence_interval": [
@@ -1328,11 +1299,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.179,
+        "probability": 0.198,
         "base_probability": 0.231,
         "confidence": 0.825,
         "recommendation": "NO",
-        "risk_score": 0.53
+        "risk_score": 0.59
       },
       "teammate_overtakes": {
         "predicted": -0.21,
@@ -1366,77 +1337,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 6.666666666666667,
-      "form_avg_points": 7.0,
-      "form_position_trend": 1.0691110529528958e-15,
-      "form_points_momentum": 3.0,
+      "form_avg_position": 7.5,
+      "form_avg_points": 5.5,
+      "form_position_trend": -5.0,
+      "form_points_momentum": 4.5,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 5.0,
-      "form_consistency": 2.8867513459481287,
-      "team_team_momentum": -4.3000000000000025,
-      "team_reliability_trend": 0.7,
-      "team_avg_team_points": 14.6,
+      "form_consistency": 3.5355339059327378,
+      "team_team_momentum": -9.900000000000006,
+      "team_reliability_trend": 0.75,
+      "team_avg_team_points": 15.25,
       "team_last_race_points": 10.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 5.666666666666667,
-      "circuit_avg_points_at_circuit": 9.333333333333334,
-      "circuit_best_position_at_circuit": 3.0,
+      "circuit_avg_position_at_circuit": 8.666666666666666,
+      "circuit_avg_points_at_circuit": 8.0,
+      "circuit_best_position_at_circuit": 2.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 7.0,
-      "circuit_circuit_affinity": 0.7166666666666667,
+      "circuit_avg_overtakes_at_circuit": 1.3333333333333333,
+      "circuit_circuit_affinity": 0.5666666666666667,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.5892,
-      "risk_score": 0.49000000000000005,
-      "overtaking_potential": 1.7
+      "momentum_score": 0.7106000000000001,
+      "risk_score": 0.47500000000000003,
+      "overtaking_potential": 1.1333333333333333
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 0.89,
-        "base_predicted": 0.45,
-        "confidence_interval": [
-          0.06,
-          0.84
-        ],
-        "confidence": 0.185,
-        "line": 2.5,
-        "over_prob": 0.012,
-        "under_prob": 0.988,
-        "historical_avg": 1.4,
-        "historical_data": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          1.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 12.42,
-        "median": 12.0,
-        "confidence_interval": [
-          9.65,
-          15.19
-        ],
-        "confidence": 1.319,
-        "line": 6.0,
-        "over_prob": 0.909,
-        "under_prob": 0.091,
-        "points_finish_rate": 0.95,
-        "historical_data": [
-          12.0,
-          25.0,
-          10.0,
-          1.0,
-          10.0
-        ],
-        "recommendation": "OVER"
-      },
       "starting_position": {
         "predicted": 4.7,
         "confidence_interval": [
@@ -1482,11 +1411,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.058,
+        "probability": 0.065,
         "base_probability": 0.0,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.49
+        "risk_score": 0.48
       },
       "teammate_overtakes": {
         "predicted": 1.5,
@@ -1528,48 +1457,27 @@
       "form_races_analyzed": 0,
       "form_last_race_position": 20.0,
       "form_consistency": 5.0,
-      "team_team_momentum": -0.5000000000000009,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 7.4,
+      "team_team_momentum": 0.2999999999999996,
+      "team_reliability_trend": 0.875,
+      "team_avg_team_points": 6.75,
       "team_last_race_points": 2.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 16.0,
+      "circuit_avg_position_at_circuit": 18.0,
       "circuit_avg_points_at_circuit": 0.0,
-      "circuit_best_position_at_circuit": 13.0,
-      "circuit_dnf_rate_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 16.0,
+      "circuit_dnf_rate_at_circuit": 0.3333333333333333,
       "circuit_avg_overtakes_at_circuit": 0.0,
-      "circuit_circuit_affinity": 0.19999999999999996,
+      "circuit_circuit_affinity": 0.09999999999999998,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.457,
-      "risk_score": 0.466,
+      "momentum_score": 0.4318,
+      "risk_score": 0.47350000000000003,
       "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.39,
-        "base_predicted": 1.85,
-        "confidence_interval": [
-          1.0,
-          2.7
-        ],
-        "confidence": 0.406,
-        "line": 2.5,
-        "over_prob": 0.387,
-        "under_prob": 0.613,
-        "historical_avg": 1.9,
-        "historical_data": [
-          4.0,
-          4.0,
-          0.0,
-          4.0,
-          2.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 17.8,
         "confidence_interval": [
@@ -1615,7 +1523,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.075,
+        "probability": 0.082,
         "base_probability": 0.05,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -1653,17 +1561,17 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 16.0,
+      "form_avg_position": 20.0,
       "form_avg_points": 0.0,
-      "form_position_trend": 7.999999999999995,
+      "form_position_trend": 0.0,
       "form_points_momentum": 0.0,
-      "form_recent_dnf_rate": 0.3333333333333333,
-      "form_races_analyzed": 3,
+      "form_recent_dnf_rate": 0.5,
+      "form_races_analyzed": 2,
       "form_last_race_position": 20.0,
-      "form_consistency": 5.656854249492381,
-      "team_team_momentum": -0.40000000000000063,
-      "team_reliability_trend": 0.7,
-      "team_avg_team_points": 3.6,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.4,
+      "team_reliability_trend": 0.625,
+      "team_avg_team_points": 3.0,
       "team_last_race_points": 4.0,
       "circuit_circuit_races": 0,
       "circuit_avg_position_at_circuit": 15.0,
@@ -1677,53 +1585,11 @@
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.2276000000000002,
-      "risk_score": 0.5900000000000001,
+      "momentum_score": 0.5524,
+      "risk_score": 0.6625,
       "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 0.38,
-        "base_predicted": 0.54,
-        "confidence_interval": [
-          -0.19,
-          1.26
-        ],
-        "confidence": 0.332,
-        "line": 2.5,
-        "over_prob": 0.038,
-        "under_prob": 0.962,
-        "historical_avg": 0.54,
-        "historical_data": [
-          2.0,
-          0.0,
-          1.0,
-          0.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 4.2,
-        "median": 4.0,
-        "confidence_interval": [
-          0.64,
-          7.76
-        ],
-        "confidence": 1.281,
-        "line": 6.0,
-        "over_prob": 0.165,
-        "under_prob": 0.835,
-        "points_finish_rate": 0.38461538461538464,
-        "historical_data": [
-          4.0,
-          1.0,
-          2.0,
-          8.0,
-          6.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 10.4,
         "confidence_interval": [
@@ -1769,11 +1635,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.161,
+        "probability": 0.179,
         "base_probability": 0.154,
         "confidence": 0.825,
         "recommendation": "NO",
-        "risk_score": 0.59
+        "risk_score": 0.66
       },
       "teammate_overtakes": {
         "predicted": 0.64,
@@ -1815,9 +1681,9 @@
       "form_races_analyzed": 0,
       "form_last_race_position": 20.0,
       "form_consistency": 5.0,
-      "team_team_momentum": 0.19999999999999987,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 2.6,
+      "team_team_momentum": 1.1000000000000003,
+      "team_reliability_trend": 0.875,
+      "team_avg_team_points": 2.25,
       "team_last_race_points": 1.0,
       "circuit_circuit_races": 0,
       "circuit_avg_position_at_circuit": 15.0,
@@ -1831,32 +1697,11 @@
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.5512,
-      "risk_score": 0.466,
+      "momentum_score": 0.5566,
+      "risk_score": 0.47350000000000003,
       "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.18,
-        "base_predicted": 1.57,
-        "confidence_interval": [
-          -0.42,
-          3.56
-        ],
-        "confidence": 0.812,
-        "line": 2.5,
-        "over_prob": 0.27,
-        "under_prob": 0.73,
-        "historical_avg": 1.57,
-        "historical_data": [
-          5.0,
-          4.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 16.1,
         "confidence_interval": [
@@ -1902,7 +1747,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.203,
+        "probability": 0.214,
         "base_probability": 0.286,
         "confidence": 0.675,
         "recommendation": "NO",
@@ -1946,48 +1791,27 @@
       "form_races_analyzed": 0,
       "form_last_race_position": 20.0,
       "form_consistency": 5.0,
-      "team_team_momentum": -0.20000000000000007,
+      "team_team_momentum": -0.7000000000000004,
       "team_reliability_trend": 1.0,
-      "team_avg_team_points": 0.6,
+      "team_avg_team_points": 0.75,
       "team_last_race_points": 0.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 16.0,
+      "circuit_avg_position_at_circuit": 16.333333333333332,
       "circuit_avg_points_at_circuit": 0.0,
       "circuit_best_position_at_circuit": 15.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 0.6666666666666666,
-      "circuit_circuit_affinity": 0.19999999999999996,
+      "circuit_avg_overtakes_at_circuit": 1.0,
+      "circuit_circuit_affinity": 0.18333333333333335,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.45880000000000004,
+      "momentum_score": 0.45080000000000003,
       "risk_score": 0.43600000000000005,
-      "overtaking_potential": 1.0666666666666667
+      "overtaking_potential": 1.1
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.36,
-        "base_predicted": 1.7,
-        "confidence_interval": [
-          0.71,
-          2.69
-        ],
-        "confidence": 0.471,
-        "line": 2.5,
-        "over_prob": 0.418,
-        "under_prob": 0.582,
-        "historical_avg": 1.21,
-        "historical_data": [
-          0.0,
-          0.0,
-          0.0,
-          1.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 12.6,
         "confidence_interval": [
@@ -2033,7 +1857,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.064,
+        "probability": 0.071,
         "base_probability": 0.05,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -2071,75 +1895,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 11.666666666666666,
-      "form_avg_points": 2.0,
-      "form_position_trend": -1.3266599536838092e-15,
-      "form_points_momentum": -2.0,
+      "form_avg_position": 10.5,
+      "form_avg_points": 3.0,
+      "form_position_trend": 6.999999999999997,
+      "form_points_momentum": -3.0,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 14.0,
-      "form_consistency": 4.041451884327381,
-      "team_team_momentum": -0.20000000000000032,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 4.4,
+      "form_consistency": 4.949747468305833,
+      "team_team_momentum": -1.6000000000000012,
+      "team_reliability_trend": 1.0,
+      "team_avg_team_points": 5.0,
       "team_last_race_points": 0.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 10.333333333333334,
-      "circuit_avg_points_at_circuit": 0.6666666666666666,
+      "circuit_avg_position_at_circuit": 11.333333333333334,
+      "circuit_avg_points_at_circuit": 0.3333333333333333,
       "circuit_best_position_at_circuit": 10.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 2.3333333333333335,
-      "circuit_circuit_affinity": 0.4833333333333333,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.43333333333333335,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.5438000000000002,
-      "risk_score": 0.43000000000000005,
-      "overtaking_potential": 1.2333333333333334
+      "momentum_score": 0.2404000000000001,
+      "risk_score": 0.4,
+      "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 2.43,
-        "base_predicted": 2.15,
-        "confidence_interval": [
-          0.88,
-          3.42
-        ],
-        "confidence": 0.608,
-        "line": 2.5,
-        "over_prob": 0.537,
-        "under_prob": 0.463,
-        "historical_avg": 2.42,
-        "historical_data": [
-          0.0,
-          0.0,
-          2.0,
-          10.0,
-          2.0
-        ],
-        "recommendation": "PASS"
-      },
-      "points": {
-        "predicted": 5.33,
-        "median": 6.0,
-        "confidence_interval": [
-          -2.26,
-          12.92
-        ],
-        "confidence": 1.764,
-        "line": 6.0,
-        "over_prob": 0.273,
-        "under_prob": 0.727,
-        "points_finish_rate": 0.15,
-        "historical_data": [
-          8.0,
-          2.0,
-          6.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 16.7,
         "confidence_interval": [
@@ -2185,11 +1969,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.09,
+        "probability": 0.094,
         "base_probability": 0.15,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.43
+        "risk_score": 0.4
       },
       "teammate_overtakes": {
         "predicted": -0.75,
@@ -2223,77 +2007,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 1.3333333333333333,
-      "form_avg_points": 22.666666666666668,
-      "form_position_trend": 0.4999999999999999,
-      "form_points_momentum": -4.666666666666668,
+      "form_avg_position": 1.5,
+      "form_avg_points": 21.5,
+      "form_position_trend": 0.9999999999999998,
+      "form_points_momentum": -3.5,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 2.0,
-      "form_consistency": 0.5773502691896257,
-      "team_team_momentum": 3.099999999999996,
+      "form_consistency": 0.7071067811865476,
+      "team_team_momentum": 9.299999999999997,
       "team_reliability_trend": 1.0,
-      "team_avg_team_points": 36.8,
+      "team_avg_team_points": 35.25,
       "team_last_race_points": 43.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 3.6666666666666665,
-      "circuit_avg_points_at_circuit": 14.0,
-      "circuit_best_position_at_circuit": 2.0,
+      "circuit_avg_position_at_circuit": 5.0,
+      "circuit_avg_points_at_circuit": 12.666666666666666,
+      "circuit_best_position_at_circuit": 1.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 0.3333333333333333,
-      "circuit_circuit_affinity": 0.8166666666666667,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.75,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.6436,
+      "momentum_score": 0.6408,
       "risk_score": 0.4,
-      "overtaking_potential": 1.0333333333333334
+      "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.01,
-        "base_predicted": 0.75,
-        "confidence_interval": [
-          0.04,
-          1.46
-        ],
-        "confidence": 0.339,
-        "line": 2.5,
-        "over_prob": 0.142,
-        "under_prob": 0.858,
-        "historical_avg": 1.16,
-        "historical_data": [
-          0.0,
-          0.0,
-          0.0,
-          2.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 17.58,
-        "median": 18.0,
-        "confidence_interval": [
-          14.35,
-          20.81
-        ],
-        "confidence": 1.538,
-        "line": 6.0,
-        "over_prob": 0.99,
-        "under_prob": 0.01,
-        "points_finish_rate": 0.95,
-        "historical_data": [
-          25.0,
-          18.0,
-          25.0,
-          25.0,
-          18.0
-        ],
-        "recommendation": "OVER"
-      },
       "starting_position": {
         "predicted": 3.7,
         "confidence_interval": [
@@ -2339,7 +2081,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.044,
+        "probability": 0.05,
         "base_probability": 0.0,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -2377,77 +2119,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 5.0,
-      "form_avg_points": 10.0,
-      "form_position_trend": 1.5000000000000002,
-      "form_points_momentum": -4.0,
+      "form_avg_position": 5.5,
+      "form_avg_points": 9.0,
+      "form_position_trend": 2.999999999999999,
+      "form_points_momentum": -3.0,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 7.0,
-      "form_consistency": 1.7320508075688772,
-      "team_team_momentum": -1.000000000000002,
+      "form_consistency": 2.1213203435596424,
+      "team_team_momentum": -0.6000000000000034,
       "team_reliability_trend": 1.0,
-      "team_avg_team_points": 20.2,
+      "team_avg_team_points": 19.5,
       "team_last_race_points": 21.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 3.0,
-      "circuit_avg_points_at_circuit": 15.333333333333334,
-      "circuit_best_position_at_circuit": 2.0,
+      "circuit_avg_position_at_circuit": 6.0,
+      "circuit_avg_points_at_circuit": 8.0,
+      "circuit_best_position_at_circuit": 4.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 2.3333333333333335,
-      "circuit_circuit_affinity": 0.85,
+      "circuit_avg_overtakes_at_circuit": 4.333333333333333,
+      "circuit_circuit_affinity": 0.7,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.589,
+      "momentum_score": 0.48639999999999994,
       "risk_score": 0.4,
-      "overtaking_potential": 1.2333333333333334
+      "overtaking_potential": 1.4333333333333333
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 3.55,
-        "base_predicted": 2.3,
-        "confidence_interval": [
-          0.69,
-          3.91
-        ],
-        "confidence": 0.768,
-        "line": 2.5,
-        "over_prob": 0.571,
-        "under_prob": 0.429,
-        "historical_avg": 2.01,
-        "historical_data": [
-          0.0,
-          0.0,
-          0.0,
-          1.0,
-          0.0
-        ],
-        "recommendation": "OVER"
-      },
-      "points": {
-        "predicted": 8.59,
-        "median": 8.0,
-        "confidence_interval": [
-          6.33,
-          10.84
-        ],
-        "confidence": 1.064,
-        "line": 6.0,
-        "over_prob": 0.835,
-        "under_prob": 0.165,
-        "points_finish_rate": 0.85,
-        "historical_data": [
-          8.0,
-          8.0,
-          12.0,
-          12.0,
-          6.0
-        ],
-        "recommendation": "OVER"
-      },
       "starting_position": {
         "predicted": 7.9,
         "confidence_interval": [
@@ -2493,7 +2193,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.069,
+        "probability": 0.075,
         "base_probability": 0.1,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -2531,77 +2231,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 7.0,
-      "form_avg_points": 4.0,
-      "form_position_trend": 1.9999999999999991,
-      "form_points_momentum": 0.0,
-      "form_recent_dnf_rate": 0.3333333333333333,
-      "form_races_analyzed": 3,
+      "form_avg_position": 8.0,
+      "form_avg_points": 2.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 2.0,
+      "form_recent_dnf_rate": 0.5,
+      "form_races_analyzed": 2,
       "form_last_race_position": 8.0,
-      "form_consistency": 1.4142135623730951,
-      "team_team_momentum": -0.40000000000000063,
-      "team_reliability_trend": 0.7,
-      "team_avg_team_points": 3.6,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.4,
+      "team_reliability_trend": 0.625,
+      "team_avg_team_points": 3.0,
       "team_last_race_points": 4.0,
-      "circuit_circuit_races": 0,
-      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_circuit_races": 1,
+      "circuit_avg_position_at_circuit": 13.0,
       "circuit_avg_points_at_circuit": 0.0,
-      "circuit_best_position_at_circuit": 20.0,
-      "circuit_dnf_rate_at_circuit": 0.12,
-      "circuit_avg_overtakes_at_circuit": 0.0,
-      "circuit_circuit_affinity": 0.5,
+      "circuit_best_position_at_circuit": 13.0,
+      "circuit_dnf_rate_at_circuit": 0.0,
+      "circuit_avg_overtakes_at_circuit": 6.0,
+      "circuit_circuit_affinity": 0.35,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.4676,
-      "risk_score": 0.5900000000000001,
-      "overtaking_potential": 1.0
+      "momentum_score": 0.5074000000000001,
+      "risk_score": 0.6625,
+      "overtaking_potential": 1.6
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.09,
-        "base_predicted": 0.95,
-        "confidence_interval": [
-          -0.12,
-          2.02
-        ],
-        "confidence": 0.51,
-        "line": 2.5,
-        "over_prob": 0.215,
-        "under_prob": 0.785,
-        "historical_avg": 1.12,
-        "historical_data": [
-          2.0,
-          0.0,
-          0.0,
-          0.0,
-          1.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 4.0,
-        "median": 4.0,
-        "confidence_interval": [
-          0.96,
-          7.04
-        ],
-        "confidence": 1.095,
-        "line": 6.0,
-        "over_prob": 0.132,
-        "under_prob": 0.868,
-        "points_finish_rate": 0.25,
-        "historical_data": [
-          2.0,
-          2.0,
-          4.0,
-          8.0,
-          4.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 13.2,
         "confidence_interval": [
@@ -2647,11 +2305,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.177,
+        "probability": 0.197,
         "base_probability": 0.2,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.59
+        "risk_score": 0.66
       },
       "teammate_overtakes": {
         "predicted": -0.64,
@@ -2693,48 +2351,27 @@
       "form_races_analyzed": 0,
       "form_last_race_position": 20.0,
       "form_consistency": 5.0,
-      "team_team_momentum": 1.9000000000000001,
-      "team_reliability_trend": 0.6,
-      "team_avg_team_points": 2.6,
+      "team_team_momentum": 2.5,
+      "team_reliability_trend": 0.625,
+      "team_avg_team_points": 3.25,
       "team_last_race_points": 8.0,
       "circuit_circuit_races": 2,
-      "circuit_avg_position_at_circuit": 17.5,
+      "circuit_avg_position_at_circuit": 16.0,
       "circuit_avg_points_at_circuit": 0.0,
-      "circuit_best_position_at_circuit": 17.0,
-      "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 1.0,
-      "circuit_circuit_affinity": 0.125,
+      "circuit_best_position_at_circuit": 16.0,
+      "circuit_dnf_rate_at_circuit": 0.5,
+      "circuit_avg_overtakes_at_circuit": 2.0,
+      "circuit_circuit_affinity": 0.19999999999999996,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.4489,
-      "risk_score": 0.556,
-      "overtaking_potential": 1.1
+      "momentum_score": 0.47500000000000003,
+      "risk_score": 0.5485,
+      "overtaking_potential": 1.2
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.4,
-        "base_predicted": 1.7,
-        "confidence_interval": [
-          0.59,
-          2.81
-        ],
-        "confidence": 0.529,
-        "line": 2.5,
-        "over_prob": 0.34,
-        "under_prob": 0.66,
-        "historical_avg": 1.69,
-        "historical_data": [
-          0.0,
-          1.0,
-          0.0,
-          1.0,
-          2.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 16.6,
         "confidence_interval": [
@@ -2780,11 +2417,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.151,
+        "probability": 0.159,
         "base_probability": 0.15,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.56
+        "risk_score": 0.55
       },
       "teammate_overtakes": {
         "predicted": -1.5,
@@ -2808,6 +2445,52 @@
       }
     }
   },
+  "luke-browning": {
+    "driver_id": "luke-browning",
+    "driver_name": "Luke Browning",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
   "max-verstappen": {
     "driver_id": "max-verstappen",
     "driver_name": "Max Verstappen",
@@ -2819,76 +2502,34 @@
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
       "form_avg_position": 4.5,
-      "form_avg_points": 7.333333333333333,
+      "form_avg_points": 11.0,
       "form_position_trend": -1.0000000000000007,
-      "form_points_momentum": 4.666666666666667,
-      "form_recent_dnf_rate": 0.3333333333333333,
-      "form_races_analyzed": 3,
+      "form_points_momentum": 1.0,
+      "form_recent_dnf_rate": 0.0,
+      "form_races_analyzed": 2,
       "form_last_race_position": 4.0,
       "form_consistency": 0.7071067811865476,
-      "team_team_momentum": 1.3999999999999995,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 8.2,
+      "team_team_momentum": -0.8000000000000015,
+      "team_reliability_trend": 0.875,
+      "team_avg_team_points": 10.0,
       "team_last_race_points": 12.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 2.3333333333333335,
-      "circuit_avg_points_at_circuit": 20.333333333333332,
+      "circuit_avg_position_at_circuit": 1.3333333333333333,
+      "circuit_avg_points_at_circuit": 23.0,
       "circuit_best_position_at_circuit": 1.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 3.3333333333333335,
-      "circuit_circuit_affinity": 0.8833333333333333,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.9333333333333333,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.7134,
-      "risk_score": 0.53,
-      "overtaking_potential": 1.3333333333333335
+      "momentum_score": 0.7152000000000001,
+      "risk_score": 0.4375,
+      "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.7,
-        "base_predicted": 1.0,
-        "confidence_interval": [
-          -0.66,
-          2.66
-        ],
-        "confidence": 0.795,
-        "line": 2.5,
-        "over_prob": 0.399,
-        "under_prob": 0.601,
-        "historical_avg": 1.42,
-        "historical_data": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 14.79,
-        "median": 12.0,
-        "confidence_interval": [
-          11.41,
-          18.17
-        ],
-        "confidence": 1.609,
-        "line": 6.0,
-        "over_prob": 0.951,
-        "under_prob": 0.049,
-        "points_finish_rate": 0.95,
-        "historical_data": [
-          12.0,
-          1.0,
-          18.0,
-          10.0,
-          12.0
-        ],
-        "recommendation": "OVER"
-      },
       "starting_position": {
         "predicted": 3.3,
         "confidence_interval": [
@@ -2934,11 +2575,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.068,
+        "probability": 0.073,
         "base_probability": 0.05,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.53
+        "risk_score": 0.44
       },
       "teammate_overtakes": {
         "predicted": 1.5,
@@ -2972,77 +2613,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 8.0,
-      "form_avg_points": 5.666666666666667,
-      "form_position_trend": 1.4999999999999991,
-      "form_points_momentum": -5.666666666666667,
+      "form_avg_position": 7.5,
+      "form_avg_points": 7.5,
+      "form_position_trend": 8.999999999999998,
+      "form_points_momentum": -7.5,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 12.0,
-      "form_consistency": 4.58257569495584,
-      "team_team_momentum": -0.5000000000000009,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 7.4,
+      "form_consistency": 6.363961030678928,
+      "team_team_momentum": 0.2999999999999996,
+      "team_reliability_trend": 0.875,
+      "team_avg_team_points": 6.75,
       "team_last_race_points": 2.0,
       "circuit_circuit_races": 2,
-      "circuit_avg_position_at_circuit": 13.5,
+      "circuit_avg_position_at_circuit": 11.5,
       "circuit_avg_points_at_circuit": 0.0,
-      "circuit_best_position_at_circuit": 13.0,
+      "circuit_best_position_at_circuit": 11.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 0.0,
-      "circuit_circuit_affinity": 0.32499999999999996,
+      "circuit_avg_overtakes_at_circuit": 1.5,
+      "circuit_circuit_affinity": 0.42500000000000004,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.43450000000000005,
-      "risk_score": 0.43000000000000005,
-      "overtaking_potential": 1.0
+      "momentum_score": 0.1693000000000001,
+      "risk_score": 0.4375,
+      "overtaking_potential": 1.15
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 3.69,
-        "base_predicted": 3.35,
-        "confidence_interval": [
-          1.16,
-          5.54
-        ],
-        "confidence": 1.044,
-        "line": 2.5,
-        "over_prob": 0.689,
-        "under_prob": 0.311,
-        "historical_avg": 1.77,
-        "historical_data": [
-          10.0,
-          3.0,
-          11.0,
-          16.0,
-          2.0
-        ],
-        "recommendation": "OVER"
-      },
-      "points": {
-        "predicted": 5.3,
-        "median": 4.0,
-        "confidence_interval": [
-          2.32,
-          8.28
-        ],
-        "confidence": 1.317,
-        "line": 6.0,
-        "over_prob": 0.375,
-        "under_prob": 0.625,
-        "points_finish_rate": 0.5,
-        "historical_data": [
-          6.0,
-          10.0,
-          4.0,
-          2.0,
-          15.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 16.2,
         "confidence_interval": [
@@ -3088,11 +2687,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.092,
+        "probability": 0.099,
         "base_probability": 0.15,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.43
+        "risk_score": 0.44
       },
       "teammate_overtakes": {
         "predicted": 0.21,
@@ -3128,15 +2727,15 @@
       "track_dnf_risk_multiplier": 1.0,
       "form_avg_position": 11.0,
       "form_avg_points": 0.0,
-      "form_position_trend": 7.522282595950339e-16,
+      "form_position_trend": -8.119847570969573e-16,
       "form_points_momentum": 0.0,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 11.0,
       "form_consistency": 0.0,
-      "team_team_momentum": -0.20000000000000007,
+      "team_team_momentum": -0.7000000000000004,
       "team_reliability_trend": 1.0,
-      "team_avg_team_points": 0.6,
+      "team_avg_team_points": 0.75,
       "team_last_race_points": 0.0,
       "circuit_circuit_races": 0,
       "circuit_avg_position_at_circuit": 15.0,
@@ -3150,53 +2749,11 @@
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.5488,
+      "momentum_score": 0.5458000000000001,
       "risk_score": 0.4,
       "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 3.09,
-        "base_predicted": 3.25,
-        "confidence_interval": [
-          1.41,
-          5.09
-        ],
-        "confidence": 0.864,
-        "line": 2.5,
-        "over_prob": 0.507,
-        "under_prob": 0.493,
-        "historical_avg": 3.25,
-        "historical_data": [
-          0.0,
-          2.0,
-          4.0,
-          7.0,
-          1.0
-        ],
-        "recommendation": "PASS"
-      },
-      "points": {
-        "predicted": 2.6,
-        "median": 1.0,
-        "confidence_interval": [
-          -0.26,
-          5.46
-        ],
-        "confidence": 1.03,
-        "line": 6.0,
-        "over_prob": 0.082,
-        "under_prob": 0.918,
-        "points_finish_rate": 0.3125,
-        "historical_data": [
-          6.0,
-          1.0,
-          4.0,
-          1.0,
-          1.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 15.5,
         "confidence_interval": [
@@ -3242,7 +2799,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.084,
+        "probability": 0.094,
         "base_probability": 0.062,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -3280,77 +2837,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 1.6666666666666667,
-      "form_avg_points": 20.333333333333332,
-      "form_position_trend": -0.4999999999999999,
-      "form_points_momentum": 4.666666666666668,
+      "form_avg_position": 1.5,
+      "form_avg_points": 21.5,
+      "form_position_trend": -1.0,
+      "form_points_momentum": 3.5,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 1.0,
-      "form_consistency": 0.5773502691896257,
-      "team_team_momentum": 3.099999999999996,
+      "form_consistency": 0.7071067811865476,
+      "team_team_momentum": 9.299999999999997,
       "team_reliability_trend": 1.0,
-      "team_avg_team_points": 36.8,
+      "team_avg_team_points": 35.25,
       "team_last_race_points": 43.0,
       "circuit_circuit_races": 2,
-      "circuit_avg_position_at_circuit": 3.0,
-      "circuit_avg_points_at_circuit": 17.5,
-      "circuit_best_position_at_circuit": 1.0,
+      "circuit_avg_position_at_circuit": 6.5,
+      "circuit_avg_points_at_circuit": 7.0,
+      "circuit_best_position_at_circuit": 4.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 0.5,
-      "circuit_circuit_affinity": 0.85,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.675,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.6936,
+      "momentum_score": 0.6983,
       "risk_score": 0.4,
-      "overtaking_potential": 1.05
+      "overtaking_potential": 1.0
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.3,
-        "base_predicted": 0.95,
-        "confidence_interval": [
-          -0.02,
-          1.92
-        ],
-        "confidence": 0.462,
-        "line": 2.5,
-        "over_prob": 0.23,
-        "under_prob": 0.77,
-        "historical_avg": 1.12,
-        "historical_data": [
-          0.0,
-          0.0,
-          1.0,
-          0.0,
-          1.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 15.0,
-        "median": 15.0,
-        "confidence_interval": [
-          11.07,
-          18.93
-        ],
-        "confidence": 1.878,
-        "line": 6.0,
-        "over_prob": 0.836,
-        "under_prob": 0.164,
-        "points_finish_rate": 1.0,
-        "historical_data": [
-          25.0,
-          12.0,
-          18.0,
-          18.0,
-          25.0
-        ],
-        "recommendation": "OVER"
-      },
       "starting_position": {
         "predicted": 2.2,
         "confidence_interval": [
@@ -3396,7 +2911,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.049,
+        "probability": 0.057,
         "base_probability": 0.0,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -3424,6 +2939,98 @@
       }
     }
   },
+  "patricio-oward": {
+    "driver_id": "patricio-oward",
+    "driver_name": "Patricio O'Ward",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
+  "paul-aron": {
+    "driver_id": "paul-aron",
+    "driver_name": "Paul Aron",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
   "pierre-gasly": {
     "driver_id": "pierre-gasly",
     "driver_name": "Pierre Gasly",
@@ -3434,77 +3041,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 9.666666666666666,
-      "form_avg_points": 3.0,
-      "form_position_trend": -1.5000000000000029,
-      "form_points_momentum": -2.0,
+      "form_avg_position": 8.0,
+      "form_avg_points": 4.5,
+      "form_position_trend": 3.9999999999999973,
+      "form_points_momentum": -3.5,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 10.0,
-      "form_consistency": 3.511884584284246,
-      "team_team_momentum": 0.19999999999999987,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 2.6,
+      "form_consistency": 2.8284271247461903,
+      "team_team_momentum": 1.1000000000000003,
+      "team_reliability_trend": 0.875,
+      "team_avg_team_points": 2.25,
       "team_last_race_points": 1.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 12.0,
-      "circuit_avg_points_at_circuit": 0.0,
-      "circuit_best_position_at_circuit": 12.0,
-      "circuit_dnf_rate_at_circuit": 0.6666666666666666,
-      "circuit_avg_overtakes_at_circuit": 8.0,
-      "circuit_circuit_affinity": 0.4,
+      "circuit_avg_position_at_circuit": 7.666666666666667,
+      "circuit_avg_points_at_circuit": 5.666666666666667,
+      "circuit_best_position_at_circuit": 3.0,
+      "circuit_dnf_rate_at_circuit": 0.0,
+      "circuit_avg_overtakes_at_circuit": 3.0,
+      "circuit_circuit_affinity": 0.6166666666666667,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.5812000000000002,
-      "risk_score": 0.43000000000000005,
-      "overtaking_potential": 1.8
+      "momentum_score": 0.4316000000000001,
+      "risk_score": 0.4375,
+      "overtaking_potential": 1.3
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 2.01,
-        "base_predicted": 1.1,
-        "confidence_interval": [
-          -0.1,
-          2.3
-        ],
-        "confidence": 0.575,
-        "line": 2.5,
-        "over_prob": 0.346,
-        "under_prob": 0.654,
-        "historical_avg": 1.54,
-        "historical_data": [
-          0.0,
-          0.0,
-          0.0,
-          2.0,
-          3.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 6.38,
-        "median": 6.0,
-        "confidence_interval": [
-          2.46,
-          10.29
-        ],
-        "confidence": 1.658,
-        "line": 6.0,
-        "over_prob": 0.426,
-        "under_prob": 0.574,
-        "points_finish_rate": 0.4,
-        "historical_data": [
-          6.0,
-          6.0,
-          4.0,
-          8.0,
-          1.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 12.1,
         "confidence_interval": [
@@ -3550,11 +3115,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.108,
+        "probability": 0.115,
         "base_probability": 0.2,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.43
+        "risk_score": 0.44
       },
       "teammate_overtakes": {
         "predicted": 1.0,
@@ -3578,6 +3143,98 @@
       }
     }
   },
+  "robert-shwartzman": {
+    "driver_id": "robert-shwartzman",
+    "driver_name": "Robert Shwartzman",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
+  "ryo-hirakawa": {
+    "driver_id": "ryo-hirakawa",
+    "driver_name": "Ry\u014d Hirakawa",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
   "sergio-perez": {
     "driver_id": "sergio-perez",
     "driver_name": "Sergio P\u00e9rez",
@@ -3596,48 +3253,27 @@
       "form_races_analyzed": 0,
       "form_last_race_position": 20.0,
       "form_consistency": 5.0,
-      "team_team_momentum": 1.3999999999999995,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 8.2,
+      "team_team_momentum": -0.8000000000000015,
+      "team_reliability_trend": 0.875,
+      "team_avg_team_points": 10.0,
       "team_last_race_points": 12.0,
       "circuit_circuit_races": 3,
       "circuit_avg_position_at_circuit": 5.0,
-      "circuit_avg_points_at_circuit": 10.333333333333334,
-      "circuit_best_position_at_circuit": 3.0,
+      "circuit_avg_points_at_circuit": 10.0,
+      "circuit_best_position_at_circuit": 4.0,
       "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 7.0,
+      "circuit_avg_overtakes_at_circuit": 1.0,
       "circuit_circuit_affinity": 0.75,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.6334,
-      "risk_score": 0.466,
-      "overtaking_potential": 1.7
+      "momentum_score": 0.6202,
+      "risk_score": 0.47350000000000003,
+      "overtaking_potential": 1.1
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 1.78,
-        "base_predicted": 1.4,
-        "confidence_interval": [
-          0.32,
-          2.48
-        ],
-        "confidence": 0.515,
-        "line": 2.5,
-        "over_prob": 0.374,
-        "under_prob": 0.626,
-        "historical_avg": 2.12,
-        "historical_data": [
-          1.0,
-          1.0,
-          5.0,
-          0.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 10.6,
         "confidence_interval": [
@@ -3683,7 +3319,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.104,
+        "probability": 0.112,
         "base_probability": 0.2,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -3729,48 +3365,27 @@
       "form_races_analyzed": 0,
       "form_last_race_position": 20.0,
       "form_consistency": 5.0,
-      "team_team_momentum": -0.5000000000000009,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 7.4,
+      "team_team_momentum": 0.2999999999999996,
+      "team_reliability_trend": 0.875,
+      "team_avg_team_points": 6.75,
       "team_last_race_points": 2.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 16.0,
+      "circuit_avg_position_at_circuit": 16.5,
       "circuit_avg_points_at_circuit": 0.0,
-      "circuit_best_position_at_circuit": 12.0,
-      "circuit_dnf_rate_at_circuit": 0.0,
-      "circuit_avg_overtakes_at_circuit": 0.0,
-      "circuit_circuit_affinity": 0.19999999999999996,
+      "circuit_best_position_at_circuit": 14.0,
+      "circuit_dnf_rate_at_circuit": 0.3333333333333333,
+      "circuit_avg_overtakes_at_circuit": 2.0,
+      "circuit_circuit_affinity": 0.17500000000000004,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.457,
-      "risk_score": 0.466,
-      "overtaking_potential": 1.0
+      "momentum_score": 0.45430000000000004,
+      "risk_score": 0.47350000000000003,
+      "overtaking_potential": 1.2
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 0.64,
-        "base_predicted": 0.85,
-        "confidence_interval": [
-          0.26,
-          1.44
-        ],
-        "confidence": 0.284,
-        "line": 2.5,
-        "over_prob": 0.109,
-        "under_prob": 0.891,
-        "historical_avg": 1.18,
-        "historical_data": [
-          1.0,
-          0.0,
-          1.0,
-          2.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 15.7,
         "confidence_interval": [
@@ -3816,7 +3431,7 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.078,
+        "probability": 0.085,
         "base_probability": 0.1,
         "confidence": 0.9,
         "recommendation": "NO",
@@ -3844,6 +3459,52 @@
       }
     }
   },
+  "victor-martins": {
+    "driver_id": "victor-martins",
+    "driver_name": "Victor Martins",
+    "constructor_id": null,
+    "contextual_features": {
+      "track_type": "mixed",
+      "track_overtaking": "moderate",
+      "track_dnf_risk": "medium",
+      "track_overtaking_multiplier": 1.0,
+      "track_dnf_risk_multiplier": 1.0,
+      "form_avg_position": 15.0,
+      "form_avg_points": 0.0,
+      "form_position_trend": 0.0,
+      "form_points_momentum": 0.0,
+      "form_recent_dnf_rate": 0.12,
+      "form_races_analyzed": 0,
+      "form_last_race_position": 20.0,
+      "form_consistency": 5.0,
+      "team_team_momentum": 0.0,
+      "team_reliability_trend": 1.0,
+      "circuit_circuit_races": 0,
+      "circuit_avg_position_at_circuit": 15.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 20.0,
+      "circuit_dnf_rate_at_circuit": 0.12,
+      "circuit_avg_overtakes_at_circuit": 0.0,
+      "circuit_circuit_affinity": 0.5,
+      "weather_rain_multiplier": 1.0,
+      "weather_temp_adjustment": 1.0,
+      "weather_chaos_factor": 1.0,
+      "weather_is_wet": false,
+      "weather_is_extreme_temp": false,
+      "momentum_score": 0.55,
+      "risk_score": 0.43600000000000005,
+      "overtaking_potential": 1.0
+    },
+    "predictions": {
+      "dnf": {
+        "probability": 0.084,
+        "base_probability": 0.15,
+        "confidence": 0.5,
+        "recommendation": "NO",
+        "risk_score": 0.44
+      }
+    }
+  },
   "yuki-tsunoda": {
     "driver_id": "yuki-tsunoda",
     "driver_name": "Yuki Tsunoda",
@@ -3854,77 +3515,35 @@
       "track_dnf_risk": "medium",
       "track_overtaking_multiplier": 1.0,
       "track_dnf_risk_multiplier": 1.0,
-      "form_avg_position": 14.666666666666666,
+      "form_avg_position": 14.0,
       "form_avg_points": 0.0,
-      "form_position_trend": -1.5000000000000033,
+      "form_position_trend": -2.0000000000000018,
       "form_points_momentum": 0.0,
       "form_recent_dnf_rate": 0.0,
-      "form_races_analyzed": 3,
+      "form_races_analyzed": 2,
       "form_last_race_position": 13.0,
-      "form_consistency": 1.5275252316519468,
-      "team_team_momentum": 1.3999999999999995,
-      "team_reliability_trend": 0.9,
-      "team_avg_team_points": 8.2,
+      "form_consistency": 1.4142135623730951,
+      "team_team_momentum": -0.8000000000000015,
+      "team_reliability_trend": 0.875,
+      "team_avg_team_points": 10.0,
       "team_last_race_points": 12.0,
       "circuit_circuit_races": 3,
-      "circuit_avg_position_at_circuit": 14.333333333333334,
-      "circuit_avg_points_at_circuit": 0.6666666666666666,
-      "circuit_best_position_at_circuit": 9.0,
-      "circuit_dnf_rate_at_circuit": 0.0,
+      "circuit_avg_position_at_circuit": 16.0,
+      "circuit_avg_points_at_circuit": 0.0,
+      "circuit_best_position_at_circuit": 15.0,
+      "circuit_dnf_rate_at_circuit": 0.3333333333333333,
       "circuit_avg_overtakes_at_circuit": 1.0,
-      "circuit_circuit_affinity": 0.2833333333333333,
+      "circuit_circuit_affinity": 0.19999999999999996,
       "weather_rain_multiplier": 1.0,
       "weather_temp_adjustment": 1.0,
       "weather_chaos_factor": 1.0,
       "weather_is_wet": false,
       "weather_is_extreme_temp": false,
-      "momentum_score": 0.5534000000000002,
-      "risk_score": 0.43000000000000005,
+      "momentum_score": 0.5352,
+      "risk_score": 0.4375,
       "overtaking_potential": 1.1
     },
     "predictions": {
-      "overtakes": {
-        "predicted": 0.51,
-        "base_predicted": 0.6,
-        "confidence_interval": [
-          -0.07,
-          1.27
-        ],
-        "confidence": 0.32,
-        "line": 2.5,
-        "over_prob": 0.101,
-        "under_prob": 0.899,
-        "historical_avg": 1.35,
-        "historical_data": [
-          0.0,
-          6.0,
-          2.0,
-          0.0,
-          0.0
-        ],
-        "recommendation": "UNDER"
-      },
-      "points": {
-        "predicted": 2.4,
-        "median": 2.0,
-        "confidence_interval": [
-          -0.17,
-          4.97
-        ],
-        "confidence": 0.927,
-        "line": 6.0,
-        "over_prob": 0.28,
-        "under_prob": 0.72,
-        "points_finish_rate": 0.25,
-        "historical_data": [
-          6.0,
-          2.0,
-          2.0,
-          1.0,
-          1.0
-        ],
-        "recommendation": "UNDER"
-      },
       "starting_position": {
         "predicted": 12.0,
         "confidence_interval": [
@@ -3970,11 +3589,11 @@
         "recommendation": "UNDER"
       },
       "dnf": {
-        "probability": 0.081,
+        "probability": 0.089,
         "base_probability": 0.1,
         "confidence": 0.9,
         "recommendation": "NO",
-        "risk_score": 0.43
+        "risk_score": 0.44
       },
       "teammate_overtakes": {
         "predicted": -1.5,

@@ -143,29 +143,54 @@ class DHLIntegratedExtractor:
             logger.info(f"Next event is in {days_until} days. No update needed.")
             return False
     
-    def merge_event_files(self):
-        """Merge all yearly event files into one DataFrame"""
-        event_files = list(self.output_dir.glob('dhl_events_mapped_*.csv'))
+    def merge_event_files(self, new_events_dict=None):
+        """Merge event data into the all_years file
         
-        if not event_files:
-            return pd.DataFrame()
-            
-        all_events = []
-        for file in sorted(event_files):
-            df = pd.read_csv(file)
-            all_events.append(df)
-            
-        if all_events:
-            merged_df = pd.concat(all_events, ignore_index=True)
-            
-            # Save merged file
-            merged_file = self.output_dir / 'dhl_events_all_years.csv'
-            merged_df.to_csv(merged_file, index=False)
-            logger.info(f"Saved merged events file: {merged_file}")
-            
-            return merged_df
+        Args:
+            new_events_dict: Optional dict of {year: DataFrame} with new events to merge
+        """
+        merged_file = self.output_dir / 'dhl_events_all_years.csv'
         
-        return pd.DataFrame()
+        # Load existing all_years file if it exists
+        if merged_file.exists():
+            existing_df = pd.read_csv(merged_file)
+        else:
+            existing_df = pd.DataFrame()
+        
+        if new_events_dict:
+            # Merge new events with existing
+            all_events = []
+            
+            # Add existing events not in new years
+            if not existing_df.empty:
+                existing_years = set(existing_df['year'].unique()) if 'year' in existing_df.columns else set()
+                new_years = set(new_events_dict.keys())
+                keep_years = existing_years - new_years
+                
+                for year in keep_years:
+                    all_events.append(existing_df[existing_df['year'] == year])
+            
+            # Add new events
+            for year, df in new_events_dict.items():
+                if not df.empty:
+                    all_events.append(df)
+            
+            if all_events:
+                merged_df = pd.concat(all_events, ignore_index=True)
+                merged_df = merged_df.sort_values(['year', 'date_parsed'])
+                
+                # Ensure race_id is integer
+                if 'f1db_race_id' in merged_df.columns:
+                    merged_df['f1db_race_id'] = merged_df['f1db_race_id'].apply(
+                        lambda x: int(x) if pd.notna(x) else None
+                    )
+                
+                merged_df.to_csv(merged_file, index=False)
+                logger.info(f"Updated merged events file: {merged_file} ({len(merged_df)} total events)")
+                return merged_df
+        
+        # If no new events, just return existing
+        return existing_df
         
     def _init_mappings(self):
         """Initialize all mapping dictionaries"""
@@ -206,7 +231,7 @@ class DHLIntegratedExtractor:
             'Baku City Circuit': 'baku',
             'Marina Bay Street Circuit': 'marina-bay',
             'Circuit of The Americas': 'americas',
-            'Autódromo Hermanos Rodríguez': 'rodriguez',
+            'Autódromo Hermanos Rodríguez': 'mexico-city',  # Fixed: was 'rodriguez'
             'Autódromo José Carlos Pace': 'interlagos',
             'Las Vegas Strip Circuit': 'las-vegas',
             'Lusail International Circuit': 'losail',
@@ -327,10 +352,8 @@ class DHLIntegratedExtractor:
             # Map to F1DB races
             events_df['f1db_race_id'] = events_df.apply(self._map_event_to_race, axis=1)
             
-            # Save events with mapping
-            events_file = self.output_dir / f'dhl_events_mapped_{year}.csv'
-            events_df.to_csv(events_file, index=False)
-            logger.info(f"✅ Saved {len(events_df)} events with race mapping to {events_file}")
+            # Don't save individual year files anymore - will be saved in merge_event_files
+            logger.info(f"✅ Extracted {len(events_df)} events for {year}")
             
             return events_df, data
             
@@ -352,15 +375,27 @@ class DHLIntegratedExtractor:
         if circuit_id:
             matches = year_races[year_races['circuitId'] == circuit_id]
             if len(matches) == 1:
-                return matches.iloc[0]['id']
+                return int(matches.iloc[0]['id'])
         
         # Try date matching (within 2 days)
         event_date_obj = pd.to_datetime(event_date)
         for _, race in year_races.iterrows():
             race_date_obj = pd.to_datetime(race['date'])
             if abs((event_date_obj - race_date_obj).days) <= 2:
-                if not circuit_id or race['circuitId'] == circuit_id:
-                    return race['id']
+                # If we found a circuit mapping and it matches, use it
+                if circuit_id and race['circuitId'] == circuit_id:
+                    return int(race['id'])
+                # If no circuit mapping or circuit doesn't match, still accept if date matches
+                # This handles cases where circuit names/IDs have changed
+                elif not circuit_id:
+                    return int(race['id'])
+        
+        # As a last resort, try matching just by date without circuit check
+        for _, race in year_races.iterrows():
+            race_date_obj = pd.to_datetime(race['date'])
+            if abs((event_date_obj - race_date_obj).days) <= 2:
+                logger.warning(f"Date match found for {event_row.get('title', 'Unknown')} but circuit mismatch: DHL='{event_circuit}' vs F1DB='{race['circuitId']}'")
+                return int(race['id'])
         
         return None
     
@@ -605,6 +640,10 @@ class DHLIntegratedExtractor:
             
             if not driver_df.empty:
                 all_driver_data.append(driver_df)
+        
+        # Update merged events file
+        if all_events:
+            self.merge_event_files(all_events)
         
         # Combine all driver data
         if all_driver_data:
