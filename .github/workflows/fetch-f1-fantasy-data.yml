@@ -44,7 +44,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pandas requests
+        pip install pandas requests unicodedata2
     
     - name: Create data directory
       run: |
@@ -62,11 +62,14 @@ jobs:
             LAST_UPDATE=$(python -c "
 import json
 from datetime import datetime, timedelta
-with open('data/f1_fantasy/.f1_fantasy_metadata.json', 'r') as f:
-    metadata = json.load(f)
-last_update = datetime.fromisoformat(metadata['last_updated'].replace('Z', '+00:00'))
-days_old = (datetime.now() - last_update.replace(tzinfo=None)).days
-print(days_old)
+try:
+    with open('data/f1_fantasy/.f1_fantasy_metadata.json', 'r') as f:
+        metadata = json.load(f)
+    last_update = datetime.fromisoformat(metadata['last_updated'].replace('Z', '+00:00'))
+    days_old = (datetime.now() - last_update.replace(tzinfo=None)).days
+    print(days_old)
+except Exception as e:
+    print(999)  # Force update on error
 ")
             echo "Data is $LAST_UPDATE days old"
             
@@ -102,8 +105,8 @@ print(days_old)
           # Display summary
           echo ""
           echo "📊 Data Summary:"
-          echo "Driver Overview: $(wc -l < ../../data/f1_fantasy/driver_overview.csv) lines"
-          echo "Driver Details: $(wc -l < ../../data/f1_fantasy/driver_details.csv) lines"
+          echo "Driver Overview: $(( $(wc -l < ../../data/f1_fantasy/driver_overview.csv) - 1 )) drivers"
+          echo "Driver Details: $(( $(wc -l < ../../data/f1_fantasy/driver_details.csv) - 1 )) records"
         else
           echo "❌ Failed to fetch fantasy data"
           exit 1
@@ -161,9 +164,10 @@ print('')
 
 # Top scorers
 print('## Top 10 Fantasy Scorers')
-top_scorers = df_overview.nsmallest(10, 'fantasy_points_rank')[['player_name', 'team_name', 'fantasy_points', 'current_price']]
-for idx, row in top_scorers.iterrows():
-    print(f'{int(idx)+1}. {row[\"player_name\"]} ({row[\"team_name\"]}) - {row[\"fantasy_points\"]} pts (${row[\"current_price\"]}M)')
+# Sort by fantasy_points descending to get top scorers
+top_scorers = df_overview.nlargest(10, 'fantasy_points')[['player_name', 'team_name', 'fantasy_points', 'current_price']]
+for i, (idx, row) in enumerate(top_scorers.iterrows(), 1):
+    print(f'{i}. {row[\"player_name\"]} ({row[\"team_name\"]}) - {row[\"fantasy_points\"]} pts (${row[\"current_price\"]}M)')
 
 print('')
 
@@ -199,8 +203,15 @@ with open('fantasy_data_report.txt', 'w') as f:
           git add data/f1_fantasy/
           
           # Create commit message
-          DRIVER_COUNT=$(wc -l < data/f1_fantasy/driver_overview.csv)
-          RACE_COUNT=$(python -c "import pandas as pd; df = pd.read_csv('data/f1_fantasy/driver_details.csv'); print(df['gameday_id'].nunique())")
+          DRIVER_COUNT=$(( $(wc -l < data/f1_fantasy/driver_overview.csv) - 1 ))  # Subtract header
+          RACE_COUNT=$(python -c "
+import pandas as pd
+try:
+    df = pd.read_csv('data/f1_fantasy/driver_details.csv')
+    print(df['gameday_id'].nunique())
+except:
+    print('N/A')
+")
           
           git commit -m "chore: Update F1 Fantasy data - $(date +'%Y-%m-%d')" \
             -m "Fetched data for $DRIVER_COUNT drivers across $RACE_COUNT races" \

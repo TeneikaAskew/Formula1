@@ -36,5 +36,20 @@ To get started with the project, clone this repository and install the required 
 git clone https://github.com/yourgithubusername/formula-one-ml-workshop.git
 cd formula-one-ml-workshop
 pip install -r requirements.txt
+```
+
+## Running the F1 Fantasy Fetcher
+
+To manually fetch F1 Fantasy data:
+```bash
+cd notebooks/advanced
+python f1_fantasy_fetcher.py --output-dir ../../data/f1_fantasy
+```
+
+This will:
+- Fetch current driver standings and statistics
+- Get race-by-race performance data
+- Save results to CSV files in `/data/f1_fantasy/`
+- Create metadata file for tracking updates
 
 
