@@ -76,7 +76,7 @@ summary:
 logging:
   level: "INFO"  # DEBUG, INFO, WARNING, ERROR
   file: "pipeline_outputs/enhanced_pipeline.log"
-  console: true
+  console: false
   
 # Notification configuration (optional)
 notifications:

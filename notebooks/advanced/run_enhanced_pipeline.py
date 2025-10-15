@@ -60,22 +60,30 @@ class EnhancedF1Pipeline:
         self.logger = logging.getLogger('EnhancedF1Pipeline')
         self.logger.setLevel(log_level)
         
+        formatter = logging.Formatter(
+            log_config.get('format', '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        )
+
         # Console handler
         if log_config.get('console', True):
             console_handler = logging.StreamHandler()
             console_handler.setLevel(log_level)
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             console_handler.setFormatter(formatter)
             self.logger.addHandler(console_handler)
-        
+
         # File handler
         if log_config.get('file'):
             log_file = Path(log_config['file'])
             log_file.parent.mkdir(exist_ok=True)
             file_handler = logging.FileHandler(log_file)
             file_handler.setLevel(log_level)
-            file_handler.setFormatter(formatter)
+            if formatter:
+                file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
+
+        if not self.logger.handlers:
+            # Ensure the logger has at least a null handler so logging calls are safe
+            self.logger.addHandler(logging.NullHandler())
     
     def load_shared_data(self):
         """Load F1DB data once for sharing across all components"""
