@@ -29,6 +29,27 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from f1db_data_loader import F1DBDataLoader
 
 
+def resolve_config_path(config_path: str) -> Path:
+    """Resolve a configuration path relative to this file.
+
+    The function first attempts to resolve the provided path relative to the
+    directory containing this script. If that file does not exist, the original
+    user-specified path (expanded and resolved where possible) is returned so
+    the caller can handle any missing-file errors with an informative path.
+    """
+
+    user_path = Path(config_path).expanduser()
+    script_dir = Path(__file__).parent
+
+    # Try resolving relative to the script directory first
+    candidate = (script_dir / user_path).resolve(strict=False)
+    if candidate.exists():
+        return candidate
+
+    # Fall back to the user-supplied path (resolved when possible)
+    return user_path.resolve(strict=False)
+
+
 class EnhancedF1Pipeline:
     """Orchestrates the enhanced F1 prediction pipeline"""
     
@@ -37,17 +58,19 @@ class EnhancedF1Pipeline:
         self.config_path = config_path
         self.config = self._load_config()
         self.setup_logging()
+        self.logger.info(f"Configuration loaded from {self.resolved_config_path}")
         self.results = {}
         self.execution_times = {}
         self.data = None
         self.data_cache_file = None
-        
+
     def _load_config(self) -> Dict:
         """Load pipeline configuration from YAML file"""
-        config_path = Path(self.config_path)
+        self.resolved_config_path = resolve_config_path(self.config_path)
+        config_path = self.resolved_config_path
         if not config_path.exists():
             raise FileNotFoundError(f"Configuration file not found: {config_path}")
-            
+
         with open(config_path, 'r') as f:
             return yaml.safe_load(f)
     
@@ -736,7 +759,7 @@ def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(description='Enhanced F1 Pipeline Orchestrator')
     parser.add_argument('--config', default='pipeline_config_enhanced.yaml',
-                        help='Path to pipeline configuration file')
+                        help='Path to pipeline configuration file (resolved relative to this script by default)')
     parser.add_argument('--skip-weather', action='store_true',
                         help='Skip weather predictions')
     parser.add_argument('--sequential', action='store_true',
@@ -751,28 +774,31 @@ def main():
         print(f"Note: Race ID {args.race_id} specified but not yet implemented in enhanced pipeline")
         print("This will be added in a future version. Running for next race instead.")
     
+    resolved_config_path = resolve_config_path(args.config)
+
     # Override config if needed
     if args.skip_weather or args.sequential:
         import yaml
-        with open(args.config, 'r') as f:
+        with open(resolved_config_path, 'r') as f:
             config = yaml.safe_load(f)
-        
+
         if args.skip_weather:
             config['predictions_v3_weather']['enabled'] = False
-        
+
         if args.sequential:
             config['pipeline']['parallel_execution'] = False
-        
+
         # Save temporary config
         import tempfile
         temp_config = Path(tempfile.gettempdir()) / 'temp_pipeline_config.yaml'
         with open(temp_config, 'w') as f:
             yaml.dump(config, f)
-        
-        args.config = str(temp_config)
-    
+
+        resolved_config_path = temp_config
+
     # Run pipeline
-    pipeline = EnhancedF1Pipeline(args.config)
+    print(f"Using configuration file: {resolved_config_path}")
+    pipeline = EnhancedF1Pipeline(str(resolved_config_path))
     pipeline.run()
 
 
